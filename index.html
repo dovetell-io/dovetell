@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>dovetell — The context layer for your code</title>
+<meta name="description" content="Prompts are assembled, not written. Context is pulled, not remembered. dovetell is the context layer for AI-assisted software teams."/>
+<script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blurple:#5865F2;
+  --blurple-dark:#3B45C4;
+  --blurple-light:#D8DAFD;
+  --blurple-pale:rgba(88,101,242,0.08);
+  --near-black:#1A1A2E;
+  --surface:#20203a;
+  --surface-2:#272745;
+  --muted:rgba(216,218,253,0.5);
+  --text:#e8e9f8;
+  --white:#ffffff;
+  --border:rgba(255,255,255,0.07);
+  --sans:'Plus Jakarta Sans',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  color:var(--text);
+  background:var(--near-black);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── BACKGROUND ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%,rgba(88,101,242,0.14) 0%,transparent 65%),
+    radial-gradient(ellipse 60% 50% at 80% 85%,rgba(59,69,196,0.10) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(88,101,242,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(88,101,242,0.04) 1px,transparent 1px);
+  background-size:52px 52px;
+  pointer-events:none;z-index:0;
+}
+
+/* ── LAYOUT ── */
+.wrap{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:0 32px}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(26,26,46,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  max-width:1040px;margin:0 auto;padding:0 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;
+}
+.wordmark{
+  font-size:19px;font-weight:800;letter-spacing:-0.03em;
+  color:var(--text);text-decoration:none;
+}
+.wordmark em{font-style:normal;color:var(--blurple)}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{
+  font-size:13px;font-weight:500;color:var(--muted);
+  text-decoration:none;transition:color 0.2s;letter-spacing:0.01em;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{
+  background:var(--blurple);color:#fff !important;
+  padding:8px 18px;border-radius:7px;font-weight:700 !important;
+  font-size:13px !important;transition:background 0.2s !important;
+}
+.nav-cta:hover{background:var(--blurple-dark) !important}
+
+/* ── HERO ── */
+.hero{
+  padding:100px 0 80px;
+  opacity:0;animation:fadeUp 0.8s ease 0.05s forwards;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--blurple);
+  background:rgba(88,101,242,0.12);border:1px solid rgba(88,101,242,0.25);
+  border-radius:4px;padding:5px 12px;margin-bottom:28px;
+}
+.hero-eyebrow span{
+  width:6px;height:6px;border-radius:50%;background:var(--blurple);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+h1{
+  font-size:clamp(40px,6.5vw,72px);
+  font-weight:800;letter-spacing:-0.04em;line-height:1.05;
+  margin-bottom:24px;max-width:800px;
+}
+h1 em{font-style:normal;color:var(--blurple)}
+
+.hero-sub{
+  font-family:var(--mono);font-size:15px;
+  color:var(--muted);line-height:1.7;
+  max-width:520px;margin-bottom:40px;
+}
+.hero-sub span{display:block}
+
+.hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:64px}
+.btn-hero{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--blurple);color:#fff;
+  font-family:var(--sans);font-size:14px;font-weight:700;
+  padding:14px 28px;border-radius:9px;border:none;
+  cursor:pointer;text-decoration:none;
+  transition:all 0.2s;letter-spacing:-0.01em;
+}
+.btn-hero:hover{background:var(--blurple-dark);transform:translateY(-2px);box-shadow:0 8px 28px rgba(88,101,242,0.35)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--text);
+  font-family:var(--sans);font-size:14px;font-weight:600;
+  padding:14px 24px;border-radius:9px;
+  border:1px solid rgba(255,255,255,0.15);
+  text-decoration:none;transition:all 0.2s;
+}
+.btn-ghost:hover{border-color:rgba(88,101,242,0.5);color:var(--blurple-light)}
+
+/* ── SIGNAL BAR ── */
+.signal-bar{
+  display:flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:11px;color:var(--muted);
+  padding-top:32px;border-top:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.signal-item{display:flex;align-items:center;gap:6px}
+.signal-dot{width:6px;height:6px;border-radius:50%;background:var(--blurple);opacity:0.7}
+.signal-divider{color:rgba(255,255,255,0.15)}
+
+/* ── SECTION SHARED ── */
+section{padding:80px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
+.section-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--blurple);margin-bottom:16px;opacity:0.8;
+}
+.section-h2{
+  font-size:clamp(26px,3.5vw,38px);font-weight:800;
+  letter-spacing:-0.03em;line-height:1.15;margin-bottom:12px;
+}
+.section-h2 em{font-style:normal;color:var(--blurple)}
+.section-sub{font-size:15px;color:var(--muted);line-height:1.65;max-width:520px;margin-bottom:48px}
+
+/* ── PROBLEM ── */
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.problem-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:24px 20px;
+  position:relative;overflow:hidden;transition:all 0.2s;
+}
+.problem-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blurple-dark),var(--blurple));
+  opacity:0.6;
+}
+.problem-card:hover{border-color:rgba(88,101,242,0.3);transform:translateY(-2px)}
+.problem-num{
+  font-family:var(--mono);font-size:10px;color:var(--blurple);
+  letter-spacing:0.08em;margin-bottom:10px;
+}
+.problem-card h3{font-size:14px;font-weight:700;margin-bottom:6px}
+.problem-card p{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ── HOW IT WORKS ── */
+.how-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.how-steps::before{
+  content:'';position:absolute;top:28px;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(88,101,242,0.3),rgba(88,101,242,0.3),transparent);
+}
+.how-step{text-align:center;padding:0 12px;position:relative}
+.how-step-num{
+  width:56px;height:56px;border-radius:14px;
+  background:var(--surface-2);border:1px solid rgba(88,101,242,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blurple);
+  margin:0 auto 16px;position:relative;z-index:1;
+  transition:all 0.2s;
+}
+.how-step:hover .how-step-num{background:rgba(88,101,242,0.15);border-color:rgba(88,101,242,0.5)}
+.how-step-title{font-size:13px;font-weight:700;margin-bottom:6px}
+.how-step-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.how-step-badge{
+  display:inline-block;font-family:var(--mono);font-size:10px;
+  color:var(--blurple);background:rgba(88,101,242,0.12);
+  border:1px solid rgba(88,101,242,0.2);border-radius:3px;
+  padding:2px 7px;margin-top:8px;
+}
+
+/* ── MATURITY ── */
+.maturity-levels{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px}
+.maturity-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:20px;transition:all 0.2s;
+}
+.maturity-card.current{
+  border-color:rgba(88,101,242,0.4);
+  background:rgba(88,101,242,0.07);
+}
+.maturity-card:hover{border-color:rgba(88,101,242,0.3)}
+.maturity-badge{
+  display:inline-block;font-size:10px;font-weight:700;
+  letter-spacing:0.06em;text-transform:uppercase;
+  padding:3px 9px;border-radius:4px;margin-bottom:12px;
+}
+.maturity-badge.scattered{background:rgba(220,38,38,0.15);color:#F87171}
+.maturity-badge.structured{background:rgba(217,119,6,0.15);color:#FBBF24}
+.maturity-badge.coordinated{background:rgba(88,101,242,0.15);color:var(--blurple-light)}
+.maturity-badge.compounding{background:rgba(22,163,74,0.15);color:#4ADE80}
+.maturity-range{
+  font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:8px;
+}
+.maturity-name{font-size:16px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+.maturity-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.maturity-cta-row{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
+.maturity-cta-text{font-size:14px;color:var(--text);font-weight:500;line-height:1.5}
+.maturity-cta-text strong{display:block;font-size:16px;font-weight:800;margin-bottom:4px}
+
+/* ── STACK ── */
+.stack-visual{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:40px;
+}
+.stack-layer{
+  border-radius:10px;padding:16px 20px;margin-bottom:10px;
+  display:flex;align-items:center;gap:14px;
+  transition:all 0.2s;
+}
+.stack-layer:last-child{margin-bottom:0}
+.stack-layer.model{background:rgba(255,255,255,0.04);border:1px solid var(--border)}
+.stack-layer.harness{
+  background:rgba(88,101,242,0.12);border:1px solid rgba(88,101,242,0.3);
+  margin-left:0;
+}
+.stack-layer.dovetell-layer{
+  background:var(--blurple);border:none;
+  box-shadow:0 4px 24px rgba(88,101,242,0.4);
+}
+.stack-layer.memory{background:rgba(255,255,255,0.04);border:1px solid var(--border)}
+.stack-layer.codebase{
+  background:var(--near-black);border:1px solid rgba(255,255,255,0.12);
+}
+.stack-icon{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.stack-layer.model .stack-icon{background:rgba(255,255,255,0.08)}
+.stack-layer.harness .stack-icon{background:rgba(88,101,242,0.2)}
+.stack-layer.dovetell-layer .stack-icon{background:rgba(255,255,255,0.15)}
+.stack-layer.memory .stack-icon{background:rgba(255,255,255,0.08)}
+.stack-layer.codebase .stack-icon{background:rgba(255,255,255,0.05)}
+.stack-body{}
+.stack-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.stack-layer.dovetell-layer .stack-name{color:#fff}
+.stack-sub{font-size:12px;color:var(--muted)}
+.stack-layer.dovetell-layer .stack-sub{color:rgba(255,255,255,0.75)}
+.harness-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--blurple);margin-bottom:10px;
+  padding:0 4px;
+}
+.stack-arrow{
+  text-align:center;color:rgba(88,101,242,0.4);
+  font-size:18px;margin:4px 0;line-height:1;
+}
+.stack-footnote{
+  margin-top:20px;font-family:var(--mono);font-size:11px;
+  color:var(--muted);font-style:italic;border-top:1px solid var(--border);
+  padding-top:16px;
+}
+
+/* ── WAITLIST ── */
+.waitlist-section{
+  background:linear-gradient(135deg,var(--surface) 0%,var(--surface-2) 100%);
+  border:1px solid var(--border);border-radius:20px;
+  padding:56px 48px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.waitlist-section::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:240px;height:240px;
+  background:radial-gradient(circle,rgba(88,101,242,0.15) 0%,transparent 70%);
+}
+.waitlist-section::after{
+  content:'';position:absolute;bottom:-40px;left:-40px;
+  width:180px;height:180px;
+  background:radial-gradient(circle,rgba(59,69,196,0.12) 0%,transparent 70%);
+}
+.waitlist-inner{position:relative;z-index:1}
+.waitlist-h2{
+  font-size:clamp(24px,3.5vw,36px);font-weight:800;
+  letter-spacing:-0.03em;margin-bottom:10px;
+}
+.waitlist-sub{font-size:15px;color:var(--muted);margin-bottom:32px;line-height:1.6}
+.waitlist-form{
+  display:flex;gap:10px;max-width:480px;margin:0 auto 16px;
+}
+.waitlist-input{
+  flex:1;padding:13px 18px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:9px;font-family:var(--sans);font-size:14px;
+  color:var(--text);outline:none;transition:border-color 0.2s;
+}
+.waitlist-input::placeholder{color:rgba(216,218,253,0.35)}
+.waitlist-input:focus{border-color:rgba(88,101,242,0.6)}
+.btn-waitlist{
+  background:var(--blurple);color:#fff;
+  font-family:var(--sans);font-size:14px;font-weight:700;
+  padding:13px 24px;border-radius:9px;border:none;
+  cursor:pointer;white-space:nowrap;transition:all 0.2s;
+}
+.btn-waitlist:hover{background:var(--blurple-dark)}
+.waitlist-note{font-size:12px;color:var(--muted)}
+.waitlist-success{
+  display:none;background:rgba(22,163,74,0.12);
+  border:1px solid rgba(22,163,74,0.25);border-radius:8px;
+  padding:14px 20px;font-size:13px;color:#4ADE80;
+  max-width:480px;margin:0 auto;
+}
+
+/* ── THOUGHT PIECES ── */
+.thought-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.thought-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:22px;transition:all 0.2s;
+}
+.thought-card:hover{border-color:rgba(88,101,242,0.3);transform:translateY(-2px)}
+.thought-source{
+  font-family:var(--mono);font-size:10px;color:var(--blurple);
+  letter-spacing:0.08em;margin-bottom:12px;display:flex;align-items:center;gap:6px;
+}
+.thought-source::before{content:'//'}
+.thought-quote{
+  font-size:13px;color:var(--text);line-height:1.65;
+  font-style:italic;margin-bottom:12px;
+}
+.thought-relevance{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* ── TAGLINE FOOTER ── */
+.site-footer{
+  border-top:1px solid var(--border);
+  padding:28px 0;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-left{display:flex;align-items:center;gap:20px}
+.footer-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
+.footer-wordmark em{font-style:normal;color:var(--blurple)}
+.footer-tagline{font-family:var(--mono);font-size:11px;color:var(--muted);font-style:italic}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--text)}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+section{animation-delay:0.15s}
+section:nth-child(2){animation-delay:0.2s}
+section:nth-child(3){animation-delay:0.25s}
+section:nth-child(4){animation-delay:0.3s}
+section:nth-child(5){animation-delay:0.35s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .wrap{padding:0 20px}
+  .nav-inner{padding:0 20px}
+  .hero{padding:48px 0 40px}
+  h1{font-size:36px;letter-spacing:-0.03em}
+  .hero-sub{font-size:13px}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .btn-hero,.btn-ghost{justify-content:center;text-align:center}
+  .signal-bar{gap:8px;font-size:10px}
+  .signal-divider{display:none}
+  .signal-item{display:none}
+  .signal-item:first-child{display:flex}
+  section{padding:56px 0}
+  .section-h2{font-size:26px}
+  .problem-grid{grid-template-columns:1fr}
+  .how-steps{grid-template-columns:1fr 1fr;gap:24px}
+  .how-steps::before{display:none}
+  .how-step{padding:0 4px}
+  .maturity-levels{grid-template-columns:1fr 1fr;gap:12px}
+  .maturity-cta-row{flex-direction:column;text-align:center}
+  .maturity-cta-row .btn-hero{width:100%;justify-content:center}
+  .stack-visual{padding:24px 20px}
+  .thought-grid{grid-template-columns:1fr}
+  .waitlist-section{padding:36px 24px}
+  .waitlist-form{flex-direction:column}
+  .waitlist-input,.btn-waitlist{width:100%}
+  .nav-links{gap:12px}
+  .nav-links a:not(.nav-cta){display:none}
+  .site-footer{flex-direction:column;text-align:center;gap:12px}
+  .footer-left{flex-direction:column;gap:4px}
+  .footer-links{gap:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="wordmark" href="/">dove<em>tell</em></a>
+    <div class="nav-links">
+      <a href="/framework">Framework</a>
+      <a href="/team-assessment">Assessment</a>
+      <a href="https://github.com/dovetell-io/dovetell" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="nav-cta" href="/team-assessment">Take the assessment →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-eyebrow">
+      <span></span>
+      v0.1 — MVP · Harness-as-a-Service context layer
+    </div>
+    <h1>The context layer<br>for <em>your</em> code.</h1>
+    <p class="hero-sub">
+      <span>Prompts are assembled, not written.</span>
+      <span>Context is pulled, not remembered.</span>
+    </p>
+    <div class="hero-actions">
+      <a class="btn-hero" href="/team-assessment">
+        Take the free assessment
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a class="btn-ghost" href="/framework">
+        See the framework →
+      </a>
+    </div>
+    <div class="signal-bar">
+      <div class="signal-item">
+        <div class="signal-dot"></div>
+        Phase 1 — Prompt library
+      </div>
+      <span class="signal-divider">·</span>
+      <div class="signal-item">Model-agnostic · BYOK</div>
+      <span class="signal-divider">·</span>
+      <div class="signal-item">Open core · GitHub</div>
+      <span class="signal-divider">·</span>
+      <div class="signal-item">No tracking · No cookies</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section style="animation-delay:0.1s">
+  <div class="wrap">
+    <div class="section-label">// The problem</div>
+    <h2 class="section-h2">Speed doesn't have to<br>mean <em>drift.</em></h2>
+    <p class="section-sub">Every decision made in a chat thread, every assumption in someone's head, every update that never touches documentation — that's context debt accumulating in real time.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-num">01</div>
+        <h3>Tribal Knowledge Failure</h3>
+        <p>Domain context lives in one person's head and never gets captured. When that person is heads-down, the team stalls.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">02</div>
+        <h3>Documentation Drift</h3>
+        <p>Governing docs are written once and go stale the moment work begins. Nobody trusts them, so nobody reads them.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">03</div>
+        <h3>Bi-directional Blindness</h3>
+        <p>Code evolves without informing docs. Docs change without reaching developers. The two never meet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section style="animation-delay:0.15s">
+  <div class="wrap">
+    <div class="section-label">// How it works</div>
+    <h2 class="section-h2">dovetell <em>prompts.</em><br>you assemble.</h2>
+    <p class="section-sub">Four inputs. One assembled context. Delivered into your flow. The loop closes when you review what the system captures.</p>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">01</div>
+        <div class="how-step-title">Personal (local)</div>
+        <div class="how-step-desc">Your prompts live in your repo. Coding guidelines, style preferences, personal context.</div>
+        <div class="how-step-badge">available now</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">02</div>
+        <div class="how-step-title">Team (shared)</div>
+        <div class="how-step-desc">Team prompts versioned with the team. Architecture, security, standards.</div>
+        <div class="how-step-badge">available now</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">03</div>
+        <div class="how-step-title">Conversation context</div>
+        <div class="how-step-desc">Decisions in progress pulled from your team's tools — GitHub, Slack, Linear.</div>
+        <div class="how-step-badge">coming soon</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">04</div>
+        <div class="how-step-title">Context base</div>
+        <div class="how-step-desc">Living markdown files. Decisions, assumptions, definitions. Unvetted until you approve.</div>
+        <div class="how-step-badge">coming soon</div>
+      </div>
+    </div>
+    <div style="margin-top:32px;text-align:center">
+      <a href="/framework" style="font-size:13px;color:var(--blurple);font-weight:600;text-decoration:none">
+        See the full framework diagram →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- MATURITY -->
+<section style="animation-delay:0.2s">
+  <div class="wrap">
+    <div class="section-label">// Where does your team stand?</div>
+    <h2 class="section-h2">Four levels.<br>One <em>clear</em> path forward.</h2>
+    <p class="section-sub">Take the free Team AI Maturity Assessment. 5 minutes. Get your score, your gaps, and exactly what to do next.</p>
+    <div class="maturity-levels">
+      <div class="maturity-card">
+        <div class="maturity-badge scattered">Scattered</div>
+        <div class="maturity-range">0 – 12</div>
+        <div class="maturity-name">Ad hoc</div>
+        <div class="maturity-desc">AI use is isolated. Context lives in individual chats. No shared standards.</div>
+      </div>
+      <div class="maturity-card">
+        <div class="maturity-badge structured">Structured</div>
+        <div class="maturity-range">13 – 24</div>
+        <div class="maturity-name">Repeatable</div>
+        <div class="maturity-desc">Some practices exist but they're inconsistent. Handoffs vary. Knowledge drifts.</div>
+      </div>
+      <div class="maturity-card current">
+        <div class="maturity-badge coordinated">Coordinated</div>
+        <div class="maturity-range">25 – 30</div>
+        <div class="maturity-name">Aligned</div>
+        <div class="maturity-desc">Shared context, standard prompts, consistent handoffs. dovetell's target entry point.</div>
+      </div>
+      <div class="maturity-card">
+        <div class="maturity-badge compounding">Compounding</div>
+        <div class="maturity-range">31 – 36</div>
+        <div class="maturity-name">Systematic</div>
+        <div class="maturity-desc">AI context compounds over time. Every decision becomes searchable precedent.</div>
+      </div>
+    </div>
+    <div class="maturity-cta-row">
+      <div class="maturity-cta-text">
+        <strong>Find out where your team scores.</strong>
+        5 minutes. 6 capability areas. Personalized gaps and next steps.
+      </div>
+      <a class="btn-hero" href="/team-assessment" style="white-space:nowrap">
+        Take the free assessment →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- THE STACK -->
+<section style="animation-delay:0.25s">
+  <div class="wrap">
+    <div class="section-label">// Where dovetell lives</div>
+    <h2 class="section-h2">The context layer in<br>your <em>agent harness.</em></h2>
+    <p class="section-sub">dovetell is not a model. It's not a harness. It's the context injection layer that makes your harness useful for your specific team's domain knowledge.</p>
+    <div class="stack-visual">
+      <div class="stack-layer model">
+        <div class="stack-icon">🧠</div>
+        <div class="stack-body">
+          <div class="stack-name">Model</div>
+          <div class="stack-sub">Claude · GPT-4o · Gemini · Local (Ollama)</div>
+        </div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="harness-label">Agent Harness</div>
+      <div class="stack-layer harness">
+        <div class="stack-icon">🛠</div>
+        <div class="stack-body">
+          <div class="stack-name">Tools + Skills</div>
+          <div class="stack-sub">Cursor · Claude Code · GitHub Copilot · VS Code</div>
+        </div>
+      </div>
+      <div class="stack-layer dovetell-layer">
+        <div class="stack-icon">🕊</div>
+        <div class="stack-body">
+          <div class="stack-name">dovetell — context injection layer</div>
+          <div class="stack-sub">Personal prompts + team prompts + context base · model-agnostic · BYOK</div>
+        </div>
+      </div>
+      <div class="stack-layer memory">
+        <div class="stack-icon">💾</div>
+        <div class="stack-body">
+          <div class="stack-name">Memory + State</div>
+          <div class="stack-sub">filesystem · AGENTS.md · git · context base</div>
+        </div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="stack-layer codebase">
+        <div class="stack-icon" style="font-family:var(--mono);font-size:12px;color:var(--blurple)">&lt;/&gt;</div>
+        <div class="stack-body">
+          <div class="stack-name">Your Codebase</div>
+          <div class="stack-sub">The right context, right in your flow.</div>
+        </div>
+      </div>
+      <div class="stack-footnote">
+        "if you're not the model, you're the harness" — LangChain, 2026 &nbsp;·&nbsp;
+        "context graphs are AI's next trillion-dollar layer" — Foundation Capital, 2025
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THOUGHT PIECES -->
+<section style="animation-delay:0.28s">
+  <div class="wrap">
+    <div class="section-label">// The thinking behind it</div>
+    <h2 class="section-h2">Three frameworks.<br>One <em>independent</em> conclusion.</h2>
+    <p class="section-sub">dovetell didn't start with a thesis. It started with a problem. These frameworks arrived later and named what was already being built.</p>
+    <div class="thought-grid">
+      <div class="thought-card">
+        <div class="thought-source">LangChain · March 2026</div>
+        <div class="thought-quote">"Harnesses today are largely delivery mechanisms for good context engineering. The question changed from what should we tell the model to what environment should the model operate in."</div>
+        <div class="thought-relevance">dovetell is the context injection layer in your agent harness. Phase 1 is manual. Phase 2 is automated.</div>
+      </div>
+      <div class="thought-card">
+        <div class="thought-source">Foundation Capital · Dec 2025</div>
+        <div class="thought-quote">"The missing layer is decision traces — the exceptions, overrides, and precedents that currently live in Slack threads, deal desk conversations, and people's heads."</div>
+        <div class="thought-relevance">dovetell's context base is a decision trace store. "unvetted → reviewed → becomes truth" is the compounding loop.</div>
+      </div>
+      <div class="thought-card">
+        <div class="thought-source">AI Daily Brief · April 2026</div>
+        <div class="thought-quote">"Harness-as-a-Service gives you three things: which model, which tools, which task. The domain context your team needs is not included."</div>
+        <div class="thought-relevance">Cursor handles the runtime. dovetell handles what the runtime needs to know about your team.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section style="animation-delay:0.3s;padding-bottom:100px">
+  <div class="wrap">
+    <div class="waitlist-section">
+      <div class="waitlist-inner">
+        <div class="section-label" style="justify-content:center;display:flex">// Early access</div>
+        <h2 class="waitlist-h2">Tell it once.<br>Let it travel.</h2>
+        <p class="waitlist-sub">Join the waitlist for the dovetell platform. Be the first to know when the context base, unvetted queue, and MCP integration go live.</p>
+        <form class="waitlist-form" id="waitlist-form" onsubmit="submitWaitlist(event)">
+          <input
+            class="waitlist-input"
+            type="email"
+            id="waitlist-email"
+            placeholder="your@email.com"
+            autocomplete="email"
+            required
+          />
+          <button class="btn-waitlist" type="submit" id="waitlist-btn">
+            Join waitlist →
+          </button>
+        </form>
+        <div class="waitlist-success" id="waitlist-success">
+          ✓ You're on the list. We'll be in touch when the platform launches.
+        </div>
+        <p class="waitlist-note">No spam. No frequency. Just a note when it's ready.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="wrap">
+  <footer class="site-footer">
+    <div class="footer-left">
+      <div class="footer-wordmark">dove<em>tell</em></div>
+      <div class="footer-tagline">"Tell it once. Let it travel."</div>
+    </div>
+    <div class="footer-links">
+      <a href="/framework">Framework</a>
+      <a href="/team-assessment">Assessment</a>
+      <a href="https://github.com/dovetell-io/dovetell" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ── WAITLIST ──────────────────────────────────────────────────────────────────
+// Replace with your Formspree endpoint
+const WAITLIST_ENDPOINT = 'https://formspree.io/f/xaqvneqn';
+
+async function submitWaitlist(e) {
+  e.preventDefault();
+  const email = document.getElementById('waitlist-email').value.trim();
+  const btn = document.getElementById('waitlist-btn');
+  if (!email) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Joining…';
+
+  try {
+    if (WAITLIST_ENDPOINT.includes('YOUR_WAITLIST_FORM_ID')) {
+      // Dev mode — just show success
+    } else {
+      await fetch(WAITLIST_ENDPOINT, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify({
+          email,
+          source:'homepage-waitlist',
+          _subject:`dovetell waitlist — ${email}`,
+          _replyto: email,
+        })
+      });
+    }
+  } catch(err) { console.log('Formspree error', err); }
+
+  document.getElementById('waitlist-form').style.display = 'none';
+  document.getElementById('waitlist-success').style.display = 'block';
+}
+
+// ── SCROLL ANIMATIONS ─────────────────────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = 'running';
+      observer.unobserve(entry.target);
+    }
+  });
+}, {threshold: 0.1});
+
+document.querySelectorAll('section').forEach(el => {
+  el.style.animationPlayState = 'paused';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
