@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Team AI Maturity Assessment — dovetell</title>
+<script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blurple:#5865F2;
+  --blurple-dark:#3B45C4;
+  --blurple-light:#D8DAFD;
+  --blurple-pale:#EEF0FE;
+  --near-black:#1A1A2E;
+  --text:#1A1A2E;
+  --muted:#6B7280;
+  --border:#E5E7EB;
+  --surface:#F9FAFB;
+  --white:#FFFFFF;
+  --green:#16A34A;
+  --green-light:#DCFCE7;
+  --red:#DC2626;
+  --red-light:#FEE2E2;
+  --yellow:#D97706;
+  --yellow-light:#FEF3C7;
+  --sans:'Plus Jakarta Sans',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--white);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);z-index:100}
+.wordmark{font-size:20px;font-weight:800;letter-spacing:-0.03em;color:var(--near-black);text-decoration:none}
+.wordmark span{color:var(--blurple)}
+.nav-status{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--muted)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--blurple);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* SCREENS */
+.screen{display:none;min-height:calc(100vh - 65px)}
+.screen.active{display:block}
+
+/* ── INTRO SCREEN ── */
+#screen-intro{background:linear-gradient(135deg,#F8F9FF 0%,#EEF0FE 100%);display:flex;align-items:center;justify-content:center;padding:60px 40px}
+.intro-inner{max-width:720px;text-align:center}
+.intro-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--blurple);background:var(--blurple-pale);border:1px solid var(--blurple-light);border-radius:4px;padding:6px 14px;margin-bottom:28px}
+.intro-h1{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:20px}
+.intro-h1 em{font-style:normal;color:var(--blurple)}
+.intro-sub{font-size:17px;color:var(--muted);line-height:1.65;max-width:560px;margin:0 auto 40px}
+.intro-meta{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:40px;flex-wrap:wrap}
+.intro-meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:500}
+.intro-meta-item svg{color:var(--blurple)}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--blurple);color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;padding:16px 32px;border-radius:10px;border:none;cursor:pointer;transition:all 0.2s;letter-spacing:-0.01em}
+.btn-primary:hover{background:var(--blurple-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(88,101,242,0.3)}
+.intro-areas{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:48px;text-align:left}
+.area-pill{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:10px}
+.area-pill-icon{width:28px;height:28px;border-radius:6px;background:var(--blurple-pale);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+
+/* ── ASSESSMENT SCREEN ── */
+#screen-assessment{padding:40px;max-width:1100px;margin:0 auto}
+.assessment-layout{display:grid;grid-template-columns:1fr 280px;gap:32px;align-items:start}
+.assessment-main{}
+.progress-bar-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:24px}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.progress-label{font-size:13px;font-weight:600;color:var(--text)}
+.progress-pct{font-family:var(--mono);font-size:12px;color:var(--blurple);font-weight:500}
+.progress-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blurple),#7C85F5);border-radius:3px;transition:width 0.5s ease}
+.section-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:32px;margin-bottom:0}
+.section-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.section-icon{width:48px;height:48px;border-radius:12px;background:var(--blurple-pale);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.section-title{font-size:20px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+.section-sub{font-size:13px;color:var(--muted);line-height:1.5}
+.question-block{margin-bottom:28px}
+.question-text{font-size:14px;font-weight:600;color:var(--text);margin-bottom:12px;line-height:1.5}
+.question-options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.q-option{border:1.5px solid var(--border);border-radius:8px;padding:10px 8px;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--white)}
+.q-option:hover{border-color:var(--blurple);background:var(--blurple-pale)}
+.q-option.selected{border-color:var(--blurple);background:var(--blurple);color:#fff}
+.q-option.selected .opt-score{color:rgba(255,255,255,0.8)}
+.q-option.selected .opt-label{color:#fff}
+.opt-score{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--blurple);display:block;margin-bottom:2px}
+.opt-label{font-size:11px;font-weight:500;color:var(--muted);display:block}
+.q-option.selected .opt-score{color:#fff}
+.nav-buttons{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;background:var(--white);color:var(--text);font-family:var(--sans);font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;transition:all 0.2s}
+.btn-secondary:hover{border-color:var(--blurple);color:var(--blurple)}
+.btn-next{display:inline-flex;align-items:center;gap:8px;background:var(--blurple);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;padding:12px 28px;border-radius:8px;border:none;cursor:pointer;transition:all 0.2s}
+.btn-next:hover{background:var(--blurple-dark)}
+.btn-next:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+
+/* SIDEBAR */
+.assessment-sidebar{position:sticky;top:100px}
+.sidebar-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.sidebar-title{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.sidebar-section{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--surface)}
+.sidebar-section:last-child{border-bottom:none}
+.sidebar-section-num{width:24px;height:24px;border-radius:6px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;font-family:var(--mono)}
+.sidebar-section.done .sidebar-section-num{background:var(--green-light);color:var(--green)}
+.sidebar-section.active .sidebar-section-num{background:var(--blurple);color:#fff}
+.sidebar-section-name{font-size:13px;font-weight:600;color:var(--muted)}
+.sidebar-section.active .sidebar-section-name{color:var(--blurple)}
+.sidebar-section.done .sidebar-section-name{color:var(--text)}
+.sidebar-section-status{font-size:11px;color:var(--muted);margin-left:auto}
+.sidebar-section.active .sidebar-section-status{color:var(--blurple)}
+.sidebar-section.done .sidebar-section-status{color:var(--green)}
+.trust-box{background:var(--blurple-pale);border:1px solid var(--blurple-light);border-radius:10px;padding:16px}
+.trust-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:12px;color:var(--near-black);line-height:1.5}
+.trust-item:last-child{margin-bottom:0}
+.trust-item svg{color:var(--blurple);flex-shrink:0;margin-top:1px}
+.trust-item strong{display:block;font-weight:700;margin-bottom:2px}
+
+/* ── RESULTS SCREEN ── */
+#screen-results{padding:40px;max-width:960px;margin:0 auto}
+.results-hero{background:linear-gradient(135deg,var(--near-black) 0%,#2A2A4A 100%);border-radius:16px;padding:40px;margin-bottom:24px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
+.results-label{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(216,218,253,0.6);margin-bottom:12px}
+.results-headline{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-0.03em;color:#fff;margin-bottom:12px}
+.results-headline em{font-style:normal;color:var(--blurple-light)}
+.results-desc{font-size:14px;color:rgba(255,255,255,0.7);line-height:1.65;max-width:440px}
+.results-next-tip{margin-top:16px;font-size:13px;color:var(--blurple-light);display:flex;align-items:center;gap:6px}
+.score-gauge-wrap{text-align:center;flex-shrink:0}
+.score-circle{width:120px;height:120px;position:relative;margin:0 auto 12px}
+.score-circle svg{transform:rotate(-90deg)}
+.score-circle-track{fill:none;stroke:rgba(255,255,255,0.1);stroke-width:8}
+.score-circle-fill{fill:none;stroke:var(--blurple-light);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s ease}
+.score-number{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num{font-size:28px;font-weight:800;color:#fff;line-height:1}
+.score-denom{font-size:12px;color:rgba(255,255,255,0.5);font-family:var(--mono)}
+.score-level-badge{display:inline-block;background:var(--blurple);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:0.02em}
+.level-scale{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.level-item{text-align:center;padding:12px 8px;position:relative}
+.level-item:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--border)}
+.level-item.current{background:var(--blurple-pale);border-radius:8px}
+.level-name{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px}
+.level-item.current .level-name{color:var(--blurple)}
+.level-range{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.level-item.current .level-range{color:var(--blurple)}
+.level-desc-small{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+.breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.breakdown-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px}
+.breakdown-icon{font-size:20px;margin-bottom:8px}
+.breakdown-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.breakdown-score-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.breakdown-score{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blurple)}
+.breakdown-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.breakdown-bar-fill{height:100%;background:var(--blurple);border-radius:2px}
+.breakdown-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.strengths-box{background:var(--green-light);border:1px solid #BBF7D0;border-radius:12px;padding:20px}
+.gaps-box{background:var(--red-light);border:1px solid #FECACA;border-radius:12px;padding:20px}
+.box-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.box-title{font-size:14px;font-weight:700}
+.box-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.strength-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.5}
+.strength-item:last-child{margin-bottom:0}
+.gap-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.5}
+.gap-item:last-child{margin-bottom:0}
+.next-steps{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.next-steps-title{font-size:15px;font-weight:800;margin-bottom:4px}
+.next-steps-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+.step-row{display:flex;align-items:flex-start;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)}
+.step-row:last-child{border-bottom:none}
+.step-num{width:28px;height:28px;border-radius:8px;background:var(--blurple-pale);color:var(--blurple);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono)}
+.step-body{}
+.step-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.step-link{font-size:12px;color:var(--blurple);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:4px}
+.cta-banner{background:linear-gradient(135deg,var(--blurple) 0%,var(--blurple-dark) 100%);border-radius:14px;padding:32px 36px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.cta-text h3{font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:6px}
+.cta-text p{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.55;max-width:400px}
+.cta-buttons-row{display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap}
+.btn-white{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--blurple);font-family:var(--sans);font-size:13px;font-weight:700;padding:11px 20px;border-radius:8px;border:none;cursor:pointer;white-space:nowrap;text-decoration:none;transition:all 0.2s}
+.btn-white:hover{background:var(--blurple-light)}
+.btn-outline-white{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#fff;font-family:var(--sans);font-size:13px;font-weight:600;padding:11px 20px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.4);cursor:pointer;white-space:nowrap;text-decoration:none;transition:all 0.2s}
+.btn-outline-white:hover{border-color:#fff;background:rgba(255,255,255,0.1)}
+
+/* ── OFFER SCREEN ── */
+#screen-offer{padding:40px;max-width:880px;margin:0 auto}
+.offer-header{margin-bottom:36px}
+.offer-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--blurple);margin-bottom:12px}
+.offer-h2{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-0.03em;margin-bottom:10px}
+.offer-h2 em{font-style:normal;color:var(--blurple)}
+.offer-sub{font-size:15px;color:var(--muted);line-height:1.6;max-width:560px}
+.journey-bar{display:flex;align-items:center;gap:0;margin-bottom:36px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 20px;overflow-x:auto}
+.journey-stop{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.journey-stop.current{color:var(--blurple)}
+.journey-stop.target{color:var(--near-black)}
+.journey-icon{width:32px;height:32px;border-radius:8px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:15px}
+.journey-stop.current .journey-icon{background:var(--blurple-pale)}
+.journey-stop.target .journey-icon{background:var(--blurple);font-size:14px}
+.journey-arrow{color:var(--muted);padding:0 12px;font-size:16px}
+.tiers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+.tier-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column}
+.tier-card.featured{border-color:var(--blurple);box-shadow:0 0 0 4px rgba(88,101,242,0.08)}
+.tier-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 10px;border-radius:4px;margin-bottom:14px}
+.tier-badge.free{background:var(--surface);color:var(--muted)}
+.tier-badge.paid{background:var(--blurple-pale);color:var(--blurple)}
+.tier-badge.best{background:var(--blurple);color:#fff}
+.tier-name{font-size:16px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+.tier-price{font-size:28px;font-weight:800;letter-spacing:-0.03em;color:var(--blurple);margin-bottom:4px}
+.tier-price span{font-size:14px;font-weight:500;color:var(--muted)}
+.tier-desc{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:16px}
+.tier-includes{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.tier-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text);margin-bottom:8px;line-height:1.4}
+.tier-item svg{color:var(--blurple);flex-shrink:0;margin-top:1px}
+.tier-cta{margin-top:auto;padding-top:16px}
+.btn-tier{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;border:none;text-decoration:none}
+.btn-tier.free-btn{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}
+.btn-tier.free-btn:hover{border-color:var(--blurple);color:var(--blurple)}
+.btn-tier.paid-btn{background:var(--blurple);color:#fff}
+.btn-tier.paid-btn:hover{background:var(--blurple-dark)}
+.review-card{background:var(--near-black);border-radius:14px;padding:24px;display:flex;align-items:flex-start;gap:20px;margin-bottom:36px}
+.review-icon{width:48px;height:48px;border-radius:10px;background:rgba(88,101,242,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.review-body{flex:1}
+.review-title{font-size:16px;font-weight:800;color:#fff;margin-bottom:4px;display:flex;align-items:center;gap:12px}
+.review-price{color:var(--blurple-light)}
+.review-desc{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.55;margin-bottom:12px}
+.review-features{display:flex;flex-wrap:wrap;gap:8px}
+.review-feat{font-size:11px;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.08);border-radius:4px;padding:4px 10px}
+.btn-review{display:inline-flex;align-items:center;gap:8px;background:var(--blurple);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;padding:11px 20px;border-radius:8px;border:none;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;align-self:center}
+.btn-review:hover{background:var(--blurple-dark)}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:12px}
+.why-card{padding:16px}
+.why-icon{font-size:20px;margin-bottom:8px}
+.why-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.why-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.gumroad-note{text-align:center;font-size:12px;color:var(--muted);padding:12px}
+.gumroad-note a{color:var(--blurple);font-weight:600}
+
+/* ── EMAIL GATE MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,26,46,0.6);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal-card{background:var(--white);border-radius:20px;padding:40px;max-width:480px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.2);text-align:center;position:relative}
+.modal-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:24px}
+.modal-logo-icon{width:36px;height:36px;background:var(--blurple);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.modal-logo-text{font-size:18px;font-weight:800;letter-spacing:-0.03em;color:var(--near-black)}
+.modal-logo-text span{color:var(--blurple)}
+.modal-h2{font-size:26px;font-weight:800;letter-spacing:-0.03em;margin-bottom:10px}
+.modal-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.modal-input-wrap{position:relative;margin-bottom:12px}
+.modal-input-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.modal-input{width:100%;padding:14px 14px 14px 42px;font-family:var(--sans);font-size:14px;border:1.5px solid var(--border);border-radius:10px;outline:none;transition:border-color 0.2s;color:var(--text)}
+.modal-input:focus{border-color:var(--blurple)}
+.modal-input::placeholder{color:#9CA3AF}
+.btn-modal{width:100%;padding:14px;background:var(--blurple);color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;border:none;border-radius:10px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px}
+.btn-modal:hover{background:var(--blurple-dark)}
+.btn-modal:disabled{opacity:0.6;cursor:not-allowed}
+.modal-trust{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.modal-trust-item{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted)}
+.modal-mono-note{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:16px;padding:8px 12px;background:var(--surface);border-radius:6px}
+.modal-bottom-note{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:var(--muted);text-align:left;padding-top:16px;border-top:1px solid var(--border);line-height:1.5}
+.modal-skip{display:block;margin-top:12px;font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--sans)}
+.modal-skip:hover{color:var(--text)}
+.modal-success{display:none;text-align:center;padding:16px 0}
+.modal-success-icon{font-size:40px;margin-bottom:12px}
+.modal-success h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.modal-success p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* Demographics */
+.demo-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;margin:16px 0 0;font-size:12px;font-weight:600;color:var(--muted);background:none;border:none;font-family:var(--sans);padding:0;width:100%;justify-content:center}
+.demo-toggle:hover{color:var(--text)}
+.demo-toggle svg{transition:transform 0.2s}
+.demo-toggle.open svg{transform:rotate(180deg)}
+.demo-fields{display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:16px;text-align:left}
+.demo-fields.open{display:block}
+.demo-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.demo-field{display:flex;flex-direction:column;gap:4px}
+.demo-label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase}
+.demo-input,.demo-select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;background:var(--white);transition:border-color 0.2s;width:100%}
+.demo-input:focus,.demo-select:focus{border-color:var(--blurple)}
+.demo-input::placeholder{color:#9CA3AF}
+.demo-full{grid-column:1/-1}
+.demo-note{font-size:11px;color:var(--muted);text-align:center;margin-top:8px}
+
+/* Unique link display */
+.unique-link-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:12px 0;font-family:var(--mono);font-size:11px;color:var(--blurple);word-break:break-all;text-align:center;cursor:pointer;transition:background 0.2s}
+.unique-link-box:hover{background:#EEF0FE}
+.unique-link-label{font-size:11px;color:var(--muted);text-align:center;margin-bottom:4px}
+
+/* Email results button on results page */
+.email-results-bar{background:var(--blurple-pale);border:1px solid var(--blurple-light);border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+.email-results-text{font-size:13px;color:var(--near-black);line-height:1.5}
+.email-results-text strong{display:block;font-weight:700;margin-bottom:2px}
+.btn-email-results{display:inline-flex;align-items:center;gap:8px;background:var(--blurple);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;border:none;cursor:pointer;white-space:nowrap;transition:all 0.2s}
+.btn-email-results:hover{background:var(--blurple-dark)}
+.btn-email-results.sent{background:var(--green);cursor:default}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-size:12px;color:var(--muted)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:var(--muted);text-decoration:none}
+.footer-links a:hover{color:var(--blurple)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  #screen-intro{padding:40px 20px}
+  .intro-inner{text-align:left}
+  .intro-eyebrow{font-size:10px}
+  .intro-h1{font-size:28px;text-align:left}
+  .intro-sub{font-size:14px;text-align:left}
+  .intro-meta{justify-content:flex-start;gap:16px}
+  .btn-primary{width:100%;justify-content:center}
+  .intro-areas{grid-template-columns:1fr 1fr}
+  #screen-assessment,#screen-results,#screen-offer{padding:16px 20px}
+  .assessment-layout{grid-template-columns:1fr}
+  .assessment-sidebar{display:none}
+  .question-options{grid-template-columns:1fr 1fr}
+  .section-card{padding:20px 16px}
+  .breakdown-grid{grid-template-columns:1fr 1fr}
+  .two-col{grid-template-columns:1fr}
+  .results-hero{grid-template-columns:1fr;gap:24px}
+  .score-gauge-wrap{order:-1}
+  .level-scale{grid-template-columns:1fr 1fr;gap:0}
+  .level-item:nth-child(2)::after{display:none}
+  .tiers{grid-template-columns:1fr}
+  .review-card{flex-direction:column}
+  .why-grid{grid-template-columns:1fr}
+  .cta-banner{flex-direction:column;padding:24px 20px}
+  .cta-buttons-row{flex-direction:column;width:100%}
+  .btn-white,.btn-outline-white{justify-content:center;width:100%}
+  .email-results-bar{flex-direction:column;gap:12px}
+  .btn-email-results{width:100%;justify-content:center}
+  .nav-buttons{flex-direction:column;gap:12px}
+  .btn-next,.btn-secondary{width:100%;justify-content:center}
+  .modal-card{padding:28px 20px}
+  .journey-bar{flex-wrap:wrap;gap:8px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="wordmark" href="#">dove<span>tell</span></a>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    <span id="nav-label">Assessment</span>
+  </div>
+</nav>
+
+<!-- ══ SCREEN: INTRO ══ -->
+<div class="screen active" id="screen-intro">
+  <div class="intro-inner">
+    <div class="intro-eyebrow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Free · 5 minutes
+    </div>
+    <h1 class="intro-h1">Team AI Maturity<br><em>Assessment</em></h1>
+    <p class="intro-sub">Answer a few questions to see how reusable, reviewable, and team-aware your AI-assisted work really is. Get a score, gaps, and a clear next step.</p>
+    <div class="intro-meta">
+      <div class="intro-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        ~5 minutes
+      </div>
+      <div class="intro-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        For PMs &amp; team leads
+      </div>
+      <div class="intro-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+        Personalized results
+      </div>
+    </div>
+    <button class="btn-primary" onclick="startAssessment()">
+      Start assessment
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+    <div class="intro-areas">
+      <div class="area-pill"><div class="area-pill-icon">👥</div>Shared Context</div>
+      <div class="area-pill"><div class="area-pill-icon">💬</div>Prompt Reuse</div>
+      <div class="area-pill"><div class="area-pill-icon">🔄</div>Team Handoffs</div>
+      <div class="area-pill"><div class="area-pill-icon">📋</div>Knowledge Capture</div>
+      <div class="area-pill"><div class="area-pill-icon">🛡️</div>Review &amp; Governance</div>
+      <div class="area-pill"><div class="area-pill-icon">⚡</div>Workflow Integration</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: ASSESSMENT ══ -->
+<div class="screen" id="screen-assessment">
+  <div class="assessment-layout">
+    <div class="assessment-main">
+      <div class="progress-bar-wrap">
+        <div class="progress-top">
+          <span class="progress-label" id="progress-label">Section 1 of 6 · Shared Context</span>
+          <span class="progress-pct" id="progress-pct">0% complete</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="section-card" id="section-card"></div>
+    </div>
+    <div class="assessment-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-title">Sections</div>
+        <div id="sidebar-sections"></div>
+      </div>
+      <div class="sidebar-card">
+        <div class="sidebar-title">About this assessment</div>
+        <div class="trust-box">
+          <div class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <div><strong>Results are personalized</strong>We use your responses to generate benchmarks and recommendations that fit your team.</div>
+          </div>
+          <div class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <div><strong>Responses are private</strong>Your answers are not shared or sold. Used only to generate your report.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: RESULTS ══ -->
+<div class="screen" id="screen-results">
+  <div id="results-content"></div>
+</div>
+
+<!-- ══ SCREEN: OFFER ══ -->
+<div class="screen" id="screen-offer">
+  <div id="offer-content"></div>
+</div>
+
+<!-- ══ EMAIL GATE MODAL ══ -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal-card">
+    <div id="modal-form-content">
+      <div class="modal-logo">
+        <div class="modal-logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="modal-logo-text">dove<span>tell</span></div>
+      </div>
+      <div class="modal-h2">Your results are ready.</div>
+      <div class="modal-sub">Enter your email to get your personalized score, gap analysis, and unique tracking link.</div>
+
+      <!-- Email — required -->
+      <div class="modal-input-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <input class="modal-input" type="email" id="gate-email" placeholder="your@email.com" autocomplete="email"/>
+      </div>
+
+      <!-- Demographics toggle -->
+      <button class="demo-toggle" id="demo-toggle" onclick="toggleDemo()">
+        Tell us about your team (optional)
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      <div class="demo-fields" id="demo-fields">
+        <div class="demo-row">
+          <div class="demo-field">
+            <label class="demo-label" for="demo-role">Role</label>
+            <select class="demo-select" id="demo-role">
+              <option value="">Select role</option>
+              <option>Product Manager</option>
+              <option>Developer</option>
+              <option>Data Scientist</option>
+              <option>Engineering Lead</option>
+              <option>Founder / CTO</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="demo-field">
+            <label class="demo-label" for="demo-teamsize">Team size</label>
+            <select class="demo-select" id="demo-teamsize">
+              <option value="">Select size</option>
+              <option>1 (just me)</option>
+              <option>2–5</option>
+              <option>6–15</option>
+              <option>16–50</option>
+              <option>50+</option>
+            </select>
+          </div>
+        </div>
+        <div class="demo-row">
+          <div class="demo-field">
+            <label class="demo-label" for="demo-company">Company</label>
+            <input class="demo-input" type="text" id="demo-company" placeholder="Acme Corp"/>
+          </div>
+          <div class="demo-field">
+            <label class="demo-label" for="demo-industry">Industry</label>
+            <select class="demo-select" id="demo-industry">
+              <option value="">Select industry</option>
+              <option>Software / SaaS</option>
+              <option>Manufacturing</option>
+              <option>Finance</option>
+              <option>Healthcare</option>
+              <option>Consulting</option>
+              <option>Government / Defense</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="demo-row">
+          <div class="demo-field">
+            <label class="demo-label" for="demo-tool">Primary AI tool</label>
+            <select class="demo-select" id="demo-tool">
+              <option value="">Select tool</option>
+              <option>Cursor</option>
+              <option>Claude / Claude Code</option>
+              <option>GitHub Copilot</option>
+              <option>ChatGPT</option>
+              <option>Gemini</option>
+              <option>Multiple</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="demo-field">
+            <label class="demo-label" for="demo-source">How you found us</label>
+            <select class="demo-select" id="demo-source">
+              <option value="">Select source</option>
+              <option>LinkedIn</option>
+              <option>Colleague / referral</option>
+              <option>GitHub</option>
+              <option>Google</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="demo-note">All fields optional. Used only to improve dovetell.</div>
+      </div>
+
+      <button class="btn-modal" id="gate-submit-btn" onclick="submitGate()" style="margin-top:16px">
+        Get my results
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+
+      <div class="modal-trust">
+        <div class="modal-trust-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          We never share your email.
+        </div>
+        <div class="modal-trust-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          You'll get a unique link to retake and track your progress.
+        </div>
+      </div>
+      <div class="modal-mono-note">No account required. No password. Just your link.</div>
+      <button class="modal-skip" onclick="skipGateAndShow()">Skip — just show my results</button>
+    </div>
+    <div class="modal-success" id="modal-success-content">
+      <div class="modal-success-icon">✉️</div>
+      <h3>Results sent!</h3>
+      <p>Check your inbox for your personalized report.<br><br>Your unique assessment link:</p>
+      <div class="unique-link-label">Tap to copy</div>
+      <div class="unique-link-box" id="success-link-display" onclick="copyLink(this)"></div>
+      <p style="font-size:11px;color:var(--muted);margin-top:8px">Bookmark this link to retake and track your progress over time. Loading your results…</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-copy">© 2026 dovetell.io</span>
+  <div class="footer-links">
+    <a href="#">Product</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+  </div>
+</footer>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const sections = [
+  {
+    id:'shared-context',
+    name:'Shared Context',
+    icon:'👥',
+    desc:'How well your team creates and maintains shared AI context.',
+    questions:[
+      'Our team has a shared document or file that describes our mission, goals, and key decisions that AI should always know.',
+      'When a new team member joins, they can quickly get AI tools up to speed on our work without asking everyone for context.',
+      'Team members use consistent background context when prompting AI tools—not whatever they happen to remember.',
+      'When our team\'s priorities or decisions change, we update our shared AI context files to reflect this.',
+      'Our AI context doesn\'t live in one person\'s head—it\'s documented and findable by anyone on the team.',
+    ]
+  },
+  {
+    id:'prompt-reuse',
+    name:'Prompt Reuse',
+    icon:'💬',
+    desc:'How well your team creates, stores, and reuses high-value prompts.',
+    questions:[
+      'We have a shared prompt library where team members store and find reusable prompts.',
+      'High-value prompts are not trapped in private chats—they\'re saved somewhere the team can access.',
+      'Our prompts include expected inputs, outputs, and instructions so others can use them without guessing.',
+      'Prompts are grouped by workflow, role, or task so people can find what they need quickly.',
+      'We regularly reuse and adapt prompts that worked well instead of starting from scratch.',
+    ]
+  },
+  {
+    id:'team-handoffs',
+    name:'Team Handoffs',
+    icon:'🔄',
+    desc:'How well context is preserved when work moves between people.',
+    questions:[
+      'When work moves from one team member to another, there\'s a standard format for summarizing AI context and decisions.',
+      'Handoff notes include what was tried, what worked, and what the AI needs to know to continue the work.',
+      'People don\'t have to re-explain the same background context every time they start a new conversation with AI.',
+      'Our handoff process captures key decisions and assumptions, not just task status.',
+      'When a project is paused and restarted, the team can quickly reload context without losing progress.',
+    ]
+  },
+  {
+    id:'knowledge-capture',
+    name:'Knowledge Capture',
+    icon:'📋',
+    desc:'How consistently your team records decisions and domain knowledge.',
+    questions:[
+      'Valuable insights and decisions from AI-assisted work are captured somewhere durable—not just in chat history.',
+      'When the AI produces something exceptional, we document what prompt or approach led to that result.',
+      'Domain-specific knowledge (definitions, constraints, policies) is written down and accessible to AI tools.',
+      'We have a way to capture and tag decisions so they can be referenced later without asking the person who made them.',
+      'Knowledge doesn\'t disappear when someone leaves the team or goes on leave.',
+    ]
+  },
+  {
+    id:'review-governance',
+    name:'Review & Governance',
+    icon:'🛡️',
+    desc:'How your team reviews AI outputs and maintains standards.',
+    questions:[
+      'We have a clear process for reviewing AI-generated outputs before they become official or are acted upon.',
+      'There is someone or a role responsible for maintaining the quality of our AI context and prompts.',
+      'We track when context files or prompts were last updated and flag ones that may be stale.',
+      'Our team has shared standards for what makes a good prompt or AI output in our specific context.',
+      'When AI produces something wrong or misleading, we have a way to capture that feedback and improve.',
+    ]
+  },
+  {
+    id:'workflow-integration',
+    name:'Workflow Integration',
+    icon:'⚡',
+    desc:'How deeply AI is integrated into your team\'s daily workflows.',
+    questions:[
+      'AI tools are consistently used across the team—not just by a few enthusiasts.',
+      'Our AI usage is integrated into regular workflows rather than used ad hoc when someone remembers.',
+      'We have standard places in our process where AI context is checked or updated (e.g., sprint start, handoffs).',
+      'Team members feel confident using AI tools because they know the context is reliable and up to date.',
+      'Our AI workflows have improved over time as we\'ve learned what works and what doesn\'t.',
+    ]
+  }
+];
+
+const labels = ['Not true','Somewhat true','Mostly true','Very true'];
+let currentSection = 0;
+let answers = {}; // {sectionIdx: [scores]}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startAssessment() {
+  currentSection = 0;
+  answers = {};
+  showScreen('assessment');
+  document.getElementById('nav-label').textContent = 'Assessment in progress';
+  renderSection();
+}
+
+// ── RENDER SECTION ────────────────────────────────────────────────────────────
+function renderSection() {
+  const sec = sections[currentSection];
+  const pct = Math.round((currentSection / sections.length) * 100);
+
+  document.getElementById('progress-label').textContent =
+    `Section ${currentSection+1} of ${sections.length} · ${sec.name}`;
+  document.getElementById('progress-pct').textContent = pct + '% complete';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // sidebar
+  let sideHTML = '';
+  sections.forEach((s,i) => {
+    const done = i < currentSection;
+    const active = i === currentSection;
+    const cls = done ? 'done' : active ? 'active' : '';
+    const status = done ? '✓' : active ? 'In progress' : 'Not started';
+    sideHTML += `<div class="sidebar-section ${cls}">
+      <div class="sidebar-section-num">${done ? '✓' : i+1}</div>
+      <span class="sidebar-section-name">${s.name}</span>
+      <span class="sidebar-section-status">${status}</span>
+    </div>`;
+  });
+  document.getElementById('sidebar-sections').innerHTML = sideHTML;
+
+  // section card
+  const saved = answers[currentSection] || [];
+  let html = `<div class="section-header">
+    <div class="section-icon">${sec.icon}</div>
+    <div>
+      <div class="section-title">${sec.name}</div>
+      <div class="section-sub">${sec.desc}</div>
+    </div>
+  </div>`;
+
+  sec.questions.forEach((q,qi) => {
+    html += `<div class="question-block">
+      <div class="question-text">${qi+1}. ${q}</div>
+      <div class="question-options">`;
+    [0,1,2,3].forEach(score => {
+      const sel = saved[qi] === score ? 'selected' : '';
+      html += `<div class="q-option ${sel}" onclick="selectAnswer(${qi},${score},this)">
+        <span class="opt-score">${score}</span>
+        <span class="opt-label">${labels[score]}</span>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  const isFirst = currentSection === 0;
+  const isLast = currentSection === sections.length - 1;
+  const allAnswered = saved.length === sec.questions.length &&
+    saved.every(v => v !== undefined);
+
+  html += `<div class="nav-buttons">
+    <button class="btn-secondary" onclick="prevSection()" ${isFirst ? 'style="visibility:hidden"' : ''}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Previous
+    </button>
+    <button class="btn-next" id="btn-next" onclick="${isLast ? 'finishAssessment()' : 'nextSection()'}">
+      ${isLast ? 'See my results' : 'Continue'}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>`;
+
+  document.getElementById('section-card').innerHTML = html;
+}
+
+function selectAnswer(qi, score, el) {
+  if (!answers[currentSection]) answers[currentSection] = [];
+  answers[currentSection][qi] = score;
+  // update UI
+  const opts = el.closest('.question-options').querySelectorAll('.q-option');
+  opts.forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function nextSection() {
+  const sec = sections[currentSection];
+  const saved = answers[currentSection] || [];
+  // allow proceeding even if not all answered (save what we have)
+  currentSection++;
+  renderSection();
+}
+
+function prevSection() {
+  if (currentSection > 0) { currentSection--; renderSection(); }
+}
+
+// ── FORMSPREE ENDPOINT ────────────────────────────────────────────────────────
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xrejbpbv';
+
+// Assessment version — bump when questions change
+const ASSESSMENT_ID = 'v01';
+
+// ── UUID GENERATION ───────────────────────────────────────────────────────────
+function generateShortId() {
+  return Math.random().toString(36).substring(2, 10);
+}
+
+function generateUniqueLink(assessmentId, userId) {
+  return `https://dovetell.io/assessment?a=${assessmentId}&u=${userId}`;
+}
+
+// ── DEMOGRAPHICS TOGGLE ───────────────────────────────────────────────────────
+function toggleDemo() {
+  const fields = document.getElementById('demo-fields');
+  const toggle = document.getElementById('demo-toggle');
+  fields.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+function getDemographics() {
+  return {
+    role:      document.getElementById('demo-role')?.value     || '',
+    team_size: document.getElementById('demo-teamsize')?.value || '',
+    company:   document.getElementById('demo-company')?.value  || '',
+    industry:  document.getElementById('demo-industry')?.value || '',
+    ai_tool:   document.getElementById('demo-tool')?.value     || '',
+    source:    document.getElementById('demo-source')?.value   || '',
+  };
+}
+
+// ── COPY LINK ─────────────────────────────────────────────────────────────────
+function copyLink(el) {
+  const link = el.textContent;
+  navigator.clipboard?.writeText(link).then(() => {
+    const orig = el.textContent;
+    el.textContent = '✓ Copied!';
+    el.style.color = 'var(--green)';
+    setTimeout(() => { el.textContent = orig; el.style.color = ''; }, 2000);
+  });
+}
+
+// ── EMAIL GATE ────────────────────────────────────────────────────────────────
+function finishAssessment() {
+  let sectionScores = [];
+  sections.forEach((sec, i) => {
+    const ans = answers[i] || [];
+    let total = 0;
+    sec.questions.forEach((q, qi) => { total += ans[qi] !== undefined ? ans[qi] : 1; });
+    sectionScores.push(total);
+  });
+  window._sectionScores = sectionScores;
+  const totalScore = sectionScores.reduce((a,b) => a+b, 0);
+  const maxScore = sections.length * sections[0].questions.length * 3;
+  window._totalScore = totalScore;
+  window._maxScore = maxScore;
+
+  // Generate IDs now so they're ready whether user submits or skips
+  window._userId = generateShortId();
+  window._uniqueLink = generateUniqueLink(ASSESSMENT_ID, window._userId);
+
+  document.getElementById('email-modal').classList.add('active');
+  setTimeout(() => document.getElementById('gate-email').focus(), 100);
+}
+
+function skipGateAndShow() {
+  document.getElementById('email-modal').classList.remove('active');
+  renderResults(window._sectionScores, window._totalScore, window._maxScore);
+}
+
+async function submitGate() {
+  const email = document.getElementById('gate-email').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('gate-email').style.borderColor = '#DC2626';
+    document.getElementById('gate-email').focus();
+    return;
+  }
+  document.getElementById('gate-email').style.borderColor = '';
+
+  const btn = document.getElementById('gate-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = 'Sending… <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+
+  window._userEmail = email;
+
+  // Show unique link in success state before submitting
+  const linkEl = document.getElementById('success-link-display');
+  if (linkEl) linkEl.textContent = window._uniqueLink;
+
+  await sendToFormspree(email, 'gate', window._sectionScores, window._totalScore, window._maxScore);
+
+  document.getElementById('modal-form-content').style.display = 'none';
+  document.getElementById('modal-success-content').style.display = 'block';
+
+  setTimeout(() => {
+    document.getElementById('email-modal').classList.remove('active');
+    document.getElementById('modal-form-content').style.display = 'block';
+    document.getElementById('modal-success-content').style.display = 'none';
+    btn.disabled = false;
+    btn.innerHTML = 'Get my results <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    renderResults(window._sectionScores, window._totalScore, window._maxScore);
+  }, 2500);
+}
+
+async function sendToFormspree(email, trigger, sectionScores, totalScore, maxScore) {
+  if (!FORMSPREE_ENDPOINT || FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) return;
+  const level = getLevel(totalScore);
+  const demo = getDemographics();
+  const areaDetails = sections.map((sec, i) =>
+    `${sec.name}: ${sectionScores[i]}/${sec.questions.length * 3}`
+  ).join(' | ');
+
+  try {
+    await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify({
+        // Identity
+        email,
+        assessment_id: ASSESSMENT_ID,
+        user_id: window._userId,
+        unique_link: window._uniqueLink,
+        trigger,
+        taken_at: new Date().toISOString(),
+
+        // Results
+        level,
+        total_score: `${totalScore}/${maxScore}`,
+        section_breakdown: areaDetails,
+
+        // Demographics (all optional)
+        role:      demo.role      || '—',
+        team_size: demo.team_size || '—',
+        company:   demo.company   || '—',
+        industry:  demo.industry  || '—',
+        ai_tool:   demo.ai_tool   || '—',
+        source:    demo.source    || '—',
+
+        // Formspree formatting
+        _subject: `dovetell — ${level} (${totalScore}/${maxScore}) · ${demo.role || 'unknown role'} · ${demo.company || 'unknown company'} — ${email}`,
+        _replyto: email,
+      })
+    });
+  } catch(e) { console.log('Formspree error', e); }
+}
+
+function getLevel(score) {
+  if (score <= 12) return 'Scattered';
+  if (score <= 24) return 'Structured';
+  if (score <= 30) return 'Coordinated';
+  return 'Compounding';
+}
+
+async function emailMyResults() {
+  const btn = document.getElementById('email-results-btn');
+  const email = window._userEmail;
+
+  if (!email) {
+    // Show mini email input inline
+    const bar = document.getElementById('email-results-bar');
+    bar.innerHTML = `
+      <div class="email-results-text"><strong>Email my results</strong>Enter your email to receive your score and gap analysis.</div>
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <input type="email" id="inline-email" placeholder="your@email.com" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:13px;outline:none;width:200px"/>
+        <button onclick="sendInlineEmail()" class="btn-email-results">Send →</button>
+      </div>`;
+    setTimeout(() => document.getElementById('inline-email')?.focus(), 50);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  await sendToFormspree(email, 'email-results', window._sectionScores, window._totalScore, window._maxScore);
+  btn.className = 'btn-email-results sent';
+  btn.textContent = '✓ Sent to ' + email;
+}
+
+async function sendInlineEmail() {
+  const input = document.getElementById('inline-email');
+  const email = input?.value?.trim();
+  if (!email || !email.includes('@')) { input.style.borderColor='#DC2626'; return; }
+  window._userEmail = email;
+  await sendToFormspree(email, 'email-results-inline', window._sectionScores, window._totalScore, window._maxScore);
+  document.getElementById('email-results-bar').innerHTML = `
+    <div class="email-results-text"><strong>✓ Results sent!</strong>Check your inbox. Your score and gap analysis are on the way.</div>`;
+}
+
+// ── RESULTS RENDERER ──────────────────────────────────────────────────────────
+function renderResults(sectionScores, totalScore, maxScore) {
+  let level, levelDesc, nextLevel, color, tip;
+  if (totalScore <= 12) {
+    level = 'Scattered'; levelDesc = 'Ad hoc AI use with isolated results. Context exists in individual chats and drives. No shared standards or reuse.';
+    nextLevel = 'Structured'; color = '#DC2626'; tip = 'Focus on creating one shared context file and saving your best prompts.';
+  } else if (totalScore <= 24) {
+    level = 'Structured'; levelDesc = 'Some repeatable practices but inconsistent. Context is scattered, handoffs vary, and reusable knowledge lives in individual tools.';
+    nextLevel = 'Coordinated'; color = '#D97706'; tip = 'Keep building foundations — standardize your handoffs and prompt library.';
+  } else if (totalScore <= 30) {
+    level = 'Coordinated'; levelDesc = 'Aligned team practices and shared context. Your team works together with AI — the foundation is solid.';
+    nextLevel = 'Compounding'; color = '#16A34A'; tip = 'You\'re ready for governance and continuous improvement loops.';
+  } else {
+    level = 'Compounding'; levelDesc = 'Systematic advantage and continuous lift. AI is deeply embedded in your team\'s operating rhythm.';
+    nextLevel = null; color = '#5865F2'; tip = 'You\'re at the frontier — share what\'s working with peers.';
+  }
+
+  const areaDetails = sections.map((sec, i) => ({
+    name: sec.name, icon: sec.icon, score: sectionScores[i],
+    max: sec.questions.length * 3,
+    pct: Math.round((sectionScores[i] / (sec.questions.length * 3)) * 100)
+  }));
+  const sorted = [...areaDetails].sort((a,b) => a.score - b.score);
+  const gaps = sorted.slice(0,3);
+  const strengths = sorted.slice(-3).reverse();
+
+  const circumference = 2 * Math.PI * 52;
+  const dashOffset = circumference - (circumference * (totalScore / maxScore));
+
+  const html = `
+  <div class="email-results-bar" id="email-results-bar">
+    <div class="email-results-text">
+      <strong>${window._userEmail ? 'Your unique assessment link' : 'Want these results in your inbox?'}</strong>
+      ${window._userEmail
+        ? 'Bookmark this link to retake and track your progress over time.'
+        : 'Get your score, gap analysis, and a unique link to track your progress.'}
+    </div>
+    ${window._userEmail
+      ? `<div class="unique-link-box" style="font-size:11px;min-width:220px;text-align:center" onclick="copyLink(this)">${window._uniqueLink || ''}</div>`
+      : `<button class="btn-email-results" id="email-results-btn" onclick="emailMyResults()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email my results
+        </button>`
+    }
+  </div>
+
+  <div class="results-hero">
+    <div>
+      <div class="results-label">Your result</div>
+      <div class="results-headline">You're <em>${level}</em></div>
+      <div class="results-desc">${levelDesc}</div>
+      ${tip ? `<div class="results-next-tip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        ${tip}
+      </div>` : ''}
+    </div>
+    <div class="score-gauge-wrap">
+      <div class="score-circle">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle class="score-circle-track" cx="60" cy="60" r="52"/>
+          <circle class="score-circle-fill" cx="60" cy="60" r="52"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${dashOffset}"
+            style="stroke:${color}"/>
+        </svg>
+        <div class="score-number">
+          <span class="score-num">${totalScore}</span>
+          <span class="score-denom">/${maxScore}</span>
+        </div>
+      </div>
+      <div class="score-level-badge">${level}</div>
+    </div>
+  </div>
+
+  <div class="level-scale">
+    ${['Scattered','Structured','Coordinated','Compounding'].map((l,i) => {
+      const ranges = ['0–12','13–24','25–30','31–36'];
+      const descs = ['Ad hoc use,\nisolated results','Some repeatable\npractices','Aligned practices,\nshared context','Systematic\nadvantage'];
+      const isCurrent = l === level;
+      return `<div class="level-item ${isCurrent ? 'current' : ''}">
+        <div class="level-name">${l}</div>
+        <div class="level-range">${ranges[i]}</div>
+        <div class="level-desc-small">${descs[i]}</div>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div style="font-size:14px;font-weight:800;letter-spacing:-0.01em;margin-bottom:4px">Your breakdown</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Scores by capability area</div>
+  <div class="breakdown-grid">
+    ${areaDetails.map(a => `
+      <div class="breakdown-card">
+        <div class="breakdown-icon">${a.icon}</div>
+        <div class="breakdown-name">${a.name}</div>
+        <div class="breakdown-score-row">
+          <span class="breakdown-score">${a.score}/${a.max}</span>
+          <div class="breakdown-bar"><div class="breakdown-bar-fill" style="width:${a.pct}%"></div></div>
+        </div>
+        <div class="breakdown-desc">${getAreaDesc(a.name, a.pct)}</div>
+      </div>`).join('')}
+  </div>
+
+  <div class="two-col">
+    <div class="strengths-box">
+      <div class="box-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div><div class="box-title">Your strengths</div><div class="box-sub">What you're doing well</div></div>
+      </div>
+      ${strengths.map(s => `<div class="strength-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        ${s.name} — ${s.pct >= 80 ? 'strong foundation here' : s.pct >= 60 ? 'good progress, keep building' : 'emerging practice'}
+      </div>`).join('')}
+    </div>
+    <div class="gaps-box">
+      <div class="box-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div><div class="box-title">Your biggest gaps</div><div class="box-sub">Where to focus next</div></div>
+      </div>
+      ${gaps.map(g => `<div class="gap-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        ${g.name} — ${g.pct < 40 ? 'significant opportunity here' : 'room to systematize further'}
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="next-steps">
+    <div class="next-steps-title">Recommended next steps</div>
+    <div class="next-steps-sub">Small actions now. Big impact next.</div>
+    ${getNextSteps(level, gaps).map((step,i) => `
+      <div class="step-row">
+        <div class="step-num">${i+1}</div>
+        <div class="step-body">
+          <div class="step-title">${step.title}</div>
+          <div class="step-desc">${step.desc}</div>
+          <a class="step-link" href="#" onclick="showOffer();return false">
+            Get the template →
+          </a>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <div class="cta-banner">
+    <div class="cta-text">
+      <h3>Turn your score into action</h3>
+      <p>Get a personalized checklist and curated resources to help your team reach ${nextLevel || 'the next level'}—faster.</p>
+    </div>
+    <div class="cta-buttons-row">
+      <button class="btn-white" onclick="showOffer()">
+        See recommended resources →
+      </button>
+      <button class="btn-outline-white" onclick="showOffer()">
+        Get the free checklist
+      </button>
+    </div>
+  </div>
+  <div style="height:40px"></div>`;
+
+  document.getElementById('results-content').innerHTML = html;
+  showScreen('results');
+  document.getElementById('nav-label').textContent = `Your score: ${totalScore}/${maxScore} · ${level}`;
+
+  window._score = totalScore;
+  window._maxScore = maxScore;
+  window._level = level;
+  window._nextLevel = nextLevel;
+  window._gaps = gaps;
+  window._sectionScores = sectionScores;
+}
+
+function getAreaDesc(name, pct) {
+  const descs = {
+    'Shared Context': pct >= 80 ? 'Strong shared context foundation.' : pct >= 60 ? 'Context exists but coverage is uneven.' : 'Context lives in individual silos.',
+    'Prompt Reuse': pct >= 80 ? 'Good prompt reuse culture.' : pct >= 60 ? 'Some reuse happening, not systematic.' : 'Prompts trapped in private chats.',
+    'Team Handoffs': pct >= 80 ? 'Handoffs preserve context well.' : pct >= 60 ? 'Handoffs happen but format varies.' : 'Context is lost between handoffs.',
+    'Knowledge Capture': pct >= 80 ? 'Knowledge is captured systematically.' : pct >= 60 ? 'Some capture, not consistent.' : 'Insights disappear after sessions.',
+    'Review & Governance': pct >= 80 ? 'Solid review process in place.' : pct >= 60 ? 'Some governance, ownership unclear.' : 'Outputs go unreviewed and stale.',
+    'Workflow Integration': pct >= 80 ? 'AI is deeply embedded in workflows.' : pct >= 60 ? 'AI used in key workflows, unevenly.' : 'AI use is ad hoc and individual.',
+  };
+  return descs[name] || 'See recommendations below.';
+}
+
+function getNextSteps(level, gaps) {
+  const steps = {
+    'Scattered': [
+      {title:'Create one shared team context file', desc:'Capture your mission, goals, audience, and key decisions your team\'s AI should always know.'},
+      {title:'Save your 3 best prompts in a shared location', desc:'Pick prompts that have worked well and document them so others can use and improve them.'},
+      {title:'Standardize one AI handoff template', desc:'Pick a simple, repeatable format so nothing gets lost between steps.'},
+    ],
+    'Structured': [
+      {title:'Formalize your prompt library with categories', desc:'Group prompts by workflow or role so anyone can find what they need without asking.'},
+      {title:'Add a review step for AI-generated outputs', desc:'Designate someone to spot-check and approve AI work before it becomes official.'},
+      {title:`Close your biggest gap: ${gaps[0]?.name}`, desc:`This area scored lowest — focus here for the fastest improvement.`},
+    ],
+    'Coordinated': [
+      {title:'Build a staleness monitor for your context files', desc:'Flag files that haven\'t been updated in 30+ days so your context stays current.'},
+      {title:'Create a governance checklist for AI workflows', desc:'Document what good looks like so standards are maintained as the team grows.'},
+      {title:'Set up a continuous improvement loop', desc:'Schedule a monthly review of what\'s working and what prompts need updating.'},
+    ],
+    'Compounding': [
+      {title:'Document your system for others to replicate', desc:'Your AI operating system is a competitive advantage — codify it so it scales.'},
+      {title:'Mentor a peer team through their assessment', desc:'Teaching what works reinforces your own practices and builds your reputation.'},
+      {title:'Explore context graph architecture', desc:'At this maturity level, queryable decision traces at scale become your next frontier.'},
+    ],
+  };
+  return steps[level] || steps['Structured'];
+}
+
+function showOffer() {
+  const level = window._level || 'Structured';
+  const nextLevel = window._nextLevel || 'Coordinated';
+  const score = window._score || 18;
+  const maxScore = window._maxScore || 30;
+
+  const html = `
+  <div class="offer-header">
+    <div class="offer-eyebrow">★ Recommended for your team</div>
+    <h2 class="offer-h2">Here's how to move from <em>${level}</em> to <em>${nextLevel || 'Compounding'}</em>.</h2>
+    <p class="offer-sub">Based on your maturity score, we've handpicked resources and offers to help your team build shared context, streamline collaboration, and scale AI with confidence.</p>
+  </div>
+
+  <div class="journey-bar">
+    <div class="journey-stop current">
+      <div class="journey-icon">📊</div>
+      ${level}
+    </div>
+    <div class="journey-arrow">→ → →</div>
+    <div class="journey-stop target">
+      <div class="journey-icon" style="background:var(--blurple);color:#fff;font-size:14px">🚀</div>
+      ${nextLevel || 'Compounding'}
+    </div>
+  </div>
+
+  <div class="tiers">
+    <div class="tier-card">
+      <div class="tier-badge free">Free</div>
+      <div class="tier-name">Team AI OS Checklist</div>
+      <div class="tier-price">$0</div>
+      <div class="tier-desc">A practical checklist to help your team set up the foundations for a shared AI operating system.</div>
+      <div class="tier-includes">Includes</div>
+      ${['12-step implementation guide','Team-ready best practices','Print or use as a digital template'].map(i=>`
+        <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
+      <div class="tier-cta"><button class="btn-tier free-btn">Download free ↓</button></div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-badge paid">Paid Kit</div>
+      <div class="tier-name">Starter Kit</div>
+      <div class="tier-price">$49</div>
+      <div class="tier-desc">Everything you need to get started standardizing how your team works with AI.</div>
+      <div class="tier-includes">Includes</div>
+      ${['Prompt library template','Team context file','Handoff template','Governance checklist'].map(i=>`
+        <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
+      <div class="tier-cta"><a class="btn-tier paid-btn" href="https://dovetell.io" target="_blank">Buy on Gumroad →</a></div>
+    </div>
+    <div class="tier-card featured">
+      <div class="tier-badge best">Best Value</div>
+      <div class="tier-name">Pro Kit</div>
+      <div class="tier-price">$99</div>
+      <div class="tier-desc">Go further, faster with templates, examples, and a step-by-step rollout plan.</div>
+      <div class="tier-includes">Everything in Starter, plus</div>
+      ${['Starter Kit with filled-in examples','Rollout guide','Facilitation script','Sample repo structure'].map(i=>`
+        <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
+      <div class="tier-cta"><a class="btn-tier paid-btn" href="https://dovetell.io" target="_blank">Buy on Gumroad →</a></div>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-icon">📅</div>
+    <div class="review-body">
+      <div class="review-title">Setup Review <span class="review-price">$299</span></div>
+      <div class="review-desc">Book a 60-minute session with a dovetell expert to review your setup, identify gaps, and get tailored recommendations for your team.</div>
+      <div class="review-features">
+        <span class="review-feat">✓ Personalized review of your results</span>
+        <span class="review-feat">✓ Prioritized action plan</span>
+        <span class="review-feat">✓ Q&A with an AI workflow expert</span>
+      </div>
+    </div>
+    <button class="btn-review">Book review →</button>
+  </div>
+
+  <div style="font-size:15px;font-weight:800;letter-spacing:-0.01em;margin-bottom:16px;text-align:center">Why these recommendations</div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">🔁</div>
+      <div class="why-title">Improve prompt reuse</div>
+      <div class="why-desc">Standardized prompts and examples help your team move faster and stay consistent.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🤝</div>
+      <div class="why-title">Reduce handoff friction</div>
+      <div class="why-desc">Clear handoff templates and governance reduce back-and-forth and context loss.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">⚡</div>
+      <div class="why-title">Build shared context faster</div>
+      <div class="why-desc">Centralized templates and context files help everyone stay aligned from day one.</div>
+    </div>
+  </div>
+
+  <div class="gumroad-note">🛒 Paid kits are fulfilled securely via <a href="https://gumroad.com" target="_blank">Gumroad</a>.</div>
+  <div style="height:40px"></div>`;
+
+  document.getElementById('offer-content').innerHTML = html;
+  showScreen('offer');
+  document.getElementById('nav-label').textContent = 'Recommended resources';
+}
+</script>
+</body>
+</html>
