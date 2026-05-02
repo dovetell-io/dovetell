@@ -79,6 +79,8 @@ Status: Active = still in effect · Superseded = replaced by a later decision ·
 | May 2026 | Scores seen by product team, not sold/shared | Honest disclosure without alarming language | Active |
 | May 2026 | Project name field with proprietary content disclaimer | Protects IP boundary; sets expectations before input | Active |
 | May 2026 | Raw answers + skip count sent to Formspree | null in answer array = skipped = product research signal | Active |
+| May 2026 | Level always recalculated from score, never from stored string | localStorage stored stale labels from before threshold fix; recalculate on display | Active |
+| May 2026 | Compounding has no next level — recommendations show frontier state | nextLevel=null fallback to Coordinated was backwards; Compounding IS the top | Active |
 | May 2026 | Plain English privacy policy at /privacy/ | Accessible to non-lawyers; linked from gate modal | Active |
 
 ## Context & Documentation
@@ -86,10 +88,12 @@ Status: Active = still in effect · Superseded = replaced by a later decision ·
 | Date | Decision | Rationale | Status |
 |---|---|---|---|
 | May 2026 | .dovetell-context/ folder in product repo | dovetell running on itself; single source of truth | Active |
+| May 2026 | docs.dovetell.io as separate repo (dovetell-io/docs) | Clean separation from product site; independent deploy cadence | Active |
+| May 2026 | CC BY 4.0 license for docs | Docs are shareable/adaptable; not code so MIT doesn't apply | Active |
+| May 2026 | Hugo migration deferred | Ship single HTML now; migrate when second contributor joins | Deferred |
+| May 2026 | .dovetell-context/ hidden folder convention | Separates internal context from site files; sets standard for other teams adopting dovetell | Active |
 | May 2026 | One decisions.md not individual ADRs | ADRs are team ceremony; solo founder needs one scannable file | Active |
-| May 2026 | dovetell-seed.md is product-only | Personal context separated to private repo (jchromchak) | Active |
-| May 2026 | docs.dovetell.io planned as public docs | Context files become docs; dog food loop closes | Planned |
-| May 2026 | Personal context in jchromchak/dovetell/personal/ | Never committed to public product repo | Active |
+| May 2026 | dovetell-seed.md is product-only | Personal context separated to private jchromchak repo | Active |
 
 ## Deferred Decisions
 
