@@ -1291,7 +1291,7 @@ function showOffer() {
   // Redirect to standalone recommendations page with all context as URL params
   const params = new URLSearchParams({
     level:     window._level     || 'Structured',
-    next:      window._nextLevel || 'Coordinated',
+    next:      window._nextLevel || '',
     score:     window._score     || 0,
     max:       window._maxScore  || 90,
     pid:       window._pid       || '',
