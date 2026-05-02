@@ -141,7 +141,9 @@ const nextStepsByLevel = {
 window.addEventListener('DOMContentLoaded', () => {
   const p = new URLSearchParams(window.location.search);
   const level     = p.get('level') || 'Structured';
-  const nextLevel = p.get('next')  || 'Coordinated';
+  const nextLevel = p.get('next') || null;
+  const isTopLevel = level === 'Compounding' || !nextLevel;
+  const headlineNext = isTopLevel ? 'the frontier' : nextLevel;
   const score     = parseInt(p.get('score') || '0');
   const maxScore  = parseInt(p.get('max')   || '90');
   const pid       = p.get('pid') || '';
@@ -153,10 +155,21 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('page-content').innerHTML = `
     <div class="rec-hero">
       <div class="eyebrow">★ Recommended for your team</div>
-      <h1>Here's how to move from <em>${level}</em> to <em>${nextLevel}</em>.</h1>
-      <p>Based on your maturity score of ${score}/${maxScore}, we've handpicked resources to help your team build shared context, streamline collaboration, and scale AI with confidence.</p>
+      <h1>${isTopLevel
+        ? 'You\'re at <em>the frontier.</em> Here\'s what\'s next.'
+        : 'Here\'s how to move from <em>' + level + '</em> to <em>' + nextLevel + '</em>.'
+      }</h1>
+      <p>Based on your maturity score of ${score}/${maxScore}, we've handpicked resources to help your team ${isTopLevel ? 'maintain your advantage and share what\'s working' : 'build shared context, streamline collaboration, and scale AI with confidence'}.</p>
     </div>
 
+    ${isTopLevel ? `
+    <div class="journey-bar">
+      <div class="journey-stop current">
+        <div class="journey-icon">${score}</div>
+        ${level}
+      </div>
+      <div class="journey-arrow">★ Top level</div>
+    </div>` : `
     <div class="journey-bar">
       <div class="journey-stop current">
         <div class="journey-icon">${score}</div>
@@ -167,7 +180,7 @@ window.addEventListener('DOMContentLoaded', () => {
         <div class="journey-icon">🚀</div>
         ${nextLevel}
       </div>
-    </div>
+    </div>`}
 
     <div style="margin-bottom:32px">
       <div style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:16px">Your next steps</div>
