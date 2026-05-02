@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -15,120 +14,103 @@
   --blurple:#5865F2;
   --blurple-dark:#3B45C4;
   --blurple-light:#D8DAFD;
+  --blurple-pale:#EEF0FE;
   --near-black:#1A1A2E;
-  --surface:#20203a;
-  --muted:rgba(216,218,253,0.5);
-  --text:#e8e9f8;
-  --border:rgba(255,255,255,0.07);
+  --surface:#F9FAFB;
+  --muted:#6B7280;
+  --text:#2D2D3F;
+  --border:#E5E7EB;
+  --white:#FFFFFF;
   --sans:'Plus Jakarta Sans',sans-serif;
   --mono:'JetBrains Mono',monospace;
 }
-html{scroll-behavior:smooth}
-body{font-family:var(--sans);color:var(--text);background:var(--near-black);min-height:100vh}
-
-body::before{
-content:’’;position:fixed;inset:0;
-background:radial-gradient(ellipse 70% 50% at 15% 15%,rgba(88,101,242,0.10) 0%,transparent 65%);
-pointer-events:none;z-index:0;
-}
+html{scroll-behavior:smooth;color-scheme:light}
+body{font-family:var(--sans);color:var(--text);background:#ffffff !important;min-height:100vh}
 
 /* NAV */
-nav{
-position:sticky;top:0;z-index:100;
-background:rgba(26,26,46,0.9);
-backdrop-filter:blur(12px);
-border-bottom:1px solid var(–border);
-}
-.nav-inner{
-max-width:720px;margin:0 auto;padding:0 32px;
-display:flex;align-items:center;justify-content:space-between;
-height:60px;
-}
-.wordmark{font-size:19px;font-weight:800;letter-spacing:-0.03em;color:var(–text);text-decoration:none}
-.wordmark em{font-style:normal;color:var(–blurple)}
-.nav-back{font-size:13px;color:var(–muted);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s}
-.nav-back:hover{color:var(–text)}
+nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);z-index:100}
+.wordmark{font-size:19px;font-weight:800;letter-spacing:-0.03em;color:var(--near-black);text-decoration:none}
+.wordmark em{font-style:normal;color:var(--blurple)}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-back:hover{color:var(--near-black)}
 
 /* PAGE */
 .page{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:64px 32px 100px}
 
 .eyebrow{
-font-family:var(–mono);font-size:11px;letter-spacing:0.12em;
-text-transform:uppercase;color:var(–blurple);margin-bottom:16px;opacity:0.8;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--blurple);margin-bottom:16px;opacity:0.8;
 }
 h1{
-font-size:clamp(28px,4vw,40px);font-weight:800;
-letter-spacing:-0.03em;margin-bottom:8px;
+  font-size:clamp(28px,4vw,40px);font-weight:800;
+  letter-spacing:-0.03em;margin-bottom:8px;color:var(--near-black);
 }
 .updated{
-font-family:var(–mono);font-size:11px;color:var(–muted);
-margin-bottom:48px;
+  font-family:var(--mono);font-size:11px;color:var(--muted);
+  margin-bottom:48px;
 }
 
 /* SECTIONS */
 .section{margin-bottom:40px}
 h2{
-font-size:16px;font-weight:700;letter-spacing:-0.01em;
-margin-bottom:12px;color:var(–text);
-padding-bottom:10px;border-bottom:1px solid var(–border);
+  font-size:16px;font-weight:700;letter-spacing:-0.01em;
+  margin-bottom:12px;color:var(--near-black);
+  padding-bottom:10px;border-bottom:1px solid var(--border);
 }
-p{font-size:14px;color:var(–muted);line-height:1.75;margin-bottom:12px}
+p{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:12px}
 p:last-child{margin-bottom:0}
 ul{list-style:none;padding:0;margin-bottom:12px}
 ul li{
-font-size:14px;color:var(–muted);line-height:1.65;
-padding:6px 0 6px 20px;position:relative;
-border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:14px;color:var(--muted);line-height:1.65;
+  padding:6px 0 6px 20px;position:relative;
+  border-bottom:1px solid var(--border);
 }
 ul li:last-child{border-bottom:none}
 ul li::before{
-content:‘→’;position:absolute;left:0;
-color:var(–blurple);font-size:12px;
+  content:'→';position:absolute;left:0;
+  color:var(--blurple);font-size:12px;
 }
-strong{color:var(–text);font-weight:600}
+strong{color:var(--near-black);font-weight:600}
 
 /* PLAIN ENGLISH BOX */
 .plain-box{
-background:rgba(88,101,242,0.08);
-border:1px solid rgba(88,101,242,0.2);
-border-left:3px solid var(–blurple);
-border-radius:10px;padding:20px 24px;margin-bottom:40px;
+  background:var(--blurple-pale);
+  border:1px solid var(--blurple-light);
+  border-left:3px solid var(--blurple);
+  border-radius:10px;padding:20px 24px;margin-bottom:40px;
 }
-.plain-box p{font-size:14px;color:var(–text);line-height:1.7;margin-bottom:8px}
+.plain-box p{font-size:14px;color:var(--near-black);line-height:1.7;margin-bottom:8px}
 .plain-box p:last-child{margin-bottom:0}
-.plain-box strong{color:var(–blurple-light)}
+.plain-box strong{color:var(--blurple)}
 
 /* CONTACT */
 .contact-box{
-background:var(–surface);border:1px solid var(–border);
-border-radius:10px;padding:20px 24px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:20px 24px;
 }
-.contact-box p{font-size:13px;color:var(–muted);line-height:1.65;margin-bottom:8px}
-.contact-box a{color:var(–blurple);text-decoration:none;font-weight:500}
+.contact-box p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:8px}
+.contact-box a{color:var(--blurple);text-decoration:none;font-weight:500}
 .contact-box a:hover{text-decoration:underline}
 
 /* FOOTER */
-footer{border-top:1px solid var(–border);padding:24px 0;text-align:center}
-footer p{font-size:12px;color:var(–muted)}
-footer a{color:var(–blurple);text-decoration:none}
+footer{border-top:1px solid var(--border);padding:24px 0;text-align:center}
+footer p{font-size:12px;color:var(--muted)}
+footer a{color:var(--blurple);text-decoration:none}
 
 @media(max-width:680px){
-.page{padding:40px 20px 80px}
-.nav-inner{padding:0 20px}
+  .page{padding:40px 20px 80px}
+  nav{padding:16px 20px}
 }
 </style>
-
 </head>
 <body>
 
 <nav>
-  <div class="nav-inner">
-    <a class="wordmark" href="/">dove<em>tell</em></a>
-    <a class="nav-back" href="/">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-      Back to home
-    </a>
-  </div>
+  <a class="wordmark" href="/">dove<em>tell</em></a>
+  <a class="nav-back" href="/">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to home
+  </a>
 </nav>
 
 <div class="page">
@@ -138,7 +120,6 @@ footer a{color:var(–blurple);text-decoration:none}
   <p class="updated">Last updated: May 1, 2026</p>
 
   <!-- Plain English summary -->
-
   <div class="plain-box">
     <p><strong>Plain English first:</strong></p>
     <p>We collect your email when you take the assessment or join the waitlist. We use it to send you your results and occasionally share product updates. We don't sell it, share it with third parties, or use it to advertise to you. That's it.</p>
@@ -146,15 +127,13 @@ footer a{color:var(–blurple);text-decoration:none}
   </div>
 
   <!-- Who we are -->
-
   <div class="section">
     <h2>Who we are</h2>
-    <p>dovetell is a context orchestration layer for AI-assisted software teams, built by John Chromchak in Mount Pleasant, SC. You can reach us at <strong>dovetellio@gmail.com</strong>.</p>
+    <p>dovetell is a context orchestration layer for AI-assisted software teams, built by John Chromchak in Mount Pleasant, SC. You can reach us at <strong>hello@dovetell.io</strong>.</p>
     <p>This policy applies to dovetell.io and all pages on that domain, including the Team AI Maturity Assessment.</p>
   </div>
 
   <!-- What we collect -->
-
   <div class="section">
     <h2>What we collect</h2>
     <p><strong>When you take the assessment:</strong></p>
@@ -176,7 +155,6 @@ footer a{color:var(–blurple);text-decoration:none}
   </div>
 
   <!-- What we don't collect -->
-
   <div class="section">
     <h2>What we don't collect</h2>
     <ul>
@@ -189,7 +167,6 @@ footer a{color:var(–blurple);text-decoration:none}
   </div>
 
   <!-- How we use it -->
-
   <div class="section">
     <h2>How we use what we collect</h2>
     <ul>
@@ -202,7 +179,6 @@ footer a{color:var(–blurple);text-decoration:none}
   </div>
 
   <!-- Who we share it with -->
-
   <div class="section">
     <h2>Who we share it with</h2>
     <p>We use a small number of third-party services to operate dovetell. Each receives only the minimum data needed:</p>
@@ -216,7 +192,6 @@ footer a{color:var(–blurple);text-decoration:none}
   </div>
 
   <!-- Data retention -->
-
   <div class="section">
     <h2>How long we keep it</h2>
     <p>Assessment submissions are stored in Formspree for as long as we maintain the account. Waitlist emails are stored until you unsubscribe or ask us to delete them.</p>
@@ -224,7 +199,6 @@ footer a{color:var(–blurple);text-decoration:none}
   </div>
 
   <!-- Your rights -->
-
   <div class="section">
     <h2>Your rights</h2>
     <p>You can ask us to:</p>
@@ -234,21 +208,19 @@ footer a{color:var(–blurple);text-decoration:none}
       <li>Stop sending you emails</li>
       <li>Correct inaccurate information</li>
     </ul>
-    <p style="margin-top:12px">Just email us at <strong>dovetellio@gmail.com</strong> and we'll take care of it. We're a small team — you'll hear back from a human.</p>
+    <p style="margin-top:12px">Just email us at <strong>hello@dovetell.io</strong> and we'll take care of it. We're a small team — you'll hear back from a human.</p>
   </div>
 
   <!-- Changes -->
-
   <div class="section">
     <h2>Changes to this policy</h2>
     <p>We'll update this page when anything meaningful changes. The "last updated" date at the top will change when we do. If the changes are significant, we'll email you.</p>
   </div>
 
   <!-- Contact -->
-
   <div class="contact-box">
     <p><strong style="color:var(--text)">Questions?</strong></p>
-    <p>Email us at <a href="mailto:dovetellio@gmail.com">dovetellio@gmail.com</a> — we read everything and reply to everything.</p>
+    <p>Email us at <a href="mailto:hello@dovetell.io">hello@dovetell.io</a> — we read everything and reply to everything.</p>
     <p style="margin-top:8px;font-size:12px">dovetell · Mount Pleasant, SC · dovetell.io</p>
   </div>
 
