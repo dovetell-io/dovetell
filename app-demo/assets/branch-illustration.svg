@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 640" width="480" height="640" style="font-family:'Plus Jakarta Sans',sans-serif">
+  <defs>
+    <linearGradient id="blurple-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5865F2;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#3B45C4;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="green-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16A34A;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0D9488;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="alex-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5865F2;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="maya-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0891B2;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0D9488;stop-opacity:1"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#5865F2" flood-opacity="0.15"/>
+    </filter>
+    <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#1A1A2E" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow-blurple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#5865F2"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#16A34A"/>
+    </marker>
+    <marker id="arrow-muted" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#9999BB"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="480" height="640" fill="#FAFAFA" rx="0"/>
+
+  <!-- ── TITLE ── -->
+  <text x="240" y="36" text-anchor="middle" font-size="13" font-weight="700" letter-spacing="0.08em" fill="#5865F2" font-family="'JetBrains Mono',monospace" text-transform="uppercase">// context change request</text>
+
+  <!-- ════════════════════════════
+       MAIN TRUNK LINE
+  ════════════════════════════ -->
+  <!-- Top trunk -->
+  <line x1="240" y1="60" x2="240" y2="120" stroke="#D8DAFD" stroke-width="2" stroke-dasharray="0"/>
+  <!-- Bottom trunk -->
+  <line x1="240" y1="460" x2="240" y2="590" stroke="#D8DAFD" stroke-width="2"/>
+
+  <!-- ── NODE 1: Current truth ── -->
+  <circle cx="240" cy="120" r="14" fill="url(#blurple-grad)" filter="url(#shadow)"/>
+  <!-- dot in center -->
+  <circle cx="240" cy="120" r="5" fill="white"/>
+
+  <!-- Card: current truth -->
+  <rect x="60" y="140" width="360" height="72" rx="10" fill="white" filter="url(#card-shadow)" stroke="#E8E8F8" stroke-width="1"/>
+  <rect x="60" y="140" width="4" height="72" rx="2" fill="#5865F2"/>
+  <text x="78" y="160" font-size="9" font-weight="600" letter-spacing="0.1em" fill="#5865F2" font-family="'JetBrains Mono',monospace">CURRENT TRUTH</text>
+  <text x="78" y="178" font-size="13" font-weight="700" fill="#1A1A2E">decisions.md</text>
+  <text x="78" y="196" font-size="11" fill="#9999BB">Data retention · Service boundary · Access policy</text>
+  <!-- vetted chip -->
+  <rect x="346" y="154" width="62" height="18" rx="4" fill="rgba(22,163,74,0.1)" stroke="rgba(22,163,74,0.2)" stroke-width="1"/>
+  <text x="377" y="167" text-anchor="middle" font-size="9" font-weight="600" fill="#16A34A" font-family="'JetBrains Mono',monospace">✓ vetted</text>
+
+  <!-- trunk continues down -->
+  <line x1="240" y1="212" x2="240" y2="248" stroke="#D8DAFD" stroke-width="2"/>
+
+  <!-- ── BRANCH FORK ── -->
+  <!-- Fork node -->
+  <circle cx="240" cy="252" r="8" fill="#D8DAFD"/>
+  <circle cx="240" cy="252" r="4" fill="#9999BB"/>
+
+  <!-- Branch left (contributor) -->
+  <path d="M240,252 Q160,252 120,290" stroke="#C4C4E8" stroke-width="1.5" fill="none" stroke-dasharray="5,3"/>
+  <!-- Branch right (queue) -->
+  <path d="M240,252 Q320,252 360,290" stroke="#5865F2" stroke-width="2" fill="none"/>
+
+  <!-- ── LEFT BRANCH: what the contributor does ── -->
+  <!-- Contributor node -->
+  <circle cx="120" cy="300" r="18" fill="url(#alex-grad)" filter="url(#shadow)"/>
+  <text x="120" y="305" text-anchor="middle" font-size="10" font-weight="700" fill="white">AK</text>
+
+  <text x="120" y="330" text-anchor="middle" font-size="11" font-weight="600" fill="#1A1A2E">Alex Kim</text>
+  <text x="120" y="345" text-anchor="middle" font-size="10" fill="#9999BB">proposes a change</text>
+
+  <!-- dashed line down to merge point -->
+  <path d="M120,355 Q120,400 200,430" stroke="#C4C4E8" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrow-muted)"/>
+
+  <!-- ── RIGHT BRANCH: review gate ── -->
+  <!-- Queue entry node -->
+  <circle cx="360" cy="300" r="14" fill="rgba(88,101,242,0.12)" stroke="#5865F2" stroke-width="2"/>
+  <text x="360" y="305" text-anchor="middle" font-size="14" fill="#5865F2">⋯</text>
+
+  <text x="360" y="326" text-anchor="middle" font-size="11" font-weight="600" fill="#1A1A2E">Unvetted queue</text>
+
+  <!-- Review gate card -->
+  <rect x="278" y="342" width="164" height="88" rx="10" fill="white" filter="url(#card-shadow)" stroke="#5865F2" stroke-width="1.5"/>
+  <!-- dovetell label -->
+  <rect x="298" y="352" width="54" height="16" rx="3" fill="rgba(88,101,242,0.1)"/>
+  <text x="325" y="364" text-anchor="middle" font-size="8" font-weight="600" fill="#5865F2" font-family="'JetBrains Mono',monospace">dovetell</text>
+
+  <text x="360" y="382" text-anchor="middle" font-size="11" font-weight="700" fill="#1A1A2E">Review gate</text>
+
+  <!-- Reviewer avatars -->
+  <circle cx="336" cy="404" r="12" fill="url(#maya-grad)"/>
+  <text x="336" y="408" text-anchor="middle" font-size="8" font-weight="700" fill="white">MR</text>
+  <circle cx="356" cy="404" r="12" fill="url(#blurple-grad)"/>
+  <text x="356" y="408" text-anchor="middle" font-size="8" font-weight="700" fill="white">JP</text>
+  <text x="384" y="408" font-size="10" fill="#9999BB" font-style="italic">review</text>
+
+  <!-- line from gate down to merge -->
+  <path d="M360,430 Q360,440 280,455" stroke="#5865F2" stroke-width="2" fill="none" marker-end="url(#arrow-blurple)"/>
+
+  <!-- ── MERGE NODE: acceptance ── -->
+  <circle cx="240" cy="462" r="18" fill="url(#green-grad)" filter="url(#shadow)"/>
+  <!-- checkmark -->
+  <path d="M231,462 L238,470 L250,454" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Accepted label -->
+  <rect x="100" y="450" width="100" height="24" rx="5" fill="rgba(22,163,74,0.08)" stroke="rgba(22,163,74,0.2)" stroke-width="1"/>
+  <text x="150" y="466" text-anchor="middle" font-size="10" font-weight="600" fill="#16A34A">✓ Accepted</text>
+
+  <!-- becomes truth label -->
+  <text x="270" y="460" font-size="10" fill="#9999BB" font-style="italic">becomes truth</text>
+  <text x="270" y="474" font-size="10" fill="#9999BB" font-style="italic">timestamped · sourced</text>
+
+  <!-- trunk down -->
+  <line x1="240" y1="480" x2="240" y2="525" stroke="#16A34A" stroke-width="2" opacity="0.6"/>
+
+  <!-- ── NODE 2: Updated truth ── -->
+  <circle cx="240" cy="528" r="14" fill="url(#green-grad)" filter="url(#shadow)"/>
+  <circle cx="240" cy="528" r="5" fill="white"/>
+
+  <!-- Card: new truth -->
+  <rect x="60" y="548" width="360" height="72" rx="10" fill="white" filter="url(#card-shadow)" stroke="#E8E8F8" stroke-width="1"/>
+  <rect x="60" y="548" width="4" height="72" rx="2" fill="#16A34A"/>
+  <text x="78" y="568" font-size="9" font-weight="600" letter-spacing="0.1em" fill="#16A34A" font-family="'JetBrains Mono',monospace">NEW TRUTH</text>
+  <text x="78" y="586" font-size="13" font-weight="700" fill="#1A1A2E">decisions.md</text>
+  <text x="78" y="604" font-size="11" fill="#9999BB">Updated · Maya Rowe · just now</text>
+  <!-- vetted chip -->
+  <rect x="336" y="562" width="72" height="18" rx="4" fill="rgba(22,163,74,0.1)" stroke="rgba(22,163,74,0.2)" stroke-width="1"/>
+  <text x="372" y="575" text-anchor="middle" font-size="9" font-weight="600" fill="#16A34A" font-family="'JetBrains Mono',monospace">✓ vetted</text>
+
+  <!-- ── REJECT PATH (faint, bottom left of gate) ── -->
+  <path d="M278,388 Q220,388 180,420" stroke="#EF4444" stroke-width="1.2" fill="none" stroke-dasharray="4,3" opacity="0.5"/>
+  <circle cx="165" cy="428" r="10" fill="rgba(239,68,68,0.08)" stroke="rgba(239,68,68,0.3)" stroke-width="1" opacity="0.7"/>
+  <text x="165" y="432" text-anchor="middle" font-size="10" fill="#EF4444" opacity="0.7">✕</text>
+  <text x="165" y="448" text-anchor="middle" font-size="9" fill="#EF4444" opacity="0.6" font-style="italic">rejected</text>
+
+</svg>

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>dovetell — Review</title>
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blurple:#5865F2;--blurple-dark:#3B45C4;--blurple-light:#D8DAFD;
+  --near-black:#1A1A2E;--surface:#F8F8FC;--surface-2:#F0F0F8;
+  --border:rgba(88,101,242,0.08);--border-2:rgba(88,101,242,0.18);
+  --text:#1A1A2E;--muted:#6B6B9A;--muted-2:#9999BB;--cream:#F5F4EF;
+  --sans:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+  --green:#16A34A;--green-bg:rgba(22,163,74,0.08);--green-border:rgba(22,163,74,0.2);
+  --amber:#D97706;--amber-bg:rgba(217,119,6,0.08);--amber-border:rgba(217,119,6,0.2);
+  --red:#DC2626;--red-bg:rgba(220,38,38,0.05);--red-border:rgba(220,38,38,0.18);
+}
+html,body{height:100%;margin:0}
+body{font-family:var(--sans);background:var(--surface);color:var(--text);display:flex;flex-direction:column;min-height:100vh}
+
+/* ── DEMO BANNER ── */
+.demo-banner{
+  height:24px;width:100%;flex-shrink:0;
+  background:var(--cream);border-bottom:1px solid rgba(88,101,242,0.15);
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--blurple);z-index:200;
+}
+.demo-banner-divider{opacity:0.3}
+
+/* ── TOP NAV ── */
+.topbar{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:0 32px;height:56px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{
+  width:28px;height:28px;border-radius:7px;background:var(--blurple);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.logo-wordmark{font-size:16px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
+.logo-wordmark span{color:var(--blurple)}
+.topbar-project{
+  font-family:var(--mono);font-size:11px;
+  background:rgba(88,101,242,0.08);color:var(--blurple);
+  padding:4px 12px;border-radius:4px;border:1px solid rgba(88,101,242,0.15);
+}
+.topbar-right{font-size:13px;color:var(--muted)}
+.topbar-right strong{color:var(--text);font-weight:600}
+
+/* ── PROGRESS ── */
+.progress-wrap{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:10px 32px;flex-shrink:0;
+}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.progress-label{font-size:12px;color:var(--muted)}
+.progress-label strong{color:var(--text);font-weight:600}
+.progress-pct{font-size:12px;color:var(--muted)}
+.progress-track{height:3px;background:var(--surface-2);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.progress-fill{height:100%;background:var(--blurple);border-radius:2px;transition:width 0.4s ease}
+.step-pills{display:flex;gap:8px}
+.step-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;
+  border:1px solid transparent;transition:all 0.2s;cursor:default;
+}
+.step-pill.done{background:var(--blurple);color:#fff;border-color:var(--blurple)}
+.step-pill.active{background:transparent;color:var(--blurple);border-color:var(--blurple)}
+.step-pill.pending{background:transparent;color:var(--muted);border-color:rgba(88,101,242,0.15)}
+.step-num{
+  width:16px;height:16px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;
+}
+.step-pill.done .step-num{background:rgba(255,255,255,0.2)}
+.step-pill.active .step-num{background:rgba(88,101,242,0.1)}
+.step-pill.pending .step-num{background:rgba(0,0,0,0.05)}
+
+/* ── MAIN SPLIT ── */
+.main{flex:1;display:flex;overflow:hidden}
+
+/* ── LEFT COLUMN ── */
+.review-col{
+  flex:0 0 68%;overflow-y:auto;
+  padding:28px 32px 100px;
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--border);
+}
+.card-state{display:none}
+.card-state.active{display:flex;flex-direction:column;gap:14px}
+
+/* Change banner */
+.change-banner{
+  background:rgba(245,158,11,0.05);border:1px solid var(--amber-border);
+  border-radius:10px;padding:13px 16px;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.change-banner-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.change-banner-text{font-size:13px;color:var(--text);line-height:1.5}
+.change-banner-text strong{font-weight:700}
+
+/* Item card */
+.item-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;
+  box-shadow:0 2px 16px rgba(88,101,242,0.05);
+}
+.item-card-header{
+  padding:20px 24px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:14px;
+  background:#FAFAFA;
+}
+.item-type-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.icon-policy{background:rgba(234,179,8,0.1)}
+.icon-definition{background:rgba(22,163,74,0.1)}
+.item-type-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.08em;
+  text-transform:uppercase;margin-bottom:5px;
+}
+.label-policy{color:var(--amber)}
+.label-definition{color:var(--green)}
+.label-proposed{color:var(--green);margin-left:6px}
+.item-title{font-size:20px;font-weight:800;letter-spacing:-0.02em;line-height:1.2}
+.item-card-body{padding:24px}
+
+/* Plain English */
+.plain-english{font-size:15px;line-height:1.75;color:var(--text);margin-bottom:20px}
+.plain-english strong{font-weight:700}
+
+/* Diff */
+.diff-box{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.diff-cols{display:grid;grid-template-columns:1fr 1fr}
+.diff-col{padding:16px 18px}
+.diff-col.old{background:var(--red-bg);border-right:1px solid rgba(220,38,38,0.1)}
+.diff-col.new{background:var(--green-bg)}
+.diff-col-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.08em;
+  text-transform:uppercase;font-weight:700;margin-bottom:10px;
+}
+.diff-col.old .diff-col-label{color:var(--red)}
+.diff-col.new .diff-col-label{color:var(--green)}
+.diff-text{font-size:13px;line-height:1.7;color:var(--text)}
+.diff-text del{
+  background:rgba(220,38,38,0.15);color:var(--red);
+  text-decoration:line-through;border-radius:3px;
+  padding:1px 3px;font-weight:600;
+}
+.diff-text ins{
+  background:rgba(22,163,74,0.15);color:var(--green);
+  text-decoration:none;border-radius:3px;
+  padding:1px 3px;font-weight:600;
+}
+
+/* Metadata */
+.item-meta{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:9px;
+}
+.meta-row{display:flex;align-items:center;gap:10px;font-size:12px}
+.meta-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--muted);
+  width:88px;flex-shrink:0;
+}
+.meta-value{color:var(--text);font-weight:500}
+.meta-link{
+  font-family:var(--mono);font-size:11px;
+  color:var(--blurple);font-weight:500;
+}
+.meta-avatar{
+  width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:#fff;flex-shrink:0;
+  background:linear-gradient(135deg,#5865F2,#7C3AED);
+}
+.chip-amber{
+  font-family:var(--mono);font-size:10px;font-weight:600;
+  color:var(--amber);background:var(--amber-bg);
+  border:1px solid var(--amber-border);
+  padding:2px 8px;border-radius:4px;
+}
+.chip-green{
+  font-family:var(--mono);font-size:10px;font-weight:600;
+  color:var(--green);background:var(--green-bg);
+  border:1px solid var(--green-border);
+  padding:2px 8px;border-radius:4px;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.meta-vetted-line{
+  display:flex;align-items:center;gap:8px;
+  margin-top:2px;padding-top:8px;
+  border-top:1px solid var(--border);
+}
+.meta-vetted-label{
+  font-family:var(--mono);font-size:10px;color:var(--muted);
+  letter-spacing:0.06em;text-transform:uppercase;
+  width:88px;flex-shrink:0;
+}
+
+/* Actions */
+.action-wrap{display:flex;flex-direction:column;gap:10px;max-width:600px}
+.btn-confirm{
+  width:100%;padding:15px;border-radius:11px;
+  background:var(--blurple);color:#fff;
+  font-family:var(--sans);font-size:15px;font-weight:700;
+  border:none;cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-confirm:hover{background:var(--blurple-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(88,101,242,0.28)}
+.btn-flag{
+  width:100%;padding:13px;border-radius:11px;
+  background:#fff;color:var(--muted);
+  font-family:var(--sans);font-size:14px;font-weight:600;
+  border:1px solid var(--border-2);cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-flag:hover,.btn-flag.active{border-color:var(--amber);color:var(--amber);background:var(--amber-bg)}
+.flag-panel{
+  background:#fff;border:1px solid var(--border-2);
+  border-radius:11px;padding:18px;
+  display:none;
+}
+.flag-panel.open{display:block}
+.flag-label{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.flag-textarea{
+  width:100%;padding:11px 14px;
+  background:var(--surface);border:1px solid var(--border-2);
+  border-radius:8px;font-family:var(--sans);font-size:13px;
+  color:var(--text);resize:none;outline:none;
+  transition:border-color 0.15s;min-height:72px;
+}
+.flag-textarea:focus{border-color:var(--blurple)}
+.flag-textarea::placeholder{color:var(--muted-2)}
+.flag-footer{display:flex;justify-content:flex-end;margin-top:8px}
+.flag-submit{
+  padding:8px 18px;background:var(--blurple);color:#fff;
+  font-family:var(--sans);font-size:13px;font-weight:700;
+  border:none;border-radius:7px;cursor:pointer;transition:background 0.15s;
+}
+.flag-submit:hover{background:var(--blurple-dark)}
+.btn-skip{
+  text-align:center;padding:8px;background:transparent;
+  color:var(--muted-2);font-family:var(--sans);font-size:13px;
+  font-weight:500;border:none;cursor:pointer;transition:color 0.15s;
+}
+.btn-skip:hover{color:var(--text)}
+
+/* Done state */
+.done-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:14px;padding:56px 48px;text-align:center;
+  box-shadow:0 2px 16px rgba(88,101,242,0.05);
+}
+.done-icon{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--green-bg);border:2px solid var(--green-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin:0 auto 20px;color:var(--green);
+}
+.done-title{font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:8px}
+.done-sub{font-size:14px;color:var(--muted);line-height:1.65;max-width:400px;margin:0 auto 28px}
+.done-summary{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:16px;text-align:left;max-width:360px;margin:0 auto;
+}
+.done-summary-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;
+}
+.done-summary-row:last-child{border-bottom:none}
+.done-summary-row span:first-child{color:var(--muted)}
+.done-summary-row span:last-child{font-weight:700;font-family:var(--mono);font-size:12px}
+
+/* ── RIGHT COLUMN: BRANCH ── */
+.branch-col{
+  flex:0 0 32%;background:var(--cream);
+  border-left:1px solid rgba(88,101,242,0.08);
+  overflow-y:auto;padding:24px 18px;
+  display:flex;flex-direction:column;align-items:center;
+}
+.branch-title{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--blurple);
+  margin-bottom:18px;text-align:center;opacity:0.75;
+}
+.branch-svg-wrap{width:100%;max-width:320px}
+.branch-svg-wrap svg{width:100%;height:auto}
+
+/* ── BOTTOM BAR ── */
+.bottom-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;border-top:1px solid var(--border);
+  padding:12px 32px;display:flex;align-items:center;
+  justify-content:space-between;font-size:12px;color:var(--muted);z-index:100;
+}
+.bottom-bar-count{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .main{flex-direction:column}
+  .review-col{flex:none;border-right:none;padding:24px 20px 80px}
+  .branch-col{flex:none;flex-basis:auto;border-left:none;border-top:1px solid var(--border);padding:24px 20px}
+  .branch-svg-wrap{max-width:280px}
+  .diff-cols{grid-template-columns:1fr}
+  .diff-col.old{border-right:none;border-bottom:1px solid rgba(220,38,38,0.1)}
+}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <span>// Non-technical reviewer</span>
+  <span class="demo-banner-divider">·</span>
+  <span>Demo — not live data</span>
+</div>
+
+<div class="topbar">
+  <a class="topbar-logo" href="/app-demo/projects.html">
+    <div class="logo-mark">🕊</div>
+    <div class="logo-wordmark">dove<span>tell</span></div>
+  </a>
+  <div class="topbar-project">Datagate Systems</div>
+  <div class="topbar-right">Hi, <strong>Sam</strong></div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-top">
+    <div class="progress-label"><strong id="progress-item-label">Item 1 of 2</strong> — reviewing context updates</div>
+    <div class="progress-pct" id="progress-pct">50% complete</div>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill" style="width:50%"></div>
+  </div>
+  <div class="step-pills">
+    <div class="step-pill done" id="pill-1">
+      <div class="step-num">✓</div>Review item 1
+    </div>
+    <div class="step-pill active" id="pill-2">
+      <div class="step-num">2</div>Review item 2
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ── LEFT: REVIEW STATES ── -->
+  <div class="review-col">
+
+    <!-- STATE 1: Simple new policy -->
+    <div class="card-state active" id="state-1">
+      <div class="item-card">
+        <div class="item-card-header">
+          <div class="item-type-icon icon-policy">📋</div>
+          <div>
+            <div class="item-type-label label-policy">Policy · New</div>
+            <div class="item-title">Data access — read-only for all non-engineer roles</div>
+          </div>
+        </div>
+        <div class="item-card-body">
+          <div class="plain-english">
+            Anyone on the Datagate team who isn't an engineer will have
+            <strong>read-only access</strong> to data in the platform.
+            This means you can view reports and dashboards, but you
+            can't edit, export raw data, or change configurations.
+          </div>
+          <div class="item-meta">
+            <div class="meta-row">
+              <span class="meta-label">Added by</span>
+              <div class="meta-avatar">AK</div>
+              <span class="meta-value">Alex Kim · Senior Engineer</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Source</span>
+              <span class="meta-link">sprint-14-decisions.md</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Added</span>
+              <span class="meta-value">2 hours ago</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Status</span>
+              <span class="chip-amber">Pending your review</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="action-wrap">
+        <button class="btn-confirm" onclick="confirmItem(1)">✓ &nbsp;Looks right</button>
+        <button class="btn-flag" id="flag-btn-1" onclick="toggleFlag(1)">⚑ &nbsp;Something's off</button>
+        <div class="flag-panel open" id="flag-panel-1">
+          <div class="flag-label">What doesn't look right?</div>
+          <textarea class="flag-textarea" placeholder="Describe the issue — Maya Rowe will be notified to review before this becomes official…"></textarea>
+          <div class="flag-footer">
+            <button class="flag-submit" onclick="submitFlag(1)">Send flag →</button>
+          </div>
+        </div>
+        <button class="btn-skip" onclick="skipItem(1)">Skip for now</button>
+      </div>
+    </div>
+
+    <!-- STATE 2: Proposed change with diff -->
+    <div class="card-state" id="state-2">
+      <div class="change-banner">
+        <div class="change-banner-icon">⚡</div>
+        <div class="change-banner-text">
+          <strong>This is a proposed change</strong> to something your team
+          already agreed on. Review what's different before confirming.
+        </div>
+      </div>
+      <div class="item-card">
+        <div class="item-card-header">
+          <div class="item-type-icon icon-definition">📖</div>
+          <div>
+            <div class="item-type-label">
+              <span class="label-definition">Definition</span>
+              <span class="label-proposed">· Proposed update</span>
+            </div>
+            <div class="item-title">Service Boundary</div>
+          </div>
+        </div>
+        <div class="item-card-body">
+          <div class="diff-box">
+            <div class="diff-cols">
+              <div class="diff-col old">
+                <div class="diff-col-label">Current version</div>
+                <div class="diff-text">
+                  The service boundary is the line between the
+                  <del>data ingestion layer</del> and the
+                  processing layer. All events must cross this
+                  boundary before being stored.
+                </div>
+              </div>
+              <div class="diff-col new">
+                <div class="diff-col-label">Proposed update</div>
+                <div class="diff-text">
+                  The service boundary is the line between the
+                  <ins>ingestion and transformation layers</ins> and the
+                  processing layer. All events must cross this
+                  boundary before being stored.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item-meta">
+            <div class="meta-row">
+              <span class="meta-label">Changed by</span>
+              <div class="meta-avatar">AK</div>
+              <span class="meta-value">Alex Kim · Sprint 14 architecture review</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Source</span>
+              <span class="meta-link">sprint-14-decisions.md</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Added</span>
+              <span class="meta-value">2 hours ago</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Status</span>
+              <span class="chip-amber">Pending your review</span>
+            </div>
+            <div class="meta-vetted-line">
+              <span class="meta-vetted-label">Currently</span>
+              <span class="chip-green">✓ Vetted · Maya Rowe · 14d ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="action-wrap">
+        <button class="btn-confirm" onclick="confirmItem(2)">✓ &nbsp;Update looks right</button>
+        <button class="btn-flag" id="flag-btn-2" onclick="toggleFlag(2)">⚑ &nbsp;Something's off</button>
+        <div class="flag-panel" id="flag-panel-2">
+          <div class="flag-label">What doesn't look right?</div>
+          <textarea class="flag-textarea" placeholder="Describe the issue — Maya Rowe will be notified…"></textarea>
+          <div class="flag-footer">
+            <button class="flag-submit" onclick="submitFlag(2)">Send flag →</button>
+          </div>
+        </div>
+        <button class="btn-skip" onclick="skipItem(2)">Skip for now</button>
+      </div>
+    </div>
+
+    <!-- STATE 3: Done -->
+    <div class="card-state" id="state-done">
+      <div class="done-card">
+        <div class="done-icon">✓</div>
+        <div class="done-title">All caught up</div>
+        <div class="done-sub">
+          Your responses have been sent to Maya Rowe for final sign-off.
+          Nothing becomes official until she confirms.
+        </div>
+        <div class="done-summary">
+          <div class="done-summary-row">
+            <span>Confirmed</span>
+            <span id="confirmed-count">—</span>
+          </div>
+          <div class="done-summary-row">
+            <span>Flagged</span>
+            <span id="flagged-count">—</span>
+          </div>
+          <div class="done-summary-row">
+            <span>Skipped</span>
+            <span id="skipped-count">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── RIGHT: BRANCH DIAGRAM ── -->
+  <div class="branch-col">
+    <div class="branch-title">// context change request</div>
+    <div class="branch-svg-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 620">
+        <defs>
+          <linearGradient id="g-blurple" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5865F2"/><stop offset="100%" stop-color="#3B45C4"/>
+          </linearGradient>
+          <linearGradient id="g-green" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#16A34A"/><stop offset="100%" stop-color="#0D9488"/>
+          </linearGradient>
+          <linearGradient id="g-alex" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5865F2"/><stop offset="100%" stop-color="#7C3AED"/>
+          </linearGradient>
+          <linearGradient id="g-maya" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0891B2"/><stop offset="100%" stop-color="#0D9488"/>
+          </linearGradient>
+          <filter id="f-shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#5865F2" flood-opacity="0.12"/>
+          </filter>
+          <filter id="f-card">
+            <feDropShadow dx="0" dy="1" stdDeviation="3" flood-color="#1A1A2E" flood-opacity="0.07"/>
+          </filter>
+          <marker id="arr-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#5865F2"/>
+          </marker>
+          <marker id="arr-m" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#9999BB"/>
+          </marker>
+        </defs>
+
+        <!-- Trunk top -->
+        <line x1="240" y1="12" x2="240" y2="72" stroke="#D8DAFD" stroke-width="2"/>
+
+        <!-- Node 1: Current truth -->
+        <circle cx="240" cy="72" r="12" fill="url(#g-blurple)" filter="url(#f-shadow)"/>
+        <circle cx="240" cy="72" r="4" fill="white"/>
+
+        <!-- Current truth card -->
+        <rect x="44" y="90" width="392" height="66" rx="9" fill="white" filter="url(#f-card)" stroke="#E8E8F8" stroke-width="1"/>
+        <rect x="44" y="90" width="4" height="66" rx="2" fill="#5865F2"/>
+        <text x="60" y="108" font-size="8" font-weight="600" letter-spacing="0.1em" fill="#5865F2" font-family="JetBrains Mono,monospace">CURRENT TRUTH</text>
+        <text x="60" y="128" font-size="13" font-weight="700" fill="#1A1A2E" font-family="Plus Jakarta Sans,sans-serif">decisions.md</text>
+        <text x="60" y="146" font-size="10" fill="#9999BB" font-family="Plus Jakarta Sans,sans-serif">Data retention · Service boundary · Access policy</text>
+        <rect x="352" y="102" width="72" height="17" rx="4" fill="rgba(22,163,74,0.1)" stroke="rgba(22,163,74,0.2)" stroke-width="1"/>
+        <text x="388" y="115" text-anchor="middle" font-size="9" font-weight="600" fill="#16A34A" font-family="JetBrains Mono,monospace">✓ vetted</text>
+
+        <!-- Trunk to fork -->
+        <line x1="240" y1="156" x2="240" y2="192" stroke="#D8DAFD" stroke-width="2"/>
+
+        <!-- Fork node -->
+        <circle cx="240" cy="196" r="7" fill="#E8E8F8" stroke="#C4C4E8" stroke-width="1"/>
+        <circle cx="240" cy="196" r="3" fill="#9999BB"/>
+
+        <!-- Branch left: Alex -->
+        <path d="M240,196 Q158,196 112,236" stroke="#C4C4E8" stroke-width="1.5" fill="none" stroke-dasharray="5,3"/>
+        <!-- Branch right: Queue -->
+        <path d="M240,196 Q322,196 366,236" stroke="#5865F2" stroke-width="2" fill="none"/>
+
+        <!-- AK Avatar -->
+        <circle cx="104" cy="254" r="20" fill="url(#g-alex)" filter="url(#f-shadow)"/>
+        <text x="104" y="259" text-anchor="middle" font-size="10" font-weight="700" fill="white" font-family="Plus Jakarta Sans,sans-serif">AK</text>
+        <text x="104" y="285" text-anchor="middle" font-size="11" font-weight="600" fill="#1A1A2E" font-family="Plus Jakarta Sans,sans-serif">Alex Kim</text>
+        <text x="104" y="299" text-anchor="middle" font-size="10" fill="#9999BB" font-family="Plus Jakarta Sans,sans-serif" font-style="italic">proposes a change</text>
+
+        <!-- AK to merge (dashed) -->
+        <path d="M104,312 Q104,374 212,400" stroke="#C4C4E8" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr-m)"/>
+
+        <!-- Queue node -->
+        <circle cx="374" cy="254" r="13" fill="rgba(88,101,242,0.1)" stroke="#5865F2" stroke-width="1.5"/>
+        <text x="374" y="259" text-anchor="middle" font-size="13" fill="#5865F2">⋯</text>
+        <text x="374" y="280" text-anchor="middle" font-size="11" font-weight="600" fill="#1A1A2E" font-family="Plus Jakarta Sans,sans-serif">Unvetted queue</text>
+
+        <!-- Review gate card -->
+        <rect x="292" y="293" width="166" height="86" rx="9" fill="white" filter="url(#f-card)" stroke="#5865F2" stroke-width="1.5"/>
+        <rect x="306" y="301" width="50" height="14" rx="3" fill="rgba(88,101,242,0.1)"/>
+        <text x="331" y="312" text-anchor="middle" font-size="8" font-weight="600" fill="#5865F2" font-family="JetBrains Mono,monospace">dovetell</text>
+        <text x="375" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#1A1A2E" font-family="Plus Jakarta Sans,sans-serif">Review gate</text>
+        <!-- MR avatar -->
+        <circle cx="350" cy="354" r="12" fill="url(#g-maya)"/>
+        <text x="350" y="359" text-anchor="middle" font-size="8" font-weight="700" fill="white" font-family="Plus Jakarta Sans,sans-serif">MR</text>
+        <!-- JP avatar -->
+        <circle cx="372" cy="354" r="12" fill="url(#g-blurple)"/>
+        <text x="372" y="359" text-anchor="middle" font-size="8" font-weight="700" fill="white" font-family="Plus Jakarta Sans,sans-serif">JP</text>
+        <text x="393" y="358" font-size="10" fill="#9999BB" font-family="Plus Jakarta Sans,sans-serif" font-style="italic">review</text>
+
+        <!-- Reject path -->
+        <path d="M292,340 Q244,340 214,366" stroke="#EF4444" stroke-width="1.2" fill="none" stroke-dasharray="4,3" opacity="0.45"/>
+        <circle cx="200" cy="374" r="9" fill="rgba(239,68,68,0.06)" stroke="rgba(239,68,68,0.22)" stroke-width="1" opacity="0.65"/>
+        <text x="200" y="378" text-anchor="middle" font-size="10" fill="#EF4444" opacity="0.65">✕</text>
+        <text x="200" y="392" text-anchor="middle" font-size="9" fill="#EF4444" opacity="0.55" font-style="italic" font-family="Plus Jakarta Sans,sans-serif">rejected</text>
+
+        <!-- Gate to merge -->
+        <path d="M375,379 Q375,402 272,412" stroke="#5865F2" stroke-width="2" fill="none" marker-end="url(#arr-b)"/>
+
+        <!-- Merge node -->
+        <circle cx="244" cy="416" r="17" fill="url(#g-green)" filter="url(#f-shadow)"/>
+        <path d="M235,416 L242,424 L254,408" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- Accepted chip -->
+        <rect x="44" y="406" width="96" height="20" rx="5" fill="rgba(22,163,74,0.08)" stroke="rgba(22,163,74,0.2)" stroke-width="1"/>
+        <text x="92" y="420" text-anchor="middle" font-size="10" font-weight="600" fill="#16A34A" font-family="Plus Jakarta Sans,sans-serif">✓ Accepted</text>
+
+        <!-- Labels right of merge -->
+        <text x="274" y="414" font-size="10" fill="#9999BB" font-family="Plus Jakarta Sans,sans-serif" font-style="italic">becomes truth ·</text>
+        <text x="274" y="427" font-size="10" fill="#9999BB" font-family="Plus Jakarta Sans,sans-serif" font-style="italic">timestamped · sourced</text>
+
+        <!-- Trunk down -->
+        <line x1="244" y1="433" x2="244" y2="476" stroke="#16A34A" stroke-width="2" opacity="0.6"/>
+
+        <!-- Node 2 -->
+        <circle cx="244" cy="478" r="12" fill="url(#g-green)" filter="url(#f-shadow)"/>
+        <circle cx="244" cy="478" r="4" fill="white"/>
+
+        <!-- New truth card -->
+        <rect x="44" y="496" width="392" height="66" rx="9" fill="white" filter="url(#f-card)" stroke="#E8E8F8" stroke-width="1"/>
+        <rect x="44" y="496" width="4" height="66" rx="2" fill="#16A34A"/>
+        <text x="60" y="514" font-size="8" font-weight="600" letter-spacing="0.1em" fill="#16A34A" font-family="JetBrains Mono,monospace">NEW TRUTH</text>
+        <text x="60" y="534" font-size="13" font-weight="700" fill="#1A1A2E" font-family="Plus Jakarta Sans,sans-serif">decisions.md</text>
+        <text x="60" y="552" font-size="10" fill="#9999BB" font-family="Plus Jakarta Sans,sans-serif">Updated · Maya Rowe · just now</text>
+        <rect x="352" y="508" width="72" height="17" rx="4" fill="rgba(22,163,74,0.1)" stroke="rgba(22,163,74,0.2)" stroke-width="1"/>
+        <text x="388" y="521" text-anchor="middle" font-size="9" font-weight="600" fill="#16A34A" font-family="JetBrains Mono,monospace">✓ vetted</text>
+      </svg>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottom-bar">
+  <span>Datagate Systems — Ops Analytics</span>
+  <span class="bottom-bar-count" id="bottom-count">2 items remaining</span>
+</div>
+
+<script>
+let confirmed=0, flagged=0, skipped=0;
+
+function showState(id){
+  document.querySelectorAll('.card-state').forEach(el=>el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function updateProgress(step){
+  const fill = document.getElementById('progress-fill');
+  const lbl = document.getElementById('progress-item-label');
+  const pct = document.getElementById('progress-pct');
+  const p1 = document.getElementById('pill-1');
+  const p2 = document.getElementById('pill-2');
+  const cnt = document.getElementById('bottom-count');
+  if(step===2){
+    fill.style.width='75%';
+    pct.textContent='75% complete';
+    lbl.textContent='Item 2 of 2';
+    p1.className='step-pill done';
+    p2.className='step-pill active';
+    cnt.textContent='1 item remaining';
+  } else if(step===3){
+    fill.style.width='100%';
+    pct.textContent='100% complete';
+    lbl.textContent='Done';
+    p1.className='step-pill done';
+    p2.className='step-pill done';
+    p2.querySelector('.step-num').textContent='✓';
+    cnt.textContent='All done';
+  }
+}
+
+function updateSummary(){
+  const f = n => n + ' item' + (n!==1?'s':'');
+  document.getElementById('confirmed-count').textContent = f(confirmed);
+  document.getElementById('flagged-count').textContent = f(flagged);
+  document.getElementById('skipped-count').textContent = f(skipped);
+}
+
+function confirmItem(n){
+  confirmed++;
+  if(n===1){updateProgress(2);showState('state-2')}
+  else{updateProgress(3);updateSummary();showState('state-done')}
+}
+
+function skipItem(n){
+  skipped++;
+  if(n===1){updateProgress(2);showState('state-2')}
+  else{updateProgress(3);updateSummary();showState('state-done')}
+}
+
+function toggleFlag(n){
+  const panel = document.getElementById('flag-panel-'+n);
+  const btn = document.getElementById('flag-btn-'+n);
+  panel.classList.toggle('open');
+  btn.classList.toggle('active');
+}
+
+function submitFlag(n){
+  flagged++;
+  if(n===1){updateProgress(2);showState('state-2')}
+  else{updateProgress(3);updateSummary();showState('state-done')}
+}
+</script>
+</body>
+</html>

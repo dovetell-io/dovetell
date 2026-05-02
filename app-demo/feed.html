@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>dovetell — Activity Feed</title>
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blurple:#5865F2;
+  --blurple-dark:#3B45C4;
+  --blurple-light:#D8DAFD;
+  --near-black:#0D0D1A;
+  --surface:#161625;
+  --surface-2:#1E1E30;
+  --surface-3:#252538;
+  --border:rgba(255,255,255,0.07);
+  --border-2:rgba(255,255,255,0.12);
+  --text:#E8E9F8;
+  --muted:#6B6B8A;
+  --muted-2:#9999BB;
+  --sans:'Plus Jakarta Sans',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --green:#22C55E;
+  --amber:#F59E0B;
+  --red:#EF4444;
+  --purple:#A855F7;
+  --yellow:#EAB308;
+  --teal:#14B8A6;
+}
+html,body{height:100%;margin:0}
+body{font-family:var(--sans);background:var(--near-black);color:var(--text);display:flex;flex-direction:column}
+
+/* DEMO BANNER */
+.demo-banner{
+  height:24px;width:100%;flex-shrink:0;
+  background:#F5F4EF;
+  border-bottom:1px solid rgba(88,101,242,0.15);
+  display:flex;align-items:center;justify-content:center;
+  gap:16px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--blurple);
+  position:relative;z-index:200;
+}
+.demo-banner-divider{opacity:0.3}
+
+.app{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR — identical to projects.html */
+.sidebar{width:224px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.sidebar-logo{padding:20px 20px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.logo-mark{width:28px;height:28px;border-radius:7px;background:var(--blurple);display:flex;align-items:center;justify-content:center;font-size:14px}
+.logo-wordmark{font-size:16px;font-weight:800;letter-spacing:-0.03em;color:var(--text);text-decoration:none}
+.logo-wordmark span{color:var(--blurple)}
+.nav-links{padding:12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;font-size:13px;font-weight:500;color:var(--muted-2);cursor:pointer;transition:all 0.15s;margin-bottom:1px;text-decoration:none}
+.nav-item:hover{background:var(--surface-2);color:var(--text)}
+.nav-item.active{background:rgba(88,101,242,0.15);color:var(--blurple-light)}
+.nav-item .icon{width:16px;height:16px;flex-shrink:0;opacity:0.7}
+.nav-item.active .icon{opacity:1}
+.badge{margin-left:auto;background:var(--blurple);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;font-family:var(--mono)}
+.badge-red{background:rgba(239,68,68,0.2);color:#FCA5A5}
+.section-label-small{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:12px 10px 4px}
+.sidebar-bottom{margin-top:auto;padding:12px;border-top:1px solid var(--border)}
+.feedback-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;font-size:12px;color:var(--muted);cursor:pointer;margin-bottom:4px;text-decoration:none}
+.feedback-btn:hover{background:var(--surface-2);color:var(--text)}
+.user-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer}
+.user-row:hover{background:var(--surface-2)}
+.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blurple),var(--purple));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:12px;font-weight:600;color:var(--text)}
+.user-email{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* MAIN */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;background:var(--near-black)}
+.main-header{padding:24px 28px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.main-title{font-size:22px;font-weight:800;letter-spacing:-0.02em}
+.main-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.header-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:13px;font-weight:600;padding:8px 16px;border-radius:7px;border:none;cursor:pointer;transition:all 0.15s;text-decoration:none}
+.btn-primary{background:var(--blurple);color:#fff}
+.btn-primary:hover{background:var(--blurple-dark)}
+.btn-ghost{background:transparent;color:var(--muted-2);border:1px solid var(--border-2)}
+.btn-ghost:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-xs{padding:3px 10px;font-size:11px}
+
+/* FILTERS */
+.feed-filters{display:flex;gap:4px;padding:14px 28px;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+.filter-pill{font-family:var(--mono);font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all 0.15s}
+.filter-pill:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.filter-pill.active{background:rgba(88,101,242,0.15);border-color:rgba(88,101,242,0.3);color:var(--blurple-light)}
+.filter-pill.d-dot::before,.filter-pill.a-dot::before,.filter-pill.def-dot::before,.filter-pill.p-dot::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.filter-pill.d-dot::before{background:var(--blurple)}
+.filter-pill.a-dot::before{background:var(--purple)}
+.filter-pill.def-dot::before{background:var(--green)}
+.filter-pill.p-dot::before{background:var(--yellow)}
+
+/* FEED LAYOUT */
+.feed-layout{display:flex;flex:1;overflow:hidden}
+.feed-main{flex:1;overflow-y:auto;padding:0 28px}
+
+/* FEED ITEMS */
+.feed-day{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:20px 0 12px;display:flex;align-items:center;gap:12px}
+.feed-day::after{content:'';flex:1;height:1px;background:var(--border)}
+.feed-item{display:flex;gap:14px;padding:14px 12px;border-radius:8px;cursor:pointer;transition:background 0.1s;margin:0 -12px 2px}
+.feed-item:hover{background:var(--surface-2)}
+
+.fa{width:32px;height:32px;border-radius:50%;flex-shrink:0;margin-top:2px;font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center}
+.fa.auto{background:var(--surface-3);border:1px solid var(--border);color:var(--muted);font-size:9px;font-family:var(--mono);font-weight:500}
+.av1{background:linear-gradient(135deg,#5865F2,#7C3AED)}
+.av2{background:linear-gradient(135deg,#0891B2,#0D9488)}
+.av3{background:linear-gradient(135deg,#DC2626,#EA580C)}
+.av4{background:linear-gradient(135deg,#16A34A,#0D9488)}
+
+.feed-body{flex:1;min-width:0}
+.feed-top{display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap}
+
+.proj-badge{font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px;white-space:nowrap}
+.pb1{background:rgba(88,101,242,0.1);color:var(--blurple-light)}
+.pb2{background:rgba(20,184,166,0.1);color:#5EEAD4}
+.pb3{background:rgba(245,158,11,0.1);color:#FCD34D}
+
+.type-tag{font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px}
+.tt-decision{background:rgba(88,101,242,0.12);color:var(--blurple-light)}
+.tt-assumption{background:rgba(168,85,247,0.12);color:#C084FC}
+.tt-definition{background:rgba(34,197,94,0.12);color:#86EFAC}
+.tt-policy{background:rgba(234,179,8,0.12);color:#FDE047}
+.tt-stale{background:rgba(239,68,68,0.12);color:#FCA5A5}
+.tt-gap{background:rgba(249,115,22,0.12);color:#FDBA74}
+
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;font-family:var(--mono)}
+.chip.unvetted{background:rgba(168,85,247,0.12);color:#C084FC}
+.chip.vetted{background:rgba(34,197,94,0.12);color:var(--green)}
+
+.feed-time{font-size:11px;color:var(--muted);font-family:var(--mono);margin-left:auto;flex-shrink:0}
+.feed-summary{font-size:13px;color:var(--text);line-height:1.5;margin-bottom:5px}
+.feed-summary strong{color:#fff;font-weight:600}
+.feed-detail{font-size:12px;color:var(--muted-2);line-height:1.55;font-style:italic;margin-bottom:8px}
+.feed-footer{display:flex;align-items:center;gap:8px}
+.feed-source{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.feed-source a{color:var(--blurple);text-decoration:none}
+.feed-source a:hover{text-decoration:underline}
+.inline-actions{display:flex;gap:6px;margin-left:auto}
+.btn-vet{background:transparent;color:var(--green);border:1px solid rgba(34,197,94,0.3);font-family:var(--sans);font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s}
+.btn-vet:hover{background:rgba(34,197,94,0.1)}
+.btn-defer{background:transparent;color:var(--muted-2);border:1px solid var(--border-2);font-family:var(--sans);font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s}
+.btn-defer:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.btn-create{background:var(--blurple);color:#fff;border:none;font-family:var(--sans);font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s}
+.btn-create:hover{background:var(--blurple-dark)}
+
+/* RIGHT SIDEBAR */
+.feed-sidebar{width:236px;flex-shrink:0;border-left:1px solid var(--border);background:var(--surface);padding:20px 16px;overflow-y:auto}
+.sidebar-section-title{font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.stat-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.stat-row:last-of-type{border-bottom:none}
+.stat-label{font-size:12px;color:var(--muted-2);display:flex;align-items:center;gap:7px}
+.stat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.stat-val{font-size:12px;font-weight:700;font-family:var(--mono)}
+
+.pending-section{margin-top:20px}
+.pending-item{padding:10px 0;border-bottom:1px solid var(--border)}
+.pending-item:last-child{border-bottom:none}
+.pending-name{font-size:12px;color:var(--text);font-weight:500;margin-bottom:3px}
+.pending-meta{font-size:10px;color:var(--muted);font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="demo-banner">
+  <span>// Activity feed</span>
+  <span class="demo-banner-divider">·</span>
+  <span>Demo — not live data</span>
+</div>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">🕊</div>
+      <a class="logo-wordmark" href="/app-demo/projects.html">dove<span>tell</span></a>
+    </div>
+    <div class="nav-links">
+      <a class="nav-item" href="/app-demo/projects.html">
+        <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/></svg>
+        All Projects
+      </a>
+      <a class="nav-item active" href="/app-demo/feed.html">
+        <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 11.5L3.5 15L5 9.5L1 6H6L8 1Z" fill="currentColor"/></svg>
+        Activity Feed
+        <span class="badge badge-red">9</span>
+      </a>
+      <a class="nav-item" href="/app-demo/feed.html">
+        <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Review Queue
+        <span class="badge">7</span>
+      </a>
+      <div class="section-label-small">Workspace</div>
+      <a class="nav-item" href="#">
+        <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Settings
+      </a>
+    </div>
+    <div class="sidebar-bottom">
+      <a class="feedback-btn" href="#">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 14l3-2 3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Give feedback
+      </a>
+      <div class="user-row">
+        <div class="avatar">JP</div>
+        <div class="user-info">
+          <div class="user-name">Jane Park</div>
+          <div class="user-email">jane@datagate.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="main-header">
+      <div>
+        <div class="main-title">Activity Feed</div>
+        <div class="main-sub">Context changes across all projects</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost btn-sm">Mark all read</button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="feed-filters">
+      <div class="filter-pill active">All</div>
+      <div class="filter-pill d-dot">Decisions</div>
+      <div class="filter-pill a-dot">Assumptions</div>
+      <div class="filter-pill def-dot">Definitions</div>
+      <div class="filter-pill p-dot">Policies</div>
+      <div class="filter-pill" style="margin-left:8px;border-color:rgba(239,68,68,0.3);color:#FCA5A5">⚠ Unvetted only</div>
+      <div class="filter-pill" style="color:var(--amber)">⏱ Stale only</div>
+    </div>
+
+    <div class="feed-layout">
+      <div class="feed-main">
+
+        <div class="feed-day">Today</div>
+
+        <!-- Item 1 — decision, unvetted -->
+        <div class="feed-item">
+          <div class="fa av1">AK</div>
+          <div class="feed-body">
+            <div class="feed-top">
+              <span class="proj-badge pb1">Datagate · Ops Analytics</span>
+              <span class="type-tag tt-decision">decision</span>
+              <span class="chip unvetted">Unvetted</span>
+              <span class="feed-time">2h ago</span>
+            </div>
+            <div class="feed-summary"><strong>Alex Kim</strong> added a decision — Standardize on OpenTelemetry for all services</div>
+            <div class="feed-detail">"All new services will use OpenTelemetry for distributed tracing. Existing Datadog instrumentation to be migrated by Q3."</div>
+            <div class="feed-footer">
+              <span class="feed-source">from <a href="#">sprint-14-decisions.md</a></span>
+              <div class="inline-actions">
+                <button class="btn-defer">Defer</button>
+                <button class="btn-vet">✓ Vet</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2 — definition, vetted -->
+        <div class="feed-item">
+          <div class="fa av2">PN</div>
+          <div class="feed-body">
+            <div class="feed-top">
+              <span class="proj-badge pb2">Meridian · Data Platform</span>
+              <span class="type-tag tt-definition">definition</span>
+              <span class="chip vetted">Vetted</span>
+              <span class="feed-time">5h ago</span>
+            </div>
+            <div class="feed-summary"><strong>Priya N.</strong> updated a definition — Service Boundary</div>
+            <div class="feed-detail">Updated to clarify the boundary between ingestion and processing layers following Q3 architecture review.</div>
+            <div class="feed-footer">
+              <span class="feed-source">from <a href="#">definitions.md</a></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3 — gap, auto -->
+        <div class="feed-item">
+          <div class="fa auto">AUTO</div>
+          <div class="feed-body">
+            <div class="feed-top">
+              <span class="proj-badge pb1">Datagate · Ops Analytics</span>
+              <span class="type-tag tt-gap">gap flagged</span>
+              <span class="feed-time">6h ago</span>
+            </div>
+            <div class="feed-summary"><strong>dovetell</strong> detected an unanswered context gap — <em>Defect classification: rework vs. scrap</em></div>
+            <div class="feed-detail">Developer query returned no match. Flagged 3 times this sprint. A definition may be needed.</div>
+            <div class="feed-footer">
+              <span class="feed-source">Context Gap Analyzer</span>
+              <div class="inline-actions">
+                <button class="btn-create">+ Create definition</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feed-day">Yesterday</div>
+
+        <!-- Item 4 — assumption, unvetted -->
+        <div class="feed-item">
+          <div class="fa av3">MR</div>
+          <div class="feed-body">
+            <div class="feed-top">
+              <span class="proj-badge pb3">Volta · MES Integration</span>
+              <span class="type-tag tt-assumption">assumption</span>
+              <span class="chip unvetted">Unvetted</span>
+              <span class="feed-time">1d ago</span>
+            </div>
+            <div class="feed-summary"><strong>Marco R.</strong> added an assumption — AWS is our primary cloud provider</div>
+            <div class="feed-detail">"All infrastructure assumed to be AWS unless otherwise stated. Azure used only for existing MES connector."</div>
+            <div class="feed-footer">
+              <span class="feed-source">from <a href="#">MES Integration Notes.md</a></span>
+              <div class="inline-actions">
+                <button class="btn-vet">✓ Vet</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 5 — stale, auto -->
+        <div class="feed-item">
+          <div class="fa auto">AUTO</div>
+          <div class="feed-body">
+            <div class="feed-top">
+              <span class="proj-badge pb3">Volta · MES Integration</span>
+              <span class="type-tag tt-stale">stale flagged</span>
+              <span class="feed-time">1d ago</span>
+            </div>
+            <div class="feed-summary"><strong>dovetell</strong> flagged 3 definitions as stale — last vetted 60+ days ago</div>
+            <div class="feed-detail">OEE calculation method · Shift boundary definition · Line 7 throughput target</div>
+            <div class="feed-footer">
+              <span class="feed-source">Staleness detector · 60-day threshold</span>
+              <div class="inline-actions">
+                <button class="btn-defer">Review all</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 6 — policy, vetted -->
+        <div class="feed-item">
+          <div class="fa av4">JP</div>
+          <div class="feed-body">
+            <div class="feed-top">
+              <span class="proj-badge pb1">Datagate · Ops Analytics</span>
+              <span class="type-tag tt-policy">policy</span>
+              <span class="chip vetted">Vetted</span>
+              <span class="feed-time">2d ago</span>
+            </div>
+            <div class="feed-summary"><strong>Jane Park</strong> updated a policy — Data retention and deletion policy</div>
+            <div class="feed-detail">Retention window extended from 90 to 180 days for shift-level data following compliance review.</div>
+            <div class="feed-footer">
+              <span class="feed-source">from <a href="#">policy-update.md</a></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDEBAR -->
+      <div class="feed-sidebar">
+        <div class="sidebar-section-title">This week</div>
+        <div class="stat-row">
+          <div class="stat-label"><div class="stat-dot" style="background:var(--blurple)"></div>Decisions</div>
+          <div class="stat-val" style="color:var(--blurple-light)">3</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><div class="stat-dot" style="background:var(--purple)"></div>Assumptions</div>
+          <div class="stat-val" style="color:#C084FC">2</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><div class="stat-dot" style="background:var(--green)"></div>Definitions</div>
+          <div class="stat-val" style="color:#86EFAC">4</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><div class="stat-dot" style="background:var(--yellow)"></div>Policies</div>
+          <div class="stat-val" style="color:#FDE047">1</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><div class="stat-dot" style="background:var(--red)"></div>Gaps flagged</div>
+          <div class="stat-val" style="color:#FCA5A5">2</div>
+        </div>
+
+        <div class="pending-section">
+          <div class="sidebar-section-title">Needs your review</div>
+          <div class="pending-item">
+            <div class="pending-name">OpenTelemetry standardization</div>
+            <div class="pending-meta">Datagate · decision · 2h ago</div>
+          </div>
+          <div class="pending-item">
+            <div class="pending-name">AWS primary cloud assumption</div>
+            <div class="pending-meta">Volta · assumption · 1d ago</div>
+          </div>
+          <div class="pending-item">
+            <div class="pending-name">Shift data refresh cadence</div>
+            <div class="pending-meta">Datagate · assumption · 3d ago</div>
+          </div>
+          <div style="margin-top:12px">
+            <button class="btn-create" style="width:100%;padding:8px;border-radius:7px;font-size:12px">Review all 7 →</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>
