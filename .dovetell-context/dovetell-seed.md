@@ -155,3 +155,32 @@ demographic options. Do not hardcode these values in HTML or JS.
 - No personal, confidential, or proprietary content in public repo
 - Context folder (dovetell-io/dovetell/.dovetell-context/) is dovetell running on itself
 - Personal context lives in jchromchak/dovetell/personal/ (private repo)
+
+---
+
+## The @dovetell vision
+
+When the MCP server exists, a developer in Cursor or Claude Code types:
+
+```
+@dovetell what's our defect rate threshold?
+```
+
+dovetell queries the context base and returns the team's vetted answer —
+sourced, with decision trace, linked to docs.dovetell.io. The answer
+comes from `definitions.md` or `decisions.md`, confirmed by a human,
+queryable at build time. "I want to be asked fewer questions" made literal.
+
+---
+
+## Claude Code closed loop
+
+When working in Claude Code on `dovetell-io/dovetell`, files in
+`.dovetell-context/` are picked up as project context automatically.
+Every session starts informed — no re-explaining the ID architecture,
+why reCAPTCHA is disabled, what Datagate Systems is, what a pid is.
+
+When Phase 2 platform exists, it ingests `.dovetell-context/` as its
+own context base. The loop closes:
+
+**build the thing → use the thing to build the thing → the thing documents itself**
