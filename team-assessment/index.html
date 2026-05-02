@@ -789,7 +789,7 @@ const ASSESSMENT_ID = 'v01';
 // pid (project ID) — generated once per project, persists across retakes
 // uid (run ID) — generated fresh every submission, tracks individual runs
 //
-// URL: dovetell.io/assessment?v=v01&pid=8f3c2a1b&uid=f4e2b3a9
+// URL: dovetell.io/assessments?v=v01&pid=8f3c2a1b&uid=f4e2b3a9
 // Same pid across multiple uids = growth tracking for one project
 // New pid = new project (different team, different initiative)
 
@@ -800,7 +800,7 @@ function generateShortId() {
 }
 
 function generateUniqueLink(version, pid, uid) {
-  return `https://dovetell.io/assessment?v=${version}&pid=${pid}&uid=${uid}`;
+  return `https://dovetell.io/assessments?v=${version}&pid=${pid}&uid=${uid}`;
 }
 
 // Read pid from URL if returning user, otherwise generate new one
