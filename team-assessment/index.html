@@ -781,32 +781,59 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xrejbpbv';
 
-// Assessment version — bump when questions change
-const ASSESSMENT_ID = 'v01';
-
 // ── ID ARCHITECTURE ───────────────────────────────────────────────────────────
-// version (v) — assessment question set version, hardcoded, bumped manually
-// pid (project ID) — generated once per project, persists across retakes
-// uid (run ID) — generated fresh every submission, tracks individual runs
+// uid  — userId: permanent random ID for this browser/user. Generated once,
+//        stored in localStorage. Ties all projects for one person together.
+// pid  — projectId: one per project/team. Generated once, travels in URL.
+//        Persists across retakes of the same project.
+// aid  — assessmentId: generated fresh every submission. One per completed run.
+//        Tracks individual assessment instances within a project.
+// vid  — versionId: which question set was used. Hardcoded, bumped manually
+//        when questions change. Allows comparing scores across versions.
 //
-// URL: dovetell.io/assessments?v=v01&pid=8f3c2a1b&uid=f4e2b3a9
-// Same pid across multiple uids = growth tracking for one project
-// New pid = new project (different team, different initiative)
+// Hierarchy:
+//   email
+//   └── uid
+//       ├── pid-a
+//       │   ├── aid-1 (vid=v01, score=14)
+//       │   └── aid-2 (vid=v01, score=18)
+//       └── pid-b
+//           └── aid-1 (vid=v01, score=16)
+//
+// URL: dovetell.io/team-assessment?pid=8f3c2a1b
+// On submit generates: aid (fresh), reads vid (hardcoded), reads/creates uid
 
-const ASSESSMENT_VERSION = 'v01';
+const VID = 'v01'; // bump to v02 when questions change
 
 function generateShortId() {
   return Math.random().toString(36).substring(2, 10);
 }
 
-function generateUniqueLink(version, pid, uid) {
-  return `https://dovetell.io/assessments?v=${version}&pid=${pid}&uid=${uid}`;
+// uid — permanent per browser, stored in localStorage
+function getOrCreateUid() {
+  try {
+    let uid = localStorage.getItem('dovetell_uid');
+    if (!uid) {
+      uid = generateShortId();
+      localStorage.setItem('dovetell_uid', uid);
+    }
+    return uid;
+  } catch(e) { return generateShortId(); }
 }
 
-// Read pid from URL if returning user, otherwise generate new one
+// pid — from URL if returning to existing project, else generate new
 function getOrCreatePid() {
   const params = new URLSearchParams(window.location.search);
   return params.get('pid') || generateShortId();
+}
+
+// aid — always fresh per submission
+function generateAid() {
+  return generateShortId();
+}
+
+function generateUniqueLink(pid) {
+  return 'https://dovetell.io/assessments/?pid=' + pid;
 }
 
 // ── DEMOGRAPHICS TOGGLE ───────────────────────────────────────────────────────
@@ -854,10 +881,12 @@ function finishAssessment() {
   window._totalScore = totalScore;
   window._maxScore = maxScore;
 
-  // Generate IDs — pid persists for returning users, uid is always fresh
-  window._pid = getOrCreatePid();
-  window._uid = generateShortId();
-  window._uniqueLink = generateUniqueLink(ASSESSMENT_VERSION, window._pid, window._uid);
+  // Establish all four IDs
+  window._uid = getOrCreateUid();   // permanent per browser
+  window._pid = getOrCreatePid();   // per project, from URL or new
+  window._aid = generateAid();      // fresh per submission
+  window._vid = VID;                // hardcoded version
+  window._uniqueLink = generateUniqueLink(window._pid);
 
   document.getElementById('email-modal').classList.add('active');
   setTimeout(() => document.getElementById('gate-email').focus(), 100);
@@ -892,19 +921,6 @@ async function submitGate() {
   document.getElementById('modal-form-content').style.display = 'none';
   document.getElementById('modal-success-content').style.display = 'block';
 
-  // Save run to localStorage for /assessments/ page
-  if (window._pid) {
-    try {
-      localStorage.setItem('dovetell_run_' + window._pid, JSON.stringify({
-        pid: window._pid,
-        level: getLevel(window._totalScore),
-        score: window._totalScore,
-        maxScore: window._maxScore,
-        takenAt: new Date().toISOString(),
-      }));
-    } catch(e) {}
-  }
-
   setTimeout(() => {
     document.getElementById('email-modal').classList.remove('active');
     document.getElementById('modal-form-content').style.display = 'block';
@@ -920,43 +936,35 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
   const level = getLevel(totalScore);
   const demo = getDemographics();
 
-  // Section breakdown — scores
   const areaDetails = sections.map((sec, i) =>
     `${sec.name}: ${sectionScores[i]}/${sec.questions.length * 3}`
   ).join(' | ');
 
-  // Raw answer arrays — null means skipped
-  // Format: "Shared Context: [0,1,null,2,3]"
   const rawAnswers = sections.map((sec, i) => {
     const ans = window._rawAnswers?.[i] || [];
-    const arr = sec.questions.map((q, qi) =>
-      ans[qi] !== undefined ? ans[qi] : null
-    );
+    const arr = sec.questions.map((q, qi) => ans[qi] !== undefined ? ans[qi] : null);
     return `${sec.name}: [${arr.join(',')}]`;
   }).join(' | ');
 
-  // Skipped questions summary — which questions had no answer
   const skipped = [];
   sections.forEach((sec, i) => {
     const ans = window._rawAnswers?.[i] || [];
     sec.questions.forEach((q, qi) => {
-      if (ans[qi] === undefined) {
-        skipped.push(`${sec.name} Q${qi+1}`);
-      }
+      if (ans[qi] === undefined) skipped.push(`${sec.name} Q${qi+1}`);
     });
   });
-  const skippedSummary = skipped.length > 0 ? skipped.join(', ') : 'none';
 
   try {
     await fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
       body: JSON.stringify({
-        // Identity
+        // Full ID set
         email,
-        version: ASSESSMENT_VERSION,
-        pid: window._pid,
-        uid: window._uid,
+        uid:  window._uid,   // userId — permanent per browser
+        pid:  window._pid,   // projectId — per project
+        aid:  window._aid,   // assessmentId — per run
+        vid:  window._vid,   // versionId — question set version
         unique_link: window._uniqueLink,
         trigger,
         taken_at: new Date().toISOString(),
@@ -965,13 +973,11 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
         level,
         total_score: `${totalScore}/${maxScore}`,
         section_breakdown: areaDetails,
-
-        // Raw answers — null = skipped
         raw_answers: rawAnswers,
-        skipped_questions: skippedSummary,
+        skipped_questions: skipped.length > 0 ? skipped.join(', ') : 'none',
         skip_count: skipped.length,
 
-        // Demographics (all optional)
+        // Demographics
         role:      demo.role      || '—',
         team_size: demo.team_size || '—',
         company:   demo.company   || '—',
@@ -979,11 +985,40 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
         ai_tool:   demo.ai_tool   || '—',
         source:    demo.source    || '—',
 
-        // Formspree formatting
-        _subject: `dovetell — ${level} (${totalScore}/${maxScore}) · pid:${window._pid} · ${demo.role || 'unknown role'} · ${demo.company || 'unknown company'} — ${email}`,
+        _subject: `dovetell — ${level} (${totalScore}/${maxScore}) · pid:${window._pid} · aid:${window._aid} · ${demo.role || 'unknown'} · ${demo.company || 'unknown'} — ${email}`,
         _replyto: email,
       })
     });
+
+    // Save run to localStorage for /assessments/ page
+    // Structure: dovetell_pid_{pid} = array of aids
+    try {
+      const runData = {
+        aid: window._aid,
+        vid: window._vid,
+        pid: window._pid,
+        uid: window._uid,
+        level,
+        score: totalScore,
+        maxScore,
+        takenAt: new Date().toISOString(),
+      };
+      // Save latest run per pid (for quick display)
+      localStorage.setItem('dovetell_run_' + window._pid, JSON.stringify(runData));
+      // Save run history per pid (for trajectory)
+      const histKey = 'dovetell_history_' + window._pid;
+      const hist = JSON.parse(localStorage.getItem(histKey) || '[]');
+      hist.push(runData);
+      localStorage.setItem(histKey, JSON.stringify(hist));
+      // Save uid → pids map (for future multi-project dashboard)
+      const pidsKey = 'dovetell_pids_' + window._uid;
+      const pids = JSON.parse(localStorage.getItem(pidsKey) || '[]');
+      if (!pids.includes(window._pid)) {
+        pids.push(window._pid);
+        localStorage.setItem(pidsKey, JSON.stringify(pids));
+      }
+    } catch(e) {}
+
   } catch(e) { console.log('Formspree error', e); }
 }
 
@@ -1236,103 +1271,19 @@ function getNextSteps(level, gaps) {
 }
 
 function showOffer() {
-  const level = window._level || 'Structured';
-  const nextLevel = window._nextLevel || 'Coordinated';
-  const score = window._score || 18;
-  const maxScore = window._maxScore || 30;
-
-  const html = `
-  <div class="offer-header">
-    <div class="offer-eyebrow">★ Recommended for your team</div>
-    <h2 class="offer-h2">Here's how to move from <em>${level}</em> to <em>${nextLevel || 'Compounding'}</em>.</h2>
-    <p class="offer-sub">Based on your maturity score, we've handpicked resources and offers to help your team build shared context, streamline collaboration, and scale AI with confidence.</p>
-  </div>
-
-  <div class="journey-bar">
-    <div class="journey-stop current">
-      <div class="journey-icon">📊</div>
-      ${level}
-    </div>
-    <div class="journey-arrow">→ → →</div>
-    <div class="journey-stop target">
-      <div class="journey-icon" style="background:var(--blurple);color:#fff;font-size:14px">🚀</div>
-      ${nextLevel || 'Compounding'}
-    </div>
-  </div>
-
-  <div class="tiers">
-    <div class="tier-card">
-      <div class="tier-badge free">Free</div>
-      <div class="tier-name">Team AI OS Checklist</div>
-      <div class="tier-price">$0</div>
-      <div class="tier-desc">A practical checklist to help your team set up the foundations for a shared AI operating system.</div>
-      <div class="tier-includes">Includes</div>
-      ${['12-step implementation guide','Team-ready best practices','Print or use as a digital template'].map(i=>`
-        <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
-      <div class="tier-cta"><button class="btn-tier free-btn">Download free ↓</button></div>
-    </div>
-    <div class="tier-card">
-      <div class="tier-badge paid">Paid Kit</div>
-      <div class="tier-name">Starter Kit</div>
-      <div class="tier-price">$49</div>
-      <div class="tier-desc">Everything you need to get started standardizing how your team works with AI.</div>
-      <div class="tier-includes">Includes</div>
-      ${['Prompt library template','Team context file','Handoff template','Governance checklist'].map(i=>`
-        <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
-      <div class="tier-cta"><a class="btn-tier paid-btn" href="https://dovetell.io" target="_blank">Buy on Gumroad →</a></div>
-    </div>
-    <div class="tier-card featured">
-      <div class="tier-badge best">Best Value</div>
-      <div class="tier-name">Pro Kit</div>
-      <div class="tier-price">$99</div>
-      <div class="tier-desc">Go further, faster with templates, examples, and a step-by-step rollout plan.</div>
-      <div class="tier-includes">Everything in Starter, plus</div>
-      ${['Starter Kit with filled-in examples','Rollout guide','Facilitation script','Sample repo structure'].map(i=>`
-        <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
-      <div class="tier-cta"><a class="btn-tier paid-btn" href="https://dovetell.io" target="_blank">Buy on Gumroad →</a></div>
-    </div>
-  </div>
-
-  <div class="review-card">
-    <div class="review-icon">📅</div>
-    <div class="review-body">
-      <div class="review-title">Setup Review <span class="review-price">$299</span></div>
-      <div class="review-desc">Book a 60-minute session with a dovetell expert to review your setup, identify gaps, and get tailored recommendations for your team.</div>
-      <div class="review-features">
-        <span class="review-feat">✓ Personalized review of your results</span>
-        <span class="review-feat">✓ Prioritized action plan</span>
-        <span class="review-feat">✓ Q&A with an AI workflow expert</span>
-      </div>
-    </div>
-    <button class="btn-review">Book review →</button>
-  </div>
-
-  <div style="font-size:15px;font-weight:800;letter-spacing:-0.01em;margin-bottom:16px;text-align:center">Why these recommendations</div>
-  <div class="why-grid">
-    <div class="why-card">
-      <div class="why-icon">🔁</div>
-      <div class="why-title">Improve prompt reuse</div>
-      <div class="why-desc">Standardized prompts and examples help your team move faster and stay consistent.</div>
-    </div>
-    <div class="why-card">
-      <div class="why-icon">🤝</div>
-      <div class="why-title">Reduce handoff friction</div>
-      <div class="why-desc">Clear handoff templates and governance reduce back-and-forth and context loss.</div>
-    </div>
-    <div class="why-card">
-      <div class="why-icon">⚡</div>
-      <div class="why-title">Build shared context faster</div>
-      <div class="why-desc">Centralized templates and context files help everyone stay aligned from day one.</div>
-    </div>
-  </div>
-
-  <div class="gumroad-note">🛒 Paid kits are fulfilled securely via <a href="https://gumroad.com" target="_blank">Gumroad</a>.</div>
-  <div style="height:40px"></div>`;
-
-  document.getElementById('offer-content').innerHTML = html;
-  showScreen('offer');
-  document.getElementById('nav-label').textContent = 'Recommended resources';
+  // Redirect to standalone recommendations page with all context as URL params
+  const params = new URLSearchParams({
+    level:     window._level     || 'Structured',
+    next:      window._nextLevel || 'Coordinated',
+    score:     window._score     || 0,
+    max:       window._maxScore  || 90,
+    pid:       window._pid       || '',
+    uid:       window._uid       || '',
+    aid:       window._aid       || '',
+  });
+  window.location.href = '/recommendations/?' + params.toString();
 }
+
 </script>
 </body>
 </html>
