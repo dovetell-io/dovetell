@@ -445,6 +445,14 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
         <input class="modal-input" type="email" id="gate-email" placeholder="your@email.com" autocomplete="email"/>
       </div>
 
+      <!-- Project name — optional -->
+      <div style="margin-bottom:12px">
+        <input class="modal-input" type="text" id="gate-project" placeholder="Project name (optional — e.g. Ops Analytics Team)" maxlength="80" style="padding:12px 14px;width:100%"/>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5">
+          ⚠ Don't include sensitive, confidential, or proprietary information here.
+        </div>
+      </div>
+
       <!-- Demographics toggle -->
       <button class="demo-toggle" id="demo-toggle" onclick="toggleDemo()">
         Tell us about your team (optional)
@@ -533,14 +541,17 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
       <div class="modal-trust">
         <div class="modal-trust-item">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          We never share your email.
+          Your scores are seen by the dovetell product team to improve the product — never sold or shared with third parties.
         </div>
         <div class="modal-trust-item">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          You'll get a unique link to retake and track your progress.
+          You'll get a unique link to retake and track your team's progress over time.
         </div>
       </div>
       <div class="modal-mono-note">No account required. No password. Just your link.</div>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px">
+        <a href="/privacy/" target="_blank" style="color:var(--blurple);text-decoration:none">Read our privacy policy →</a>
+      </div>
       <button class="modal-skip" onclick="skipGateAndShow()">Skip — just show my results</button>
     </div>
     <div class="modal-success" id="modal-success-content">
@@ -773,9 +784,12 @@ function prevSection() {
 }
 
 // ── PID REDIRECT — if returning user, send to /assessments/ ──────────────────
+// Exception: if retake=1 in URL, skip redirect and go straight to assessment
 window.addEventListener('DOMContentLoaded', () => {
-  const pid = new URLSearchParams(window.location.search).get('pid');
-  if (pid && /^[a-z0-9]{6,12}$/.test(pid)) {
+  const params = new URLSearchParams(window.location.search);
+  const pid = params.get('pid');
+  const retake = params.get('retake');
+  if (pid && /^[a-z0-9]{6,12}$/.test(pid) && retake !== '1') {
     window.location.replace('/assessments/?pid=' + pid);
   }
 });
@@ -846,12 +860,13 @@ function toggleDemo() {
 
 function getDemographics() {
   return {
-    role:      document.getElementById('demo-role')?.value     || '',
-    team_size: document.getElementById('demo-teamsize')?.value || '',
-    company:   document.getElementById('demo-company')?.value  || '',
-    industry:  document.getElementById('demo-industry')?.value || '',
-    ai_tool:   document.getElementById('demo-tool')?.value     || '',
-    source:    document.getElementById('demo-source')?.value   || '',
+    project_name: document.getElementById('gate-project')?.value || '',
+    role:         document.getElementById('demo-role')?.value     || '',
+    team_size:    document.getElementById('demo-teamsize')?.value || '',
+    company:      document.getElementById('demo-company')?.value  || '',
+    industry:     document.getElementById('demo-industry')?.value || '',
+    ai_tool:      document.getElementById('demo-tool')?.value     || '',
+    source:       document.getElementById('demo-source')?.value   || '',
   };
 }
 
@@ -872,7 +887,7 @@ function finishAssessment() {
   sections.forEach((sec, i) => {
     const ans = answers[i] || [];
     let total = 0;
-    sec.questions.forEach((q, qi) => { total += ans[qi] !== undefined ? ans[qi] : 1; });
+    sec.questions.forEach((q, qi) => { total += ans[qi] !== undefined ? ans[qi] : 0; });
     sectionScores.push(total);
   });
   window._sectionScores = sectionScores;
@@ -978,7 +993,8 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
         skip_count: skipped.length,
 
         // Demographics
-        role:      demo.role      || '—',
+        project_name: demo.project_name || '—',
+        role:         demo.role         || '—',
         team_size: demo.team_size || '—',
         company:   demo.company   || '—',
         industry:  demo.industry  || '—',
@@ -1001,6 +1017,7 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
         level,
         score: totalScore,
         maxScore,
+        projectName: demo.project_name || '',
         takenAt: new Date().toISOString(),
       };
       // Save latest run per pid (for quick display)
@@ -1023,9 +1040,9 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
 }
 
 function getLevel(score) {
-  if (score <= 12) return 'Scattered';
-  if (score <= 24) return 'Structured';
-  if (score <= 30) return 'Coordinated';
+  if (score <= 22) return 'Scattered';
+  if (score <= 54) return 'Structured';
+  if (score <= 72) return 'Coordinated';
   return 'Compounding';
 }
 
@@ -1139,7 +1156,7 @@ function renderResults(sectionScores, totalScore, maxScore) {
 
   <div class="level-scale">
     ${['Scattered','Structured','Coordinated','Compounding'].map((l,i) => {
-      const ranges = ['0–12','13–24','25–30','31–36'];
+      const ranges = ['0–22','23–54','55–72','73–90'];
       const descs = ['Ad hoc use,\nisolated results','Some repeatable\npractices','Aligned practices,\nshared context','Systematic\nadvantage'];
       const isCurrent = l === level;
       return `<div class="level-item ${isCurrent ? 'current' : ''}">

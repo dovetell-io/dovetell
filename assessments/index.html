@@ -240,10 +240,10 @@ function buildHistory(history) {
 
 function buildLevelScale(currentLevel) {
   const levels = [
-    {name:'Scattered',   range:'0–12'},
-    {name:'Structured',  range:'13–24'},
-    {name:'Coordinated', range:'25–30'},
-    {name:'Compounding', range:'31–36'},
+    {name:'Scattered',   range:'0–22'},
+    {name:'Structured',  range:'23–54'},
+    {name:'Coordinated', range:'55–72'},
+    {name:'Compounding', range:'73–90'},
   ];
   return `<div class="level-scale">
     ${levels.map(l => `
@@ -256,7 +256,7 @@ function buildLevelScale(currentLevel) {
 
 // ── RENDER: HAS PID ───────────────────────────────────────────────────────────
 function renderWithPid(pid, lastRun, history) {
-  const retakeUrl = '/team-assessment/?pid=' + pid;
+  const retakeUrl = '/team-assessment/?pid=' + pid + '&retake=1';
   const shareUrl  = 'https://dovetell.io/assessments/?pid=' + pid;
   const color = lastRun ? getScoreColor(lastRun.level) : '#5865F2';
   const runCount = history.length;
@@ -311,9 +311,11 @@ function renderWithPid(pid, lastRun, history) {
     <div class="hero">
       <div class="eyebrow">&#8635; Returning visitor</div>
       <h1>Welcome <em>back.</em></h1>
-      <p class="hero-sub">${lastRun
-        ? 'Last time you scored ' + lastRun.score + '/' + lastRun.maxScore + ' — ' + lastRun.level + '. Retake to see how your team has matured.'
-        : 'We found your project link. Take the assessment to start tracking your team\'s maturity over time.'
+      <p class="hero-sub">${lastRun && lastRun.projectName
+        ? '"' + lastRun.projectName + '" · Last scored ' + lastRun.score + '/' + lastRun.maxScore + ' — ' + lastRun.level + '. Retake to see how your team has matured.'
+        : lastRun
+          ? 'Last time you scored ' + lastRun.score + '/' + lastRun.maxScore + ' — ' + lastRun.level + '. Retake to see how your team has matured.'
+          : 'We found your project link. Take the assessment to start tracking your team\'s maturity over time.'
       }</p>
     </div>
 

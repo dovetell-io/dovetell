@@ -1,0 +1,266 @@
+{
+  "meta": {
+    "vid": "v01",
+    "title": "Team AI Maturity Assessment",
+    "subtitle": "Answer a few questions to see how reusable, reviewable, and team-aware your AI-assisted work really is.",
+    "estimatedMinutes": 5,
+    "maxScore": 90,
+    "questionsPerSection": 5,
+    "maxPerQuestion": 3
+  },
+
+  "scoring": {
+    "labels": ["Not true", "Somewhat true", "Mostly true", "Very true"],
+    "values": [0, 1, 2, 3],
+    "levels": [
+      {
+        "name": "Scattered",
+        "min": 0,
+        "max": 22,
+        "description": "Ad hoc AI use with isolated results. Context exists in individual chats and drives. No shared standards or reuse.",
+        "tip": "Focus on creating one shared context file and saving your best prompts.",
+        "color": "#DC2626",
+        "badge": "scattered"
+      },
+      {
+        "name": "Structured",
+        "min": 23,
+        "max": 54,
+        "description": "Some repeatable practices but inconsistent. Context is scattered, handoffs vary, and reusable knowledge lives in individual tools.",
+        "tip": "Keep building foundations â standardize your handoffs and prompt library.",
+        "color": "#D97706",
+        "badge": "structured"
+      },
+      {
+        "name": "Coordinated",
+        "min": 55,
+        "max": 72,
+        "description": "Aligned team practices and shared context. Your team works together with AI â the foundation is solid.",
+        "tip": "You're ready for governance and continuous improvement loops.",
+        "color": "#5865F2",
+        "badge": "coordinated"
+      },
+      {
+        "name": "Compounding",
+        "min": 73,
+        "max": 90,
+        "description": "Systematic advantage and continuous lift. AI is deeply embedded in your team's operating rhythm.",
+        "tip": "You're at the frontier â share what's working with peers.",
+        "color": "#16A34A",
+        "badge": "compounding"
+      }
+    ]
+  },
+
+  "nextSteps": {
+    "Scattered": [
+      {
+        "title": "Create one shared team context file",
+        "desc": "Capture your mission, goals, audience, and key decisions your team's AI should always know."
+      },
+      {
+        "title": "Save your 3 best prompts in a shared location",
+        "desc": "Pick prompts that have worked well and document them so others can use and improve them."
+      },
+      {
+        "title": "Standardize one AI handoff template",
+        "desc": "Pick a simple, repeatable format so nothing gets lost between steps."
+      }
+    ],
+    "Structured": [
+      {
+        "title": "Formalize your prompt library with categories",
+        "desc": "Group prompts by workflow or role so anyone can find what they need without asking."
+      },
+      {
+        "title": "Add a review step for AI-generated outputs",
+        "desc": "Designate someone to spot-check and approve AI work before it becomes official."
+      },
+      {
+        "title": "Close your biggest context gap",
+        "desc": "Pick the capability area that scored lowest and focus your next sprint there."
+      }
+    ],
+    "Coordinated": [
+      {
+        "title": "Build a staleness monitor for your context files",
+        "desc": "Flag files that haven't been updated in 30+ days so your context stays current."
+      },
+      {
+        "title": "Create a governance checklist for AI workflows",
+        "desc": "Document what good looks like so standards are maintained as the team grows."
+      },
+      {
+        "title": "Set up a continuous improvement loop",
+        "desc": "Schedule a monthly review of what's working and what prompts need updating."
+      }
+    ],
+    "Compounding": [
+      {
+        "title": "Document your system for others to replicate",
+        "desc": "Your AI operating system is a competitive advantage â codify it so it scales."
+      },
+      {
+        "title": "Mentor a peer team through their assessment",
+        "desc": "Teaching what works reinforces your own practices and builds your reputation."
+      },
+      {
+        "title": "Explore context graph architecture",
+        "desc": "At this maturity level, queryable decision traces at scale become your next frontier."
+      }
+    ]
+  },
+
+  "sections": [
+    {
+      "id": "shared-context",
+      "name": "Shared Context",
+      "icon": "ð¥",
+      "desc": "How well your team creates and maintains shared AI context.",
+      "questions": [
+        "Our team has a shared document or file that describes our mission, goals, and key decisions that AI should always know.",
+        "When a new team member joins, they can quickly get AI tools up to speed on our work without asking everyone for context.",
+        "Team members use consistent background context when prompting AI tools â not whatever they happen to remember.",
+        "When our team's priorities or decisions change, we update our shared AI context files to reflect this.",
+        "Our AI context doesn't live in one person's head â it's documented and findable by anyone on the team."
+      ]
+    },
+    {
+      "id": "prompt-reuse",
+      "name": "Prompt Reuse",
+      "icon": "ð¬",
+      "desc": "How well your team creates, stores, and reuses high-value prompts.",
+      "questions": [
+        "We have a shared prompt library where team members store and find reusable prompts.",
+        "High-value prompts are not trapped in private chats â they're saved somewhere the team can access.",
+        "Our prompts include expected inputs, outputs, and instructions so others can use them without guessing.",
+        "Prompts are grouped by workflow, role, or task so people can find what they need quickly.",
+        "We regularly reuse and adapt prompts that worked well instead of starting from scratch."
+      ]
+    },
+    {
+      "id": "team-handoffs",
+      "name": "Team Handoffs",
+      "icon": "ð",
+      "desc": "How well context is preserved when work moves between people.",
+      "questions": [
+        "When work moves from one team member to another, there's a standard format for summarizing AI context and decisions.",
+        "Handoff notes include what was tried, what worked, and what the AI needs to know to continue the work.",
+        "People don't have to re-explain the same background context every time they start a new conversation with AI.",
+        "Our handoff process captures key decisions and assumptions, not just task status.",
+        "When a project is paused and restarted, the team can quickly reload context without losing progress."
+      ]
+    },
+    {
+      "id": "knowledge-capture",
+      "name": "Knowledge Capture",
+      "icon": "ð",
+      "desc": "How consistently your team records decisions and domain knowledge.",
+      "questions": [
+        "Valuable insights and decisions from AI-assisted work are captured somewhere durable â not just in chat history.",
+        "When the AI produces something exceptional, we document what prompt or approach led to that result.",
+        "Domain-specific knowledge (definitions, constraints, policies) is written down and accessible to AI tools.",
+        "We have a way to capture and tag decisions so they can be referenced later without asking the person who made them.",
+        "Knowledge doesn't disappear when someone leaves the team or goes on leave."
+      ]
+    },
+    {
+      "id": "review-governance",
+      "name": "Review & Governance",
+      "icon": "ð¡ï¸",
+      "desc": "How your team reviews AI outputs and maintains standards.",
+      "questions": [
+        "We have a clear process for reviewing AI-generated outputs before they become official or are acted upon.",
+        "There is someone or a role responsible for maintaining the quality of our AI context and prompts.",
+        "We track when context files or prompts were last updated and flag ones that may be stale.",
+        "Our team has shared standards for what makes a good prompt or AI output in our specific context.",
+        "When AI produces something wrong or misleading, we have a way to capture that feedback and improve."
+      ]
+    },
+    {
+      "id": "workflow-integration",
+      "name": "Workflow Integration",
+      "icon": "â¡",
+      "desc": "How deeply AI is integrated into your team's daily workflows.",
+      "questions": [
+        "AI tools are consistently used across the team â not just by a few enthusiasts.",
+        "Our AI usage is integrated into regular workflows rather than used ad hoc when someone remembers.",
+        "We have standard places in our process where AI context is checked or updated (e.g., sprint start, handoffs).",
+        "Team members feel confident using AI tools because they know the context is reliable and up to date.",
+        "Our AI workflows have improved over time as we've learned what works and what doesn't."
+      ]
+    }
+  ],
+
+  "offers": {
+    "tiers": [
+      {
+        "badge": "Free",
+        "badgeStyle": "free",
+        "name": "Team AI OS Checklist",
+        "price": 0,
+        "desc": "A practical checklist to help your team set up the foundations for a shared AI operating system.",
+        "includes": [
+          "12-step implementation guide",
+          "Team-ready best practices",
+          "Print or use as a digital template"
+        ],
+        "cta": "Download free",
+        "url": null
+      },
+      {
+        "badge": "Starter Kit",
+        "badgeStyle": "paid",
+        "name": "Starter Kit",
+        "price": 49,
+        "desc": "Everything you need to get started standardizing how your team works with AI.",
+        "includes": [
+          "Prompt library template",
+          "Team context file",
+          "Handoff template",
+          "Governance checklist"
+        ],
+        "cta": "Buy on Gumroad",
+        "url": "https://gumroad.com"
+      },
+      {
+        "badge": "Best Value",
+        "badgeStyle": "best",
+        "name": "Pro Kit",
+        "price": 99,
+        "desc": "Go further, faster with templates, examples, and a step-by-step rollout plan.",
+        "includes": [
+          "Starter Kit with filled-in examples",
+          "Rollout guide",
+          "Facilitation script",
+          "Sample repo structure"
+        ],
+        "cta": "Buy on Gumroad",
+        "url": "https://gumroad.com"
+      }
+    ],
+    "setupReview": {
+      "price": 299,
+      "desc": "Book a 60-minute session with a dovetell expert to review your setup, identify gaps, and get tailored recommendations.",
+      "features": [
+        "Personalized review of your results",
+        "Prioritized action plan",
+        "Q&A with an AI workflow expert"
+      ]
+    }
+  },
+
+  "privacy": {
+    "gateNote": "Your email is used to send your results and unique tracking link. Your scores are seen by the dovetell product team to help improve the product â they are never sold or shared with third parties.",
+    "dataDisclaimer": "Please don't include sensitive, confidential, or proprietary information in the project name or any open fields.",
+    "fullPolicyUrl": "/privacy/"
+  },
+
+  "demographics": {
+    "roles": ["Product Manager", "Developer", "Data Scientist", "Engineering Lead", "Founder / CTO", "Other"],
+    "teamSizes": ["1 (just me)", "2â5", "6â15", "16â50", "50+"],
+    "industries": ["Software / SaaS", "Manufacturing", "Finance", "Healthcare", "Consulting", "Government / Defense", "Other"],
+    "aiTools": ["Cursor", "Claude / Claude Code", "GitHub Copilot", "ChatGPT", "Gemini", "Multiple", "Other"],
+    "sources": ["LinkedIn", "Colleague / referral", "GitHub", "Google", "Other"]
+  }
+}
