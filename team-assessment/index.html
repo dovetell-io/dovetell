@@ -282,28 +282,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 4
 .unique-link-box:hover{background:#EEF0FE}
 .unique-link-label{font-size:11px;color:var(--muted);text-align:center;margin-bottom:4px}
 
-/* ── RETURNING USER SCREEN ── */
-#screen-returning{background:linear-gradient(135deg,#F8F9FF 0%,#EEF0FE 100%);display:flex;align-items:center;justify-content:center;padding:60px 40px;min-height:calc(100vh - 65px)}
-.returning-inner{max-width:560px;width:100%;text-align:center}
-.returning-badge{display:inline-flex;align-items:center;gap:8px;background:var(--blurple);color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;padding:5px 14px;border-radius:20px;margin-bottom:24px}
-.returning-h1{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:12px;color:var(--near-black)}
-.returning-h1 em{font-style:normal;color:var(--blurple)}
-.returning-sub{font-size:15px;color:var(--muted);line-height:1.65;margin-bottom:32px;color:#6B7280}
-.last-score-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:24px;margin-bottom:28px;display:flex;align-items:center;gap:20px;text-align:left;box-shadow:0 2px 16px rgba(0,0,0,0.06)}
-.last-score-icon{width:56px;height:56px;border-radius:12px;background:var(--blurple-pale);border:1px solid var(--blurple-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.last-score-label{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;font-family:var(--mono)}
-.last-score-level{font-size:20px;font-weight:800;letter-spacing:-0.02em;color:var(--near-black);margin-bottom:2px}
-.last-score-detail{font-size:12px;color:var(--muted)}
-.returning-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
-.btn-retake{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--blurple);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;padding:14px 28px;border-radius:9px;border:none;cursor:pointer;transition:all 0.2s}
-.btn-retake:hover{background:var(--blurple-dark)}
-.btn-new-project{display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--near-black);font-family:var(--sans);font-size:13px;font-weight:600;padding:12px 24px;border-radius:9px;border:1.5px solid #E5E7EB;cursor:pointer;transition:all 0.2s;text-decoration:none}
-.btn-new-project:hover{border-color:var(--blurple);color:var(--blurple)}
-.returning-pid{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:8px}
-
-@media(max-width:680px){
-  #screen-returning{padding:40px 20px}
-}
 .email-results-bar{background:var(--blurple-pale);border:1px solid var(--blurple-light);border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
 .email-results-text{font-size:13px;color:var(--near-black);line-height:1.5}
 .email-results-text strong{display:block;font-weight:700;margin-bottom:2px}
@@ -358,42 +336,12 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
 <body>
 
 <nav>
-  <a class="wordmark" href="../">dove<span>tell</span></a>
+  <a class="wordmark" href="#">dove<span>tell</span></a>
   <div class="nav-status">
     <div class="status-dot"></div>
     <span id="nav-label">Assessment</span>
   </div>
 </nav>
-
-<!-- ══ SCREEN: RETURNING USER ══ -->
-<div class="screen" id="screen-returning">
-  <div class="returning-inner">
-    <div class="returning-badge">
-      &#8635; Returning visitor
-    </div>
-    <h1 class="returning-h1">Welcome back.</h1>
-    <p class="returning-sub" id="returning-sub">Retake the assessment to track how your team has matured since last time.</p>
-
-    <div class="last-score-card" id="last-score-card" style="display:none">
-      <div class="last-score-icon" id="last-score-icon">📊</div>
-      <div>
-        <div class="last-score-label">Last assessment</div>
-        <div class="last-score-level" id="last-score-level">—</div>
-        <div class="last-score-detail" id="last-score-detail">—</div>
-      </div>
-    </div>
-
-    <div class="returning-actions">
-      <button class="btn-retake" onclick="startAssessment()">
-        &#8635; Retake to track progress
-      </button>
-      <a class="btn-new-project" href="/team-assessment">
-        Start a new project instead →
-      </a>
-    </div>
-    <div class="returning-pid" id="returning-pid"></div>
-  </div>
-</div>
 
 <!-- ══ SCREEN: INTRO ══ -->
 <div class="screen active" id="screen-intro">
@@ -824,79 +772,13 @@ function prevSection() {
   }
 }
 
-// ── LOCALSTORAGE — save last run per pid ─────────────────────────────────────
-function saveRunToStorage(pid, level, score, maxScore) {
-  try {
-    const data = {
-      pid, level, score, maxScore,
-      takenAt: new Date().toISOString(),
-    };
-    localStorage.setItem(`dovetell_run_${pid}`, JSON.stringify(data));
-  } catch(e) { /* storage unavailable */ }
-}
-
-function getLastRun(pid) {
-  try {
-    const raw = localStorage.getItem(`dovetell_run_${pid}`);
-    return raw ? JSON.parse(raw) : null;
-  } catch(e) { return null; }
-}
-
-// ── RETURNING USER DETECTION — runs on page load ──────────────────────────────
-function checkReturningUser() {
-  const params = new URLSearchParams(window.location.search);
-  const pid = params.get('pid');
-  // Only trigger if pid exists AND looks like a real generated ID (8 alphanumeric chars)
-  if (!pid || !/^[a-z0-9]{6,12}$/.test(pid)) return;
-
-  const lastRun = getLastRun(pid);
-
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-returning').classList.add('active');
-  document.getElementById('nav-label').textContent = 'Welcome back';
-  document.getElementById('returning-pid').textContent = 'project: ' + pid;
-
-  if (lastRun) {
-    const card = document.getElementById('last-score-card');
-    card.style.display = 'flex';
-
-    const levelColors = {
-      'Scattered': '#DC2626',
-      'Structured': '#D97706',
-      'Coordinated': '#5865F2',
-      'Compounding': '#16A34A',
-    };
-
-    // Use text labels instead of emoji for cross-platform reliability
-    const levelIcons = {
-      'Scattered': '●',
-      'Structured': '●',
-      'Coordinated': '●',
-      'Compounding': '●',
-    };
-    const iconEl = document.getElementById('last-score-icon');
-    iconEl.textContent = '';
-    iconEl.style.background = (levelColors[lastRun.level] || '#5865F2') + '22';
-    iconEl.style.border = '1px solid ' + (levelColors[lastRun.level] || '#5865F2') + '44';
-    iconEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${levelColors[lastRun.level] || '#5865F2'}" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`;
-
-    document.getElementById('last-score-level').textContent = lastRun.level;
-    document.getElementById('last-score-level').style.color = levelColors[lastRun.level] || 'var(--near-black)';
-
-    const date = new Date(lastRun.takenAt);
-    const formatted = date.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
-    document.getElementById('last-score-detail').textContent =
-      lastRun.score + '/' + lastRun.maxScore + ' · Taken ' + formatted;
-
-    document.getElementById('returning-sub').textContent =
-      'Last time you scored ' + lastRun.score + '/' + lastRun.maxScore + ' — ' + lastRun.level + '. Retake to see how far you\'ve come.';
-  } else {
-    document.getElementById('returning-sub').textContent =
-      'We found your project link. Retake the assessment to start tracking your team\'s maturity over time.';
+// ── PID REDIRECT — if returning user, send to /assessments/ ──────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const pid = new URLSearchParams(window.location.search).get('pid');
+  if (pid && /^[a-z0-9]{6,12}$/.test(pid)) {
+    window.location.replace('/assessments/?pid=' + pid);
   }
-}
-
-window.addEventListener('DOMContentLoaded', checkReturningUser);
+});
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xrejbpbv';
 
 // Assessment version — bump when questions change
@@ -1009,6 +891,19 @@ async function submitGate() {
 
   document.getElementById('modal-form-content').style.display = 'none';
   document.getElementById('modal-success-content').style.display = 'block';
+
+  // Save run to localStorage for /assessments/ page
+  if (window._pid) {
+    try {
+      localStorage.setItem('dovetell_run_' + window._pid, JSON.stringify({
+        pid: window._pid,
+        level: getLevel(window._totalScore),
+        score: window._totalScore,
+        maxScore: window._maxScore,
+        takenAt: new Date().toISOString(),
+      }));
+    } catch(e) {}
+  }
 
   setTimeout(() => {
     document.getElementById('email-modal').classList.remove('active');
@@ -1300,11 +1195,6 @@ function renderResults(sectionScores, totalScore, maxScore) {
   window._nextLevel = nextLevel;
   window._gaps = gaps;
   window._sectionScores = sectionScores;
-
-  // Save to localStorage so returning user screen can show last score
-  if (window._pid) {
-    saveRunToStorage(window._pid, level, totalScore, maxScore);
-  }
 }
 
 function getAreaDesc(name, pct) {
