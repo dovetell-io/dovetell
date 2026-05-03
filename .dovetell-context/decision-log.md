@@ -15,15 +15,34 @@ Status: Active = still in effect · Superseded = replaced by a later decision ·
 
 ## Product & Strategy
 
-| Date | Decision | Rationale | Status |
-|---|---|---|---|
-| Apr 2026 | Prompt library before platform | Validate willingness to pay before building infrastructure | Active |
-| Apr 2026 | 2 free samples, not 0 or 5 | Enough to show quality; not enough to replace buying | Active |
-| Apr 2026 | Gumroad for product delivery | Zero infrastructure, immediate revenue, ~10% take rate | Active |
-| Apr 2026 | Gmail now, ConvertKit at 50+ subscribers | Zero overhead until there's a list worth managing | Active |
-| May 2026 | Assessment as primary GTM surface | Self-qualifying, shareable, captures pain before any conversation | Active |
-| May 2026 | $299 Setup Review as services wedge | High margin, no infrastructure, forces validation conversations | Active |
-| May 2026 | Manual email replies until 50+ completions | Personal founder reply converts better than automated template | Active |
+|ID| Date | Decision | Rationale | Status |
+|---|---|---|---|---|
+|| Apr 2026 | Prompt library before platform | Validate willingness to pay before building infrastructure | Active |
+|| Apr 2026 | 2 free samples, not 0 or 5 | Enough to show quality; not enough to replace buying | Active |
+|| Apr 2026 | Gumroad for product delivery | Zero infrastructure, immediate revenue, ~10% take rate | Active |
+|| Apr 2026 | Gmail now, ConvertKit at 50+ subscribers | Zero overhead until there's a list worth managing | Active |
+|| May 2026 | Assessment as primary GTM surface | Self-qualifying, shareable, captures pain before any conversation | Active |
+|| May 2026 | $299 Setup Review as services wedge | High margin, no infrastructure, forces validation conversations | Active |
+|| May 2026 | Manual email replies until 50+ completions | Personal founder reply converts better than automated template | Active |
+
+|decision-111c1ee8|May 2026|GUID pattern: 8-char nanoid, kebab-prefixed|All context items use short unique IDs. Format: [type]-[8char]. task-a1b2c3d4 · decision-d9e4f1b7. Human readable enough to copy, unique enough to reference. Enables cross-file linking between tasks.md, decisions.md, and future context files.|Active|
+|decision-77003434|May 2026|Session hash convention for chat titles|Each Claude session gets an 8-char sha256-derived hash. Embedded in chat title: “Title (2a2d3774)”. Used as source: field on Claude-generated tasks and decisions. Allows tracing any artifact to its originating conversation.|Active|
+|decision-135e8d7e|May 2026|tasks.md is flat append log|No section headers in tasks.md. UI handles grouping and sorting by priority. File grows as a chronological record. Newest tasks always at the bottom. Sections (Now/Next/Later) are a UI concern, not a file structure concern.|Active|
+|decision-96172edc|May 2026|Task queue air-gapped from product repo|tasks.md lives in dovetell-io/sandbox. tasks.html lives in jchromchak/tasks (GitHub Pages). Product repo dovetell-io/dovetell is untouched. Fine-grained PAT scoped to sandbox only — blast radius is one public markdown file.|Active|
+|decision-ee21f4d3|May 2026|tasks.html v1.0 feature set|Hide/show completed · expand task details · add task form with tag picker · decision ID field · session source field · GUID generation via crypto.getRandomValues · filter by priority and owner · flat append to tasks.md · localStorage token · 401 auto-clear.|Active|
+|decision-9f84d919|May 2026|Decision IDs backfill deferred to Claude Code|Existing decisions.md rows do not yet have GUIDs. Backfilling is a Claude Code task — read decisions.md, generate deterministic sha256 IDs for each row, write back. Schema: decision-[8char] as first column.|Deferred — Claude Code|
+|decision-64218e4b|May 2026|README.md updated with governance header|Covers: site structure, .dovetell-context/ file inventory, GUID and naming conventions table, task queue location and air gap pattern, architectural principle (renderer not owner), demo disclaimer, license.|Active|
+
+-----
+
+## This session’s decisions that also need GUIDs added retroactively
+
+The decisions written earlier today (AI independence, Cowork Dispatch,
+actions layer, etc.) also lack GUIDs. Full backfill is the Claude Code
+task referenced in decision-9f84d919.
+
+For now — this session hash is 2a2d3774. Any decision created in this
+session can be traced via that hash even before GUIDs are backfilled.
 
 ## Naming
 
@@ -36,15 +55,22 @@ Status: Active = still in effect · Superseded = replaced by a later decision ·
 
 ## Infrastructure & Hosting
 
-| Date | Decision | Rationale | Status |
-|---|---|---|---|
-| Apr 2026 | GitHub over GitLab | Developer community visibility, clean IP separation | Active |
-| Apr 2026 | Open core model | Free framework + samples public; paid library via Gumroad | Active |
-| May 2026 | GitHub Pages over Carrd | Free, version controlled, no character limits, clean URLs | Active |
-| May 2026 | Carrd cancelled | Replaced by GitHub Pages; no migration cost at zero subscribers | Active |
-| May 2026 | All accounts under dovetellio@gmail.com | Clean LLC transition, no personal account entanglement | Active |
-| May 2026 | Formspree Business plan | Submissions to product inbox, not personal email | Active |
-| May 2026 | Plausible for analytics | Privacy-first, no cookies, no personal data | Active |
+|ID| Date | Decision | Rationale | Status |
+|---|---|---|---|---|
+|| Apr 2026 | GitHub over GitLab | Developer community visibility, clean IP separation | Active |
+|| Apr 2026 | Open core model | Free framework + samples public; paid library via Gumroad | Active |
+|| May 2026 | GitHub Pages over Carrd | Free, version controlled, no character limits, clean URLs | Active |
+|| May 2026 | Carrd cancelled | Replaced by GitHub Pages; no migration cost at zero subscribers | Active |
+|| May 2026 | All accounts under dovetellio@gmail.com | Clean LLC transition, no personal account entanglement | Active |
+|| May 2026 | Formspree Business plan | Submissions to product inbox, not personal email | Active |
+|| May 2026 | Plausible for analytics | Privacy-first, no cookies, no personal data | Active |
+|decision-111c1ee8|May 2026|GUID pattern: 8-char nanoid, kebab-prefixed|All context items use short unique IDs. Format: [type]-[8char]. task-a1b2c3d4 · decision-d9e4f1b7. Human readable enough to copy, unique enough to reference. Enables cross-file linking between tasks.md, decisions.md, and future context files.|Active|
+|decision-77003434|May 2026|Session hash convention for chat titles|Each Claude session gets an 8-char sha256-derived hash. Embedded in chat title: “Title (2a2d3774)”. Used as source: field on Claude-generated tasks and decisions. Allows tracing any artifact to its originating conversation.|Active|
+|decision-135e8d7e|May 2026|tasks.md is flat append log|No section headers in tasks.md. UI handles grouping and sorting by priority. File grows as a chronological record. Newest tasks always at the bottom. Sections (Now/Next/Later) are a UI concern, not a file structure concern.|Active|
+|decision-96172edc|May 2026|Task queue air-gapped from product repo|tasks.md lives in dovetell-io/sandbox. tasks.html lives in jchromchak/tasks (GitHub Pages). Product repo dovetell-io/dovetell is untouched. Fine-grained PAT scoped to sandbox only — blast radius is one public markdown file.|Active|
+|decision-ee21f4d3|May 2026|tasks.html v1.0 feature set|Hide/show completed · expand task details · add task form with tag picker · decision ID field · session source field · GUID generation via crypto.getRandomValues · filter by priority and owner · flat append to tasks.md · localStorage token · 401 auto-clear.|Active|
+|decision-9f84d919|May 2026|Decision IDs backfill deferred to Claude Code|Existing decisions.md rows do not yet have GUIDs. Backfilling is a Claude Code task — read decisions.md, generate deterministic sha256 IDs for each row, write back. Schema: decision-[8char] as first column.|Deferred — Claude Code|
+|decision-64218e4b|May 2026|README.md updated with governance header|Covers: site structure, .dovetell-context/ file inventory, GUID and naming conventions table, task queue location and air gap pattern, architectural principle (renderer not owner), demo disclaimer, license.|Active|
 
 ## Assessment Architecture
 
