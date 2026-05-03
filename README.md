@@ -1,164 +1,123 @@
 # dovetell
 
-> A context orchestration framework for fast-moving teams building with AI.
+**Context orchestration for AI-assisted software teams.**
 
-**Tell it once. Let it travel.**
+> Tell it once. Let it travel.
 
----
-
-## The Problem
-
-Every team has a version of this.
-
-A developer asks the same domain question three sprints in a row. A data scientist builds the right answer to the wrong question because nobody told them what the metric actually means. A new team member spends their first two weeks reconstructing context that already existed — in someone's head.
-
-The work moves faster than the record of it.
-
-And every sprint, someone pays for it.
+dovetell is the governing layer that captures decisions, aligns intent,
+and keeps everyone from asking the same questions twice.
 
 ---
 
-## The Framework
+## What this repo is
 
-dovetell is a three-layer system for keeping what your team knows, what they're building, and what governs them — in sync.
+This is the public product site for dovetell — hosted on GitHub Pages
+at [dovetell.io](https://dovetell.io).
 
-### Layer 1 — Your Working Context
-Each team member works from a personal prompt set loaded into their AI tool of choice — Cursor, Claude Code, ChatGPT. These prompts shape how the tool understands the project: the domain language, the constraints, the standards being worked toward.
-
-### Layer 2 — The Team Prompt Repo
-A shared, version-controlled repo that everyone pulls from and contributes back to. Domain glossary. Decision logs. Governing doc references. When someone figures something out, it goes in the repo. The whole team gets the benefit — not just the person who figured it out.
-
-This is the heart of the framework.
-
-### Layer 3 — Governing Documentation. 
-The business processes, specs, and standards the team
-is supposed to be building toward. In most teams these
-exist but don't travel. The dovetell framework connects
-them to the day-to-day — so when work drifts from what
-the docs say, it surfaces during the sprint, not after.
-
-### The Loop
-
-Governing Docs (Layer 3)
-↓  referenced by
-Team Prompt Repo (Layer 2)
-↓  pulled down to
-Personal Prompt Instance (Layer 1)
-↓  influences
-The Work
-↑  feeds back into
-Team Prompt Repo (Layer 2)
-
-Each sprint the loop tightens. Context that used to livein one person's head starts living in the repo instead. The same questions stop getting asked.
+It is also dovetell running on itself. The `.dovetell-context/` folder
+contains the context files that govern how this product is built.
 
 ---
 
-## The Three Pillars
+## Site structure
 
-**Capture** — get it out of your head before it disappears
-
-**Align** — keep what's being built in sync with what
-governs it
-
-**Tell** — make knowledge available without being asked for it
-
----
-
-## What's in This Repo
-
-```
-dovetell/
-├── prompts/
-│   ├── pm/                 ← Product Manager prompts
-│   ├── developer/          ← Developer prompts
-│   ├── data-scientist/     ← Data Scientist prompts
-│   └── governance/         ← Cross-team prompts
-├── decisions/              ← ADRs (how we run dovetell
-│                             on dovetell)
-└── docs/
-├── positioning.md
-└── brand.md
-```
+| Path | Description |
+|------|-------------|
+| `index.html` | Homepage |
+| `framework/` | The dovetell framework diagram |
+| `why/` | "Why not just X?" positioning page |
+| `team-assessment/` | Team AI Maturity Assessment |
+| `assessments/` | Returning user dashboard |
+| `recommendations/` | Personalized offer page |
+| `privacy/` | Privacy policy |
+| `app-demo/` | Vision demo screens (not live product) |
+| `assets/` | Brand assets — logo, favicon, OG image |
 
 ---
 
-## Free Prompts
+## Context files (`.dovetell-context/`)
 
-Two prompts available free — no signup required.
+These files are the source of truth for how dovetell is built,
+positioned, and governed. They are picked up automatically by
+Claude Code when working in this repo.
 
-**Domain Glossary Builder** (PM)
-Capture the terms that cause the most confusion on your
-team, one at a time, before the next sprint starts.
-
-**Code-to-Doc Alignment Check** (Developer)
-Surface gaps between what you built and what was
-specified — before you open the PR.
-
-Browse them in the `/prompts` folder above.
-
----
-
-## Full Prompt Library
-
-The complete dovetell library has 20 prompts across
-four team personas — PM, Developer, Data Scientist,
-and Governance.
-
-**Starter Pack — $19**
-20 prompts, formatted for Claude, ChatGPT, Cursor,
-and GitHub Copilot. Markdown and plain text.
-
-**Team Kit — $49**
-Starter Pack plus a ready-to-fork repo scaffold,
-team onboarding guide, and governance prompts
-built for team-wide adoption.
-
-[Get the prompt library at dovetell.io →](https://dovetell.io)
+| File | Purpose |
+|------|---------|
+| `dovetell-seed.md` | Full product context — paste at start of any AI session |
+| `brand.md` | Colors, typography, assets, voice, demo personas |
+| `personas.md` | Fictional demo characters and canonical context data |
+| `roles.md` | Product role model and permission matrix |
+| `approval-workflow.md` | Workflow positioning and competitive analysis |
+| `actions-layer-spec.md` | Git-native task layer design spec |
+| `ai-independence-positioning.md` | AI-optional architecture and positioning |
+| `decisions.md` | All product and architecture decisions with rationale |
 
 ---
 
-## This Repo Is Dog Food
+## ID and naming conventions
 
-Every product decision behind dovetell is logged
-as an ADR in `/decisions`.
+**GUIDs:** All context items use 8-character nanoid prefixed identifiers.
 
-The framework page at dovetell.io was written using
-the dovetell framework itself — specifically the
-Decision Log Capture and Sprint Context Handoff prompts.
+| Type | Format | Example |
+|------|--------|---------|
+| Task | `task-[8char]` | `task-a1b2c3d4` |
+| Decision | `decision-[8char]` | `decision-d9e4f1b7` |
+| Session | `[8char]` hash | `2a2d3774` |
 
-You can read every decision we made and why.
-That's not a marketing claim. It's just the `/decisions`
-folder.
+**Session hashes:** Each Claude work session gets an 8-character hash
+derived from sha256(session-description). The hash is embedded in the
+chat title `(2a2d3774)` and used as the `source:` field on any tasks
+or decisions generated in that session. Allows tracing any artifact
+back to its originating conversation.
+
+**File naming:** kebab-case throughout.
+- Platform-required exact names: `favicon.png`, `apple-touch-icon.png`, `og.png`
+- dovetell assets: `dovetell-[descriptor].ext`
+- Demo assets: `demo-[descriptor].ext` in `app-demo/assets/`
+- Version suffixes (`-v2`) on prompts and drafts only — never on production files
 
 ---
 
-## Contributing
+## Task queue
 
-Found a gap? Built a prompt that works in your domain?
-Open an issue using the templates in `.github/`.
+Operational tasks are tracked in a separate repo to maintain an air gap
+from the product codebase.
 
-- **New Prompt** — propose an addition to the library
-- **Context Gap** — log a recurring question or
-  knowledge gap your team keeps hitting
+| Item | Location |
+|------|----------|
+| Task queue | `dovetell-io/sandbox/tasks.md` |
+| Task UI | `jchromchak/tasks` (GitHub Pages, private token) |
+
+tasks.md uses a flat append log schema — newest tasks at the bottom,
+UI handles grouping by priority. Each task carries an ID, priority,
+owner, source (session hash), and optional decision reference.
+
+---
+
+## Key architectural principle
+
+**dovetell is a renderer, not an owner.**
+
+Context lives in `.dovetell-context/` in this repo. dovetell reads,
+renders, and writes back to these files. No content is stored in
+dovetell's database. The team owns the data. Always.
+
+---
+
+## Demo and vision
+
+The `app-demo/` folder contains vision demos of the Phase 2 platform.
+These are static HTML mockups — not live product.
+
+All demo content uses fictional Datagate Systems personas. See
+`.dovetell-context/personas.md` for the canonical demo dataset.
 
 ---
 
 ## License
 
-Free prompts in this repo: CC BY 4.0 — use freely,
-credit dovetell.
-
-Paid library content: © 2026 dovetell. Not for
-redistribution.
+Site content: [CC0-1.0](LICENSE)
 
 ---
 
-## Links
-
-- Website: [dovetell.io](https://dovetell.io)
-- Early access: [dovetell.io/#join-early-access](https://dovetell.io/#join-early-access)
-- Email: [hello@dovetell.io](mailto:hello@dovetell.io)
-
----
-
-*Built by a PM who got tired of answering the same questions every sprint.*
+*dovetell · dovetell.io · May 2026*
