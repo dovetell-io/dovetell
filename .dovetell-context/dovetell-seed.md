@@ -1,6 +1,6 @@
 # dovetell — Product Seed
 
-Last updated: May 2, 2026 (end of session)
+Last updated: 2026-05-03 (session a3f7c291)
 
 Use this file to give an AI assistant full context on dovetell before
 starting a work session. Paste the full contents as your first message.
@@ -11,6 +11,9 @@ Companion files (paste alongside for specific work):
   personas.md          fictional demo characters, canonical context data
   roles.md             product role model, permission matrix
   approval-workflow.md workflow positioning, competitive analysis
+  business-rules.md    product behavior rules, bulk import classification, scope
+  risks.md             risk register — likelihood, impact, mitigation
+  opportunities.md     landscape file — not commitments, scope-checked
 
 -----
 
@@ -143,14 +146,51 @@ What dovetell never stores:
   Markdown file contents. Decisions. Definitions. Assumptions.
   Policies. Any content from .dovetell-context/.
 
+On authentication:
+  dovetell never holds repo credentials on behalf of users.
+  Each user authenticates with their own GitHub/GitLab OAuth (Phase 2).
+  Writes are committed as that user — attribution is structural, not cosmetic.
+  This is the BYOK principle applied to identity, not just keys.
+  The commit history is the audit trail. dovetell does not need to maintain one.
+
+Context files are created on first write — zero setup friction:
+  Context files do not need to exist before the UI loads. A 404 on
+  initial load is expected behavior for a new project. The file is
+  created automatically on the first commit. Point at a repo, start
+  adding context. Structure emerges from use.
+
+-----
+
+## Five context file types (as of 2026-05-03)
+
+  decisions.md      — commitments made or to be made. type:resolved|active
+  opportunities.md  — the landscape. Not commitments. Scope-checked.
+  risks.md          — risk register. Likelihood + impact + mitigation.
+  business-rules.md — product behavior rules. UI logic. Scope constraints.
+  tasks.md          — work queue. Flat append log. Priority · owner · source.
+
+All files: flat append log, kebab-case, same ID conventions.
+ID prefixes: decision- · opp- · risk- · rule- · task-
+
+The scope protection rule (rule-ff00c134):
+  Every feature request is tested: "Does this make team context more
+  accurate and more accessible, or does it make dovetell capable of
+  managing work?" If the latter → opportunities.md, not decisions.md.
+  "Protect the scope." — the constraint that keeps dovetell from
+  becoming ClickUp.
+
 -----
 
 ## Product phases
 
 Phase 1 — now
   Team AI Maturity Assessment (live, dovetell.io/team-assessment)
-  Prompt library (Gumroad, in progress)
-  Free checklist · $49 Starter Kit · $99 Pro Kit · $299 Setup Review
+  Prompt library (Gumroad)
+    Starter · $49 full · $29 founding — one file: team-context.md
+    Starter Plus · $99 full · $59 founding — team-context.md + maintenance-prompts.md
+    Setup Review · $299 — 60-min call + 24hr follow-up
+    Free sample — sample-team-context.md (stripped subset)
+  Founding member pricing: first 20 buyers or one week
   /why positioning page (live)
   App demo screens (unlinked, dovetell.io/app-demo/)
   Architecture Blueprint v0.1 (service blueprint, May 2026)
@@ -163,6 +203,7 @@ Phase 2 v1 — next
   Project profile onboarding (4-step intake → .dovetell-context/)
   Context base, unvetted queue, MCP integration, drift score
   Shareable links for single context items (owner-controlled, off by default)
+  GitHub OAuth BYOK authentication (Option A preferred)
 
 Phase 2 v2 — regulated industries
   Sequential approval workflows, named approvers, full audit trail
@@ -172,6 +213,30 @@ Phase 2 v2 — regulated industries
 Phase 3 — future
   Queryable decision traces at scale. Context graph.
   dovetell as MCP server in every AI-assisted workflow.
+
+-----
+
+## Gumroad products (updated 2026-05-03)
+
+| Product      | Full | Launch | What it is |
+|--------------|------|--------|------------|
+| Starter      | $49  | $29    | team-context.md — one file, fill it in, paste it |
+| Starter Plus | $99  | $59    | Starter + maintenance-prompts.md (4 prompts) |
+| Setup Review | $299 | —      | 60-min call + 24hr follow-up, we fill it in together |
+| Free sample  | $0   | —      | stripped team-context.md, links to buy |
+
+Pro Kit name reserved for a future tier with broader scope.
+Founding member pricing: first 20 buyers or one week, whichever comes first.
+
+Three purchase flows:
+  Flow 1: dovetell.io assessment → recommendations → Gumroad → buy
+  Flow 2: Gumroad direct → buy
+  Flow 3: Gumroad → assessment → Gumroad → buy
+
+Assessment link shown in listing but not promoted — less friction now.
+Listing leads with pain not assessment CTA.
+Personal email after every purchase — upsell path to $299 Setup Review.
+Optimize funnel after first 5 purchases, not before.
 
 -----
 
@@ -215,8 +280,7 @@ Proposed changes to vetted items do not overwrite truth. They enter
 the queue as a proposed change with diff view (old vs. proposed)
 until an Approver accepts, edits, rejects, or defers.
 
-The mechanic is a GitHub pull request.
-The language is plain English.
+The mechanic is a GitHub pull request. The language is plain English.
 
 | Git concept  | dovetell equivalent                          |
 |--------------|----------------------------------------------|
@@ -227,8 +291,8 @@ The language is plain English.
 | Diff view    | Old vs. proposed (in queue UI, item 2)       |
 | Audit log    | Vet history — who changed what, when         |
 
-Canonical attribution on accepted items: "accepted by Maya Rowe · 3d ago"
-Canonical "Currently" line on proposed changes: "✓ Vetted · Maya Rowe · 14d ago"
+Canonical attribution: "accepted by Maya Rowe · 3d ago"
+Canonical "Currently" line: "✓ Vetted · Maya Rowe · 14d ago"
 
 -----
 
@@ -242,48 +306,25 @@ Key principles:
   One item at a time — not a dashboard
   Two actions: "Looks right" or "Something's off"
   Flag panel opens inline with text input, routes to Approver
-  "Currently: ✓ Vetted · Maya Rowe · 14d ago" shown on proposed changes
   Progress bar + step pills across the top
   Done state shows confirmed / flagged / skipped summary
 
 Desktop layout (split):
-  Left 68% — review card + action buttons (the focus)
-  Right 32% — branch illustration panel (cream #F5F4EF, supporting)
-  Branch diagram is static — it explains the flow regardless of
-  which item is being reviewed. It answers "what is happening here?"
+  Left 68% — review card + action buttons
+  Right 32% — branch illustration panel (cream #F5F4EF)
 
-Mobile layout: single column, branch panel below card.
-
-Implemented files:
-  app-demo/review.html (rebuilt May 2, 2026 — desktop + mobile)
-  assets/branch-illustration.svg (inline in review.html and standalone)
-  assets/branch-illustration.png (2x PNG)
-
-AI-generated mockups produced (May 2, 2026):
-  Desktop Screen 1: simple new policy item with flag panel open
-  Desktop Screen 2: proposed change with red/green diff view
-  Mobile Screen 1 + 2: both states in iPhone frame composite
+Implemented: app-demo/review.html (rebuilt May 2, 2026)
 
 -----
 
 ## Sharing — phased approach
 
 Phase 1 (now): User owns data. dovetell liability ends at zip.
-Terms of use in every Gumroad purchase.
+  Terms of use in every Gumroad purchase.
 
 Phase 2 v1: Shareable read-only link for single context items.
-Owner-controlled, off by default. No account to view. Renders in
-plain English with metadata. Configurable expiry.
-
-Share card format:
-  [Item title]
-  [Plain English description]
-  Source       [filename]
-  Status       ✓ Vetted
-  Accepted by  Maya Rowe · Engineering Lead
-  Date         [date]
-  Project      Datagate Systems — Ops Analytics
-  Shared via dovetell · View expires [date]
+  Owner-controlled, off by default. No account to view.
+  Configurable expiry.
 
 Phase 2 v2: Sequential approval, audit trail, governance toggle.
 
@@ -291,60 +332,37 @@ Phase 2 v2: Sequential approval, audit trail, governance toggle.
 
 ## Competitive positioning
 
-Approval workflow 2x2 matrix (image generated May 2026):
+Approval workflow 2x2 matrix:
   X-axis: Technical → Accessible
   Y-axis: Informal → Structured
   dovetell: top-right (accessible + structured) — alone
   GitHub PR: top-left (structured, developer-only)
   Notion/Slack: bottom-right (accessible, no audit trail)
-  The gap: every tool is either too technical or too informal
 
-Market size (image generated May 2026):
-  TAM: $15–30B (AI governance, knowledge work, team intelligence)
-  SAM: $2–5B (AI-assisted software teams using Cursor, Claude Code)
-  SOM: $50–200M (teams seeking context governance, reachable 3 years)
-  Revenue multiples: $1M ARR → $8–15M · $5M → $40–75M · $20M → $160–300M
+Market size:
+  TAM: $15–30B · SAM: $2–5B · SOM: $50–200M
   SaaS developer tools trading 8–15x ARR, 2026
 
-Key pitch statement: "The maturity assessment and prompt library are
-not the product. They are the distribution channel to the platform."
+Key pitch: "The maturity assessment and prompt library are not the
+product. They are the distribution channel to the platform."
 
 -----
 
 ## Platform UI — key screens
-
-All demo content uses Datagate Systems personas. See personas.md.
 
 Project Profile (onboarding)
   4-step: team profile → repo connect → seed context → initialize
   Writes to .dovetell-context/. UI is a translator, not an editor.
 
 Context Console (single project)
-  Context Health 0–100 (Current / Drifting / Stale — formula TBD)
+  Context Health 0–100 (formula TBD, 72/100 is placeholder)
   Four quadrant cards: Decisions · Assumptions · Definitions · Policies
   Activity feed. Review Queue CTA.
 
 Multi-project view (app-demo/projects.html)
-  Table: health · status · queue count · last activity
-  Summary bar: projects / queue / stale / vetted / avg health
-
 Cross-project activity feed (app-demo/feed.html)
-  Timeline across all projects. Filter bar.
-  AUTO avatar for dovetell-generated events.
-  Right sidebar: week stats + review queue.
-
 Non-technical reviewer UI (app-demo/review.html)
-  Light theme. Split desktop layout (68/32).
-  Two states: simple new item + proposed change with diff.
-  Flag panel open by default on state 1.
-  "Currently: ✓ Vetted" line on proposed changes.
-  Interactive — click through to done state.
-
-Architecture Blueprint v0.1
-  Service blueprint (6 stages × 5 rows).
-  Connect → Import → Extract → Review ★ → Query ★ → Monitor.
-
-Context Health score: formula TBD. 72/100 is placeholder.
+Architecture Blueprint v0.1 — Connect → Import → Extract → Review → Query → Monitor
 
 -----
 
@@ -366,11 +384,8 @@ Maya Rowe = named approver on all vetted decisions
 Alex Kim = source of new unvetted items
 Sam Okafor = non-technical reviewer persona
 
-Secondary: Meridian Health (91/100 Current) · Volta Energy (38/100 Stale)
-Marco R. (MR, red-orange gradient) = Volta contributor
-
+Secondary: Meridian Health (91/100) · Volta Energy (38/100)
 Never use Boeing-adjacent terminology in public demo content.
-See personas.md for canonical Datagate seed context base.
 
 -----
 
@@ -391,7 +406,7 @@ from policies.md, confirmed by Maya Rowe. Queryable at build time.
 dovetell.io/                       homepage + waitlist (dark)
 dovetell.io/framework              framework diagram (dark)
 dovetell.io/why                    "Why not just X?" positioning (dark)
-dovetell.io/team-assessment        takes the assessment (light)
+dovetell.io/team-assessment        assessment (light)
 dovetell.io/assessments            returning user dashboard (light)
 dovetell.io/recommendations        personalized offer page (light)
 dovetell.io/privacy                privacy policy
@@ -411,111 +426,120 @@ Demo banner: 24px · cream #F5F4EF · blurple mono
 
 ## ID architecture
 
-uid   browser identity · once · localStorage
-pid   project ID · once · travels in URL
-aid   assessment run · fresh per submission
-vid   question set version · hardcoded v01
-Hierarchy: email → uid → pid → aid
+### Assessment IDs
+  uid   browser identity · once · localStorage
+  pid   project ID · once · travels in URL
+  aid   assessment run · fresh per submission
+  vid   question set version · hardcoded v01
+  Hierarchy: email → uid → pid → aid
+
+### Context and governance IDs (as of 2026-05-03)
+  task-[8char]       task IDs — generated by tasks.html
+  decision-[8char]   decision IDs — sha256 of decision slug [:8]
+  opp-[8char]        opportunity IDs — sha256 of opportunity slug [:8]
+  risk-[8char]       risk IDs — sha256 of risk slug [:8]
+  rule-[8char]       business rule IDs — sha256 of rule slug [:8]
+
+Source field convention:
+  john                  founder decision, no session reference
+  claude-[sessionhash]  Claude-generated in a specific session
+
+Migration convention — decision → opportunity:
+  Decision: status:closed · closure-statement:Migrated to opp-[id]
+  Opportunity: origin:decision-[id] — migrated [date]
+  Nothing deleted. Full audit trail in both directions.
 
 -----
 
 ## Tech stack
 
-Hosting     GitHub Pages    dovetell-io/dovetell
-Domain      Porkbun         dovetell.io
-Forms       Formspree       Assessment xrejbpbv · Waitlist xaqvneqn
-Analytics   Plausible       Privacy-first
-Products    Gumroad         ~10% + $0.50/sale
-Database    Postgres        Identity + state only. No content stored.
-Design      Figma           Logo vectorization pending
+Hosting     GitHub Pages       dovetell-io/dovetell
+Domain      Porkbun            dovetell.io (purchased 2026-04-29)
+Forms       Formspree Business Assessment xrejbpbv · Waitlist xaqvneqn
+Analytics   Plausible          Privacy-first, no cookies
+Products    Gumroad            ~10% + $0.50/sale
+Database    Postgres           Identity + state only. No content stored.
+Tracker     jchromchak/tasks   GitHub Pages · 5 pages · shared PAT
+Sandbox     dovetell-io/dovetell-sandbox  5 context files
+Assets      dovetell-io/dovetell-assets   Private repo
+Email       dovetellio@gmail.com          All accounts
 
 Future: Supabase + Resend + Railway
-Platform subdomain: app.dovetell.io (confirm .io vs .dev)
+Platform subdomain: app.dovetell.io
+
+### Authentication architecture (Phase 2 — unresolved)
+
+PAT token is the current POC pattern — one fine-grained token per
+person, stored in localStorage. Solo founder only. Not sustainable.
+
+Three options for Phase 2 v1:
+
+Option A — GitHub OAuth BYOK (preferred)
+  Each user authenticates with their own GitHub/GitLab OAuth.
+  Writes committed as that user — git blame is real attribution.
+  Consistent with renderer-not-owner and BYOK positioning.
+
+Option B — dovetell as commit proxy (viable, compromises trust)
+  dovetell holds one installation-level token per repo.
+  dovetell commits on behalf of users with attribution in message.
+  Simpler UX but partially contradicts renderer-not-owner. Avoid.
+
+Option C — read-only public, writes require auth (access model layer)
+  Viewers read without auth. Contributors and above authenticate.
+  Maps to four-role model. Combines with Option A as layered solution.
+
+Current: Deferred. Must resolve before Phase 2 v1 build.
+Preferred: Option A + Option C layered.
+See decision-63fb14f1 and children.
 
 -----
 
 ## AI independence — dovetell works without AI
 
-dovetell is designed for AI-assisted teams but is not dependent on AI.
-This is a deliberate architectural and positioning decision.
-
 Three modes of use:
 
 Mode 1 — Agentic / AI-native (north star)
-  Developer uses @dovetell in Cursor or Claude Code.
-  Context assembled at query time via MCP server.
-  Returns vetted answer with source and decision trace.
-  This is the demo, the vision, and Phase 3.
+  @dovetell in Cursor or Claude Code. MCP server. Phase 3.
 
 Mode 2 — AI-assisted / workflow
-  Team uses Claude, ChatGPT, or any LLM but not in an agentic
-  coding flow. They paste context from .dovetell-context/ into
-  chat sessions. dovetell structures what they paste and keeps it
-  current. The prompt library is the primary product for this tier.
+  Paste context from .dovetell-context/ into chat sessions.
+  Prompt library is the primary product for this tier.
 
 Mode 3 — Git-native / AI-optional
-  Team uses git but minimal or no AI tooling. dovetell still works.
-  The review workflow, vet history, decision trace, and shared context
-  base all run on markdown files in a repo. No AI required.
-  The diff view is just a diff. The queue is a review workflow.
-  This is documentation engagement through git — a real use case
-  for regulated industries that cannot yet adopt AI tooling.
+  Markdown workflow with clean UI. No AI required.
+  "Hardened from AI" is a trust signal for regulated industries.
+  This reframes the TAM — any team using git is a potential customer.
 
-Why this matters:
-  "Hardened from AI" is a trust signal for regulated industry buyers.
-  They are not being asked to trust an AI with their context.
-  They are being asked to use a structured markdown workflow with
-  a clean UI. AI is optional acceleration, not a dependency.
-  This reframes the TAM — any team using git is a potential customer,
-  not just teams using Cursor or Claude Code.
-
-Positioning implication:
-  Do not position dovetell as an AI tool. Position it as a context
-  governance layer that happens to make AI dramatically more useful.
-  The AI story is the ceiling. The git story is the floor.
-  The floor is much larger than the ceiling currently appears.
+Positioning: context governance layer that makes AI dramatically more
+useful. The AI story is the ceiling. The git story is the floor.
 
 -----
 
 ## File naming conventions
 
-Applied to all dovetell files going forward. Consistent across
-repo, assets, context files, and generated outputs.
+General: kebab-case throughout. No underscores. No camelCase.
 
-General rule: kebab-case throughout. No underscores. No camelCase.
+Platform-required exact names:
+  favicon.png · apple-touch-icon.png · og.png
 
-Platform-required exact names (do not prefix or modify):
-  favicon.png              browser tab, exact name required
-  apple-touch-icon.png     iOS home screen, exact name required
-  og.png                   OG default, exact name required
-                           (meta tag can point to any path, but
-                           og.png is the conventional default)
+dovetell-prefixed assets:
+  dovetell-wordmark.svg · dovetell-wordmark.png
 
-dovetell-prefixed assets (namespaced, kebab-case):
-  dovetell-wordmark.svg    the dual-tone SVG wordmark
-  dovetell-wordmark.png    PNG for non-SVG contexts
-  dovetell-og-[variant].png  if multiple OG images needed later
-                             e.g. dovetell-og-assessment.png
+App-demo assets (demo-prefixed, in app-demo/assets/):
+  demo-branch-flow.svg
 
-App-demo specific assets (stored in app-demo/assets/, demo-prefixed):
-  demo-branch-flow.svg     the context change request illustration
-  demo-[descriptor].ext    any future demo-specific graphics
-
-Context and documentation files (.dovetell-context/, no prefix):
+Context files (.dovetell-context/, no prefix):
   brand.md · personas.md · roles.md · decisions.md
-  approval-workflow.md
-  dovetell-seed.md         exception — prefixed because this file
-                           travels outside the repo
+  approval-workflow.md · business-rules.md · risks.md · opportunities.md
 
-Prompt and reference documents (descriptive kebab-case):
-  competitive-positioning-prompt.md
-  market-size-pitch-prompt.md
-  desktop-reviewer-prompt-v2.md
+dovetell-assets repo conventions:
+  Zips: [product]-v[version].zip
+  Content files: kebab-case, no version suffix on production
+  Free samples: free-samples/sample-[descriptor].md
+  Internal: _internal/[descriptor].md
+  Setup review: setup-review/[descriptor].md
 
-Site pages (folder/index.html pattern, kebab-case folders):
-  why/index.html · team-assessment/index.html
-  app-demo/projects.html · app-demo/feed.html · app-demo/review.html
-
+Site pages: folder/index.html pattern, kebab-case folders.
 Version suffixes: -v2, -v3 on prompts and drafts only.
 Production files never carry version suffixes.
 
@@ -529,106 +553,38 @@ Primary demo: Datagate Systems (Ops Analytics)
 Secondary demos: Meridian Health · Volta Energy
 No personal/confidential content in public repo
 .dovetell-context/ = dovetell running on itself
-Personal context: jchromchak/dovetell/personal/ (private)
 GitHub over GitLab for developer community visibility
 Formspree notifies founder only — no automated user email
 Manual reply until 50+ completions
 
 -----
 
-## Git-native actions layer (Phase 2 feature, in design)
+## Git-native actions layer (Phase 2, in design)
 
-The natural extension of the context change request model.
-When a decision is accepted, it may generate a linked action.
-Actions live in .dovetell-context/actions.md. dovetell renders
-them in the Viewer UI, you check them off, dovetell writes the
-checkbox state back to the file and commits. The task list lives
-in the repo like everything else.
+Actions live in .dovetell-context/actions.md. Linked to source
+context items. dovetell renders them, user checks off, dovetell
+writes back and commits. Audit trail is git blame.
 
-Markdown schema:
-
-  ## Actions
-
-  - [ ] Update data pipeline retention config
-    source: decisions.md#data-retention-180-days
-    owner: @alex-kim
-    due: 2026-05-16
-    status: open
-
-  - [x] Notify team of new access policy
-    source: policies.md#data-access-read-only
-    owner: @jane-park
-    completed: 2026-05-03
-
-How it works:
-  dovetell reads actions.md on page load
-  Viewer checks off a task → dovetell writes - [x] back → commits
-  Audit trail is git blame on a markdown file — free, automatic
-  Actions link to their source context item — traceability is structural
-
-Scope constraint (critical):
-  Actions must be linked to a source context item (decisions.md,
-  policies.md, etc.). Generic task lists are out of scope.
-  "Linked to a decision" is what keeps this focused and prevents
-  dovetell from becoming another Jira.
-
-Permission model (open question):
-  Can a Viewer check off a task, or only Owner/Contributor?
-  Needs decision before building.
-
-Conflict resolution (open question):
-  Two people checking off tasks simultaneously = git conflict.
-  Strategy needed: queue/lock pattern or optimistic merge
-  with last-write-wins on checkbox state.
-
-Why this matters for positioning:
-  dovetell currently captures what was decided.
-  This extends it to capture what was done about it.
-  Decision → action → completion → audit trail.
-  For regulated industries that is a compliance requirement,
-  not a nice-to-have.
-
+Scope constraint: actions must link to a source context item.
+No generic task lists. "Linked to a decision" keeps this focused.
 Status: in design. Do not build before Phase 2 v1 ships.
-
-Logo assets (file naming):
-  dovetell-mark-blurple-transparent.png  blurple dove, no bg (nav on light)
-  dovetell-mark-white-transparent.png    white dove, no bg (nav on dark)
-  dovetell-mark-blurple-square.png       white dove on blurple (favicon)
-  dovetell-mark-dark-square.png          white dove on near-black (dark mode)
-  dovetell-mark-light-square.png         blurple dove on white (light surfaces)
 
 -----
 
 ## Oversell and promise audit
 
-Known gaps between what is said and what is built.
-Review before every peer testing conversation.
-
-Live on site right now:
+Live gaps:
   Assessment confirmation copy says "check your inbox" — broken promise
-  Homepage score ranges still on 36-point scale — credibility issue
-  /why claim "the only workflow built for both" — aspirational, acceptable
-  for a positioning page, revisit when platform ships
+  /why claim "the only workflow built for both" — aspirational, revisit
 
-App-demo — requires verbal framing before sharing:
-  Demo banner is 24px, easy to miss on mobile
-  Never share app-demo URLs without saying "this is a vision demo"
-  Queue, drift score, MCP response cards, multi-project console —
-  none of it exists yet. The demo shows where it's going, not where it is.
-
-Decisions deferred that could be asked about in peer testing:
-  Context Health formula — if asked "how is 72/100 calculated"
-  there is no answer yet. Placeholder only.
-  "Something's off" mechanic — soft signal vs queue item, unresolved
-  Sequential approval (regulated industries) — mentioned in pitch,
-  no spec exists beyond the name
+App-demo requires verbal framing before sharing:
+  Never share without saying "this is a vision demo"
+  Queue, drift score, MCP response cards — none exist yet
 
 Safe ground — fully decided, consistent, defensible:
   Repo as source of truth · BYOK · four roles · renderer not owner
-  Phased sharing (Phase 1 ToU / Phase 2 v1 link / Phase 2 v2 regulated)
-  Markdown as medium · portability as feature
-  dovetell works without AI (git-native floor)
-  Cowork Dispatch is execution · dovetell is context
+  Phased sharing · Markdown as medium · portability as feature
+  dovetell works without AI · Cowork Dispatch is execution
 
 -----
 
@@ -638,6 +594,12 @@ Product
   Prompt library before platform (validate WTP first)
   Assessment as primary GTM surface
   $299 Setup Review as services wedge
+  Starter Kit = one file (team-context.md)
+  Starter Plus = superset: team-context.md + maintenance-prompts.md
+  Pro Kit name reserved for future tier
+  Founding member pricing: Starter $29 / Starter Plus $59
+  Assessment link shown not promoted in listing — less friction now
+  Personal email after every purchase — upsell path to Setup Review
   Project profile as primary onboarding interface
   /why as positioning page (composability, not comparison)
   app-demo/ unlinked — shared directly in peer testing
@@ -648,30 +610,29 @@ Product
   Git-native actions layer — in design, deferred to Phase 2 v1
   Actions must link to source context item — no generic task lists
   dovetell never becomes a task manager — constraint is intentional
-  actions.md conflict resolution: Option A (optimistic merge)
   Cowork Dispatch is execution · dovetell is context — complementary
-  Cowork Dispatch + dovetell MCP = Phase 3 integration (not built)
-  tasks.html PAT: fine-grained, scoped to one public repo, personal machine only
   app-demo screens always require verbal framing before sharing
-  /why positioning claim is aspirational — acceptable pre-platform
-  GUID pattern: 8-char nanoid, kebab-prefixed (task-a1b2c3d4, decision-d9e4f1b7)
+  GUID pattern: 8-char nanoid or sha256, kebab-prefixed
   Session hash convention: 8-char sha256 slug, embedded in chat title
-  tasks.md is flat append log — UI handles grouping, not markdown structure
-  tasks.html v1.0 shipped: hide/show completed, expand details, add task form,
-    tag picker, decision ref, session source, GUID generation, filter by priority/owner
+  decisions.md is flat bullet append log — no headers, no tables
+  tasks.md is flat bullet append log — no section headers
+  opportunities.md is landscape file — not commitments
+  risks.md is risk register — likelihood + impact + mitigation
+  business-rules.md is product behavior rules
+  Protect the scope — context governance not work management (rule-ff00c134)
+  New object types require explicit scope decision before building
+  Migration decision→opportunity requires full audit trail both directions
 
 Naming
   lowercase dovetell always
-  dovemind = leading name change candidate — deferred
+  dovemind = leading name change candidate — deferred (peer validation)
 
 Infrastructure
   Repo as source of truth — dovetell never owns context data
   Dark/light theme split by page type
   Demo banner convention on all app-demo pages
-  app.dovetell.io as platform subdomain (confirm .io vs .dev)
-  assets/ folder for standalone SVG/PNG files
-  app-demo/assets/ for demo-specific assets
-  Full logo asset set generated May 2, 2026 — five variants
+  app.dovetell.io as platform subdomain
+  Auth: Option A (GitHub OAuth BYOK) preferred — deferred to Phase 2
 
 Sharing
   Phase 1: ToU in zip, user owns sharing
@@ -680,25 +641,30 @@ Sharing
 
 Deferred
   Context Health scoring formula (define before building)
-  dovetell-data.json wired to HTML (Claude Code session)
-  Shared CSS refactor (Claude Code session)
+  Shared CSS/JS refactor (Claude Code session, after tracker stable)
   LLC ($500 Gumroad trigger)
   ConvertKit (50+ subscribers)
   Name change (48hr sit + peer validation)
-  Non-technical action language — confirm: "Looks right / Something's off"
   Viewer flag behavior — soft signal vs. queue item
   Sequential approval (Phase 2 v2)
-  Guest/public share links (Phase 2 v1)
-  Desktop reviewer HTML build (split layout with inline branch SVG)
-  Actions layer permission model — can Viewer check off tasks?
-  Actions layer conflict resolution — concurrent checkbox writes
+  Authentication architecture (Option A preferred, before Phase 2 build)
+  Onboarding open questions (4 items — empty seed, re-accessible, multi-project, configurable)
+  Pro Kit scope — future tier, not current
+  Gumroad listing copy optimization (after first 5 purchases)
+  Pro Kit repo access — issues, PRs, living prompts (after validation)
+  AI Daily Brief infinite backlog episode — find and log as opportunity
 
 -----
 
 ## Task tracker and session governance
 
-Task queue: dovetell-io/sandbox/tasks.md
-Task UI: jchromchak/tasks/tasks.html (GitHub Pages, localStorage token)
+Sandbox: dovetell-io/dovetell-sandbox
+  tasks.md · decisions.md · opportunities.md · risks.md · business-rules.md
+
+Tracker UI: jchromchak/tasks (GitHub Pages)
+  tasks/ · decisions/ · opportunities/ · rules/ · risks/
+  Five pages. Shared PAT in localStorage. Tab bar nav.
+  Bulk import with reconcile / review / skip classification.
 
 tasks.md schema (flat append log — newest at bottom):
   - [ ] Task title
@@ -708,52 +674,19 @@ tasks.md schema (flat append log — newest at bottom):
     due:YYYY-MM-DD
     owner:john|claude
     source:claude-[session-hash]
-    decision:decision-[8char-nanoid]
+    decision:decision-[8char]
     notes:free text
     completed:YYYY-MM-DDTHH:MM TZ
 
-GUID convention:
-  task-[8char]       task IDs — generated by tasks.html on add
-  decision-[8char]   decision IDs — to be added to decisions.md
-  All IDs: lowercase nanoid, kebab-prefixed, 8 chars
-
 Session hash convention:
-  Each Claude session gets an 8-char sha256-derived hash.
-  Format: sha256(session-description)[:8]
-  Embedded in chat title: "Title of chat (2a2d3774)"
-  Used as source on Claude-generated tasks: source:claude-2a2d3774
-  Allows tracing any task or decision back to the originating conversation.
-
-This session: 2a2d3774
-  Chat title should end with (2a2d3774)
-  All Claude tasks from today carry source:claude-2a2d3774
+  sha256(session-description)[:8]
+  Embedded in chat title: "Title (xxxxxxxx)"
+  Used as source field on all Claude-generated artifacts.
 
 At the start of each new session:
-  Generate a new session hash and add to seed under "Current session"
-  Rename the chat to include the hash in parentheses
-  Pre-fill session hash in CONFIG.sessionId in tasks.html
-
------
-
-## Peer testing — Monday
-
-Three people. One question each.
-
-UX Lead — cold reaction to app-demo/review.html
-  "Pretend you're an ops lead who just got a link to review two
-  context updates. Walk me through what you'd do and where you'd
-  hesitate." Don't explain it first.
-
-Former PdM Mentor — positioning and business model
-  "If you were a PM at a 10-person SaaS team using Cursor daily,
-  would you pay $49 for the starter kit? What would make you pay $299?"
-
-Small Business Owner / PE — the big picture
-  "Where does this become a real business and where does it stay a
-  tool? What's the unlock?"
-
-Rule for all three: send the link before you explain anything.
-The cold reaction is the data. Take notes during, not after.
+  Generate a new session hash
+  Rename chat to include hash in parentheses
+  Update CONFIG.sessionId in tracker pages
 
 -----
 
@@ -767,44 +700,3 @@ context base. The loop closes:
 
 build the thing → use the thing to build the thing →
 the thing documents itself
-
-----
-
-## Infrastructure & Hosting → Tech stack section
-
-### Authentication architecture (Phase 2 — unresolved)
-
-PAT token is the current POC pattern — one fine-grained token per person,
-scoped to one repo, stored in localStorage. Sustainable for solo founder only.
-
-Three options identified for Phase 2 v1:
-
-Option A — GitHub OAuth BYOK (preferred)
-Each user authenticates with their own GitHub/GitLab OAuth at onboarding.
-dovetell holds a scoped token per user session.
-Writes are committed as that user — git blame is real attribution.
-Architecturally consistent with renderer-not-owner and BYOK positioning.
-Complexity: OAuth flow implementation, token refresh handling.
-
-Option B — dovetell as commit proxy (viable, compromises trust)
-dovetell holds one installation-level GitHub App token per connected repo.
-Users authenticate to dovetell only (email/SSO), not to GitHub directly.
-dovetell commits on their behalf with attribution in commit message.
-Simpler UX. But dovetell holds credentials — partially contradicts
-the renderer-not-owner trust statement. Avoid if possible.
-
-Option C — read-only public, writes require auth (access model layer)
-Viewers can read without any auth (public repo, dovetell renders it).
-Contributors and above must authenticate.
-Maps cleanly to the four-role model.
-Likely combines with Option A as the layered solution, not a standalone choice.
-
-Current decision: Deferred. Must resolve before Phase 2 v1 build.
-Preferred direction: Option A + Option C layered.
-Decision IDs: decision-63fb14f1 (parent) · decision-de38eb25 (A) · decision-af0397fa (B) · decision-1ca0b223 (C)
-
-Key active decisions → Infrastructure section
-
-Auth architecture deferred — Option A (GitHub OAuth BYOK) preferred, Option C
-as access model layer. PAT is POC only. Decide before Phase 2 v1 build.
-See decision-63fb14f1 and children.
