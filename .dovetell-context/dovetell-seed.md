@@ -767,3 +767,44 @@ context base. The loop closes:
 
 build the thing → use the thing to build the thing →
 the thing documents itself
+
+----
+
+## Infrastructure & Hosting → Tech stack section
+
+### Authentication architecture (Phase 2 — unresolved)
+
+PAT token is the current POC pattern — one fine-grained token per person,
+scoped to one repo, stored in localStorage. Sustainable for solo founder only.
+
+Three options identified for Phase 2 v1:
+
+Option A — GitHub OAuth BYOK (preferred)
+Each user authenticates with their own GitHub/GitLab OAuth at onboarding.
+dovetell holds a scoped token per user session.
+Writes are committed as that user — git blame is real attribution.
+Architecturally consistent with renderer-not-owner and BYOK positioning.
+Complexity: OAuth flow implementation, token refresh handling.
+
+Option B — dovetell as commit proxy (viable, compromises trust)
+dovetell holds one installation-level GitHub App token per connected repo.
+Users authenticate to dovetell only (email/SSO), not to GitHub directly.
+dovetell commits on their behalf with attribution in commit message.
+Simpler UX. But dovetell holds credentials — partially contradicts
+the renderer-not-owner trust statement. Avoid if possible.
+
+Option C — read-only public, writes require auth (access model layer)
+Viewers can read without any auth (public repo, dovetell renders it).
+Contributors and above must authenticate.
+Maps cleanly to the four-role model.
+Likely combines with Option A as the layered solution, not a standalone choice.
+
+Current decision: Deferred. Must resolve before Phase 2 v1 build.
+Preferred direction: Option A + Option C layered.
+Decision IDs: decision-63fb14f1 (parent) · decision-de38eb25 (A) · decision-af0397fa (B) · decision-1ca0b223 (C)
+
+Key active decisions → Infrastructure section
+
+Auth architecture deferred — Option A (GitHub OAuth BYOK) preferred, Option C
+as access model layer. PAT is POC only. Decide before Phase 2 v1 build.
+See decision-63fb14f1 and children.
