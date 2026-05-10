@@ -1,45 +1,46 @@
-# dovetell/context
+# dovetell public context pointer
 
-This folder is dovetell running on itself.
+This repo is the public GitHub repo `dovetell-io/dovetell`.
 
-Every architectural decision, assumption, definition, and design choice
-made while building dovetell is captured here. This is the context base
-for the dovetell product — the thing the product itself is designed to do
-for other teams.
+Its job is public website implementation, public docs, public assets, and
+customer-facing pages. It should not store private GTM strategy, launch
+planning, pricing experiments, internal roadmap notes, or not-yet-routed
+product context.
 
-## Structure
+## Connected Context
 
-```
-.dovetell-context/
-├── README.md                        ← this file
-├── technical-source-of-truth.md     ← canonical technical spec
-├── seed/
-│   └── convo-seed-v1.6.md           ← conversation seed for AI sessions
-├── decisions/
-│   ├── ADR-001-id-architecture.md
-│   ├── ADR-002-scoring-model.md
-│   ├── ADR-003-page-separation.md
-│   └── ADR-004-privacy-language.md
-├── assumptions.md                   ← active assumptions (may be wrong)
-└── definitions.md                   ← shared vocabulary
-```
+Primary connected context repo:
 
-## How to use this
+- `dovetell-gtm`
 
-When starting a new Claude or ChatGPT session about dovetell:
-1. Open `seed/convo-seed-v1.6.md`
-2. Paste the full contents as your first message
-3. Claude will have full context — no re-explaining required
+Use `dovetell-gtm` for private GTM, positioning, validation, pricing, launch
+thinking, and product operating context that informs this public repo.
 
-When making a significant architectural decision:
-1. Add an ADR to `decisions/`
-2. Update `technical-source-of-truth.md` if it affects the spec
-3. Update the seed doc if it affects how future sessions should understand the product
+Reusable framework/package material should route to `dovetell-assets` only after
+privacy, usefulness, and claims review.
 
-## The meta point
+App product requirements should route to `dovetell-ctx-app-private`.
 
-dovetell's north star is "I want to be asked fewer questions."
-This folder exists so you never have to re-explain dovetell to an AI
-tool. It is the product eating its own dog food.
+## Transfer Quarantine
 
-Last updated: May 1, 2026
+Temporary private or not-yet-routed material belongs in `transfer/`.
+
+Rules:
+
+- `transfer/` is ignored by git.
+- Do not publish, link, import, build from, or expose transfer contents.
+- Exclude `transfer/` from initial context/template assessments.
+- Migrate durable private material to the proper private repo when that repo
+  exists.
+
+## Migration Note
+
+The previous tracked `.dovetell-context/` files were migrated to:
+
+- `dovetell-gtm/migration/dovetell-public-context-20260510/`
+
+Treat that archive as historical source material, not current public repo truth.
+
+---
+
+*Public implementation here. Private context elsewhere.*

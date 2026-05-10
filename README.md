@@ -14,8 +14,8 @@ and keeps everyone from asking the same questions twice.
 This is the public product site for dovetell — hosted on GitHub Pages
 at [dovetell.io](https://dovetell.io).
 
-It is also dovetell running on itself. The `.dovetell-context/` folder
-contains the context files that govern how this product is built.
+It is connected to private Dovetell context, but this public repo should only
+contain public implementation files and a thin context pointer.
 
 ---
 
@@ -35,22 +35,14 @@ contains the context files that govern how this product is built.
 
 ---
 
-## Context files (`.dovetell-context/`)
+## Context pointer (`.dovetell-context/`)
 
-These files are the source of truth for how dovetell is built,
-positioned, and governed. They are picked up automatically by
-Claude Code when working in this repo.
+This repo keeps only a thin context pointer. Private GTM, launch, pricing,
+product strategy, and internal operating context belong in the connected
+context repo, `dovetell-gtm`, or in a future private Dovetell context repo.
 
-| File | Purpose |
-|------|---------|
-| `dovetell-seed.md` | Full product context — paste at start of any AI session |
-| `brand.md` | Colors, typography, assets, voice, demo personas |
-| `personas.md` | Fictional demo characters and canonical context data |
-| `roles.md` | Product role model and permission matrix |
-| `approval-workflow.md` | Workflow positioning and competitive analysis |
-| `actions-layer-spec.md` | Git-native task layer design spec |
-| `ai-independence-positioning.md` | AI-optional architecture and positioning |
-| `decisions.md` | All product and architecture decisions with rationale |
+Temporary private or not-yet-routed material belongs in `transfer/`, which is
+ignored by git and excluded from initial context assessment.
 
 ---
 
@@ -98,9 +90,10 @@ owner, source (session hash), and optional decision reference.
 
 **dovetell is a renderer, not an owner.**
 
-Context lives in `.dovetell-context/` in this repo. dovetell reads,
-renders, and writes back to these files. No content is stored in
-dovetell's database. The team owns the data. Always.
+Context lives in repo-owned markdown. For this public site, the implementation
+lives here and private operating context lives in the connected context repo.
+No content should be stored in Dovetell's database. The team owns the data.
+Always.
 
 ---
 
@@ -109,8 +102,7 @@ dovetell's database. The team owns the data. Always.
 The `app-demo/` folder contains vision demos of the Phase 2 platform.
 These are static HTML mockups — not live product.
 
-All demo content uses fictional Datagate Systems personas. See
-`.dovetell-context/personas.md` for the canonical demo dataset.
+All demo content should use fictional data only.
 
 ---
 
