@@ -21,6 +21,9 @@ privacy, usefulness, and claims review.
 
 App product requirements should route to `dovetell-ctx-app-private`.
 
+Private Dovetell product/build/strategy context and boundary hardening should
+route to `dovetell-private`.
+
 ## Transfer Quarantine
 
 Temporary private or not-yet-routed material belongs in `transfer/`.
@@ -30,8 +33,8 @@ Rules:
 - `transfer/` is ignored by git.
 - Do not publish, link, import, build from, or expose transfer contents.
 - Exclude `transfer/` from initial context/template assessments.
-- Migrate durable private material to the proper private repo when that repo
-  exists.
+- Migrate durable private material to `dovetell-private` or the proper owner
+  repo after review.
 
 ## Migration Note
 
