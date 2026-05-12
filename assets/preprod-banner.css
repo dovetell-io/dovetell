@@ -1,0 +1,34 @@
+#preprod-env-label{
+  position:fixed;
+  top:76px;
+  right:16px;
+  z-index:10000;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border:1px solid rgba(217,119,6,0.35);
+  border-radius:8px;
+  background:rgba(255,247,237,0.96);
+  color:#9A3412;
+  box-shadow:0 8px 24px rgba(0,0,0,0.14);
+  font:700 11px/1.2 'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  pointer-events:none;
+}
+#preprod-env-label::before{
+  content:'';
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:#F97316;
+  box-shadow:0 0 0 4px rgba(249,115,22,0.16);
+}
+@media(max-width:720px){
+  #preprod-env-label{
+    top:auto;
+    right:12px;
+    bottom:12px;
+  }
+}
