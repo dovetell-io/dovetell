@@ -199,9 +199,9 @@ const levelDescriptions = {
 };
 
 function getLevel(score) {
-  if (score <= 22) return 'Scattered';
-  if (score <= 54) return 'Structured';
-  if (score <= 72) return 'Coordinated';
+  if (score <= 24) return 'Scattered';
+  if (score <= 60) return 'Structured';
+  if (score <= 80) return 'Coordinated';
   return 'Compounding';
 }
 
@@ -265,10 +265,10 @@ function buildHistory(history) {
 
 function buildLevelScale(currentLevel) {
   const levels = [
-    {name:'Scattered',   range:'0–22'},
-    {name:'Structured',  range:'23–54'},
-    {name:'Coordinated', range:'55–72'},
-    {name:'Compounding', range:'73–90'},
+    {name:'Scattered',   range:'0–24'},
+    {name:'Structured',  range:'25–60'},
+    {name:'Coordinated', range:'61–80'},
+    {name:'Compounding', range:'81–100'},
   ];
   return `<div class="level-scale">
     ${levels.map(l => `

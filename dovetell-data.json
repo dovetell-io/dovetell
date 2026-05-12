@@ -4,7 +4,9 @@
     "title": "Team AI Maturity Assessment",
     "subtitle": "Answer a few questions to see how reusable, reviewable, and team-aware your AI-assisted work really is.",
     "estimatedMinutes": 5,
-    "maxScore": 90,
+    "maxScore": 100,
+    "rawMaxScore": 144,
+    "scoringModel": "evidence-weighted-normalized",
     "questionsPerSection": 5,
     "maxPerQuestion": 3
   },
@@ -16,7 +18,7 @@
       {
         "name": "Scattered",
         "min": 0,
-        "max": 22,
+        "max": 24,
         "description": "Ad hoc AI use with isolated results. Context exists in individual chats and drives. No shared standards or reuse.",
         "tip": "Focus on creating one shared context file and saving your best prompts.",
         "color": "#DC2626",
@@ -24,8 +26,8 @@
       },
       {
         "name": "Structured",
-        "min": 23,
-        "max": 54,
+        "min": 25,
+        "max": 60,
         "description": "Some repeatable practices but inconsistent. Context is scattered, handoffs vary, and reusable knowledge lives in individual tools.",
         "tip": "Keep building foundations â standardize your handoffs and prompt library.",
         "color": "#D97706",
@@ -33,8 +35,8 @@
       },
       {
         "name": "Coordinated",
-        "min": 55,
-        "max": 72,
+        "min": 61,
+        "max": 80,
         "description": "Aligned team practices and shared context. Your team works together with AI â the foundation is solid.",
         "tip": "You're ready for governance and continuous improvement loops.",
         "color": "#5865F2",
@@ -42,8 +44,8 @@
       },
       {
         "name": "Compounding",
-        "min": 73,
-        "max": 90,
+        "min": 81,
+        "max": 100,
         "description": "Systematic advantage and continuous lift. AI is deeply embedded in your team's operating rhythm.",
         "tip": "You're at the frontier â share what's working with peers.",
         "color": "#16A34A",
@@ -205,7 +207,7 @@
           "Team-ready best practices",
           "Print or use as a digital template"
         ],
-        "cta": "Download free",
+        "cta": "Free sample coming soon",
         "url": null
       },
       {
@@ -220,8 +222,8 @@
           "Handoff template",
           "Governance checklist"
         ],
-        "cta": "Buy on Gumroad",
-        "url": "https://gumroad.com"
+        "cta": "Paid kit coming soon",
+        "url": null
       },
       {
         "badge": "Best Value",
@@ -235,8 +237,8 @@
           "Facilitation script",
           "Sample repo structure"
         ],
-        "cta": "Buy on Gumroad",
-        "url": "https://gumroad.com"
+        "cta": "Paid kit coming soon",
+        "url": null
       }
     ],
     "setupReview": {

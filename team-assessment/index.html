@@ -373,7 +373,7 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
         Personalized results
       </div>
     </div>
-    <button class="btn-primary" onclick="startAssessment()">
+    <button class="btn-primary" id="start-assessment-btn" onclick="startAssessment()" disabled>
       Start assessment
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </button>
@@ -411,11 +411,11 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
         <div class="trust-box">
           <div class="trust-item">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            <div><strong>Results are personalized</strong>We use your responses to generate benchmarks and recommendations that fit your team.</div>
+            <div><strong>Results come from your answers</strong>We use your responses to calculate a score, surface gaps, and recommend next steps.</div>
           </div>
           <div class="trust-item">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <div><strong>Responses are private</strong>Your answers are not shared or sold. Used only to generate your report.</div>
+            <div><strong>Responses are not public</strong>Your answers are sent to dovetell through our form provider and are not sold or shared with advertisers.</div>
           </div>
         </div>
       </div>
@@ -444,7 +444,7 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
         <div class="modal-logo-text">dove<span>tell</span></div>
       </div>
       <div class="modal-h2">Your results are ready.</div>
-      <div class="modal-sub">Enter your email to get your personalized score, gap analysis, and unique tracking link.</div>
+      <div class="modal-sub">Enter your email to save your score, gap analysis, and unique tracking link.</div>
 
       <!-- Email — required -->
       <div class="modal-input-wrap">
@@ -583,90 +583,78 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
 
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────────────
-const sections = [
-  {
-    id:'shared-context',
-    name:'Shared Context',
-    icon:'👥',
-    desc:'How well your team creates and maintains shared AI context.',
-    questions:[
-      'Our team has a shared document or file that describes our mission, goals, and key decisions that AI should always know.',
-      'When a new team member joins, they can quickly get AI tools up to speed on our work without asking everyone for context.',
-      'Team members use consistent background context when prompting AI tools—not whatever they happen to remember.',
-      'When our team\'s priorities or decisions change, we update our shared AI context files to reflect this.',
-      'Our AI context doesn\'t live in one person\'s head—it\'s documented and findable by anyone on the team.',
-    ]
-  },
-  {
-    id:'prompt-reuse',
-    name:'Prompt Reuse',
-    icon:'💬',
-    desc:'How well your team creates, stores, and reuses high-value prompts.',
-    questions:[
-      'We have a shared prompt library where team members store and find reusable prompts.',
-      'High-value prompts are not trapped in private chats—they\'re saved somewhere the team can access.',
-      'Our prompts include expected inputs, outputs, and instructions so others can use them without guessing.',
-      'Prompts are grouped by workflow, role, or task so people can find what they need quickly.',
-      'We regularly reuse and adapt prompts that worked well instead of starting from scratch.',
-    ]
-  },
-  {
-    id:'team-handoffs',
-    name:'Team Handoffs',
-    icon:'🔄',
-    desc:'How well context is preserved when work moves between people.',
-    questions:[
-      'When work moves from one team member to another, there\'s a standard format for summarizing AI context and decisions.',
-      'Handoff notes include what was tried, what worked, and what the AI needs to know to continue the work.',
-      'People don\'t have to re-explain the same background context every time they start a new conversation with AI.',
-      'Our handoff process captures key decisions and assumptions, not just task status.',
-      'When a project is paused and restarted, the team can quickly reload context without losing progress.',
-    ]
-  },
-  {
-    id:'knowledge-capture',
-    name:'Knowledge Capture',
-    icon:'📋',
-    desc:'How consistently your team records decisions and domain knowledge.',
-    questions:[
-      'Valuable insights and decisions from AI-assisted work are captured somewhere durable—not just in chat history.',
-      'When the AI produces something exceptional, we document what prompt or approach led to that result.',
-      'Domain-specific knowledge (definitions, constraints, policies) is written down and accessible to AI tools.',
-      'We have a way to capture and tag decisions so they can be referenced later without asking the person who made them.',
-      'Knowledge doesn\'t disappear when someone leaves the team or goes on leave.',
-    ]
-  },
-  {
-    id:'review-governance',
-    name:'Review & Governance',
-    icon:'🛡️',
-    desc:'How your team reviews AI outputs and maintains standards.',
-    questions:[
-      'We have a clear process for reviewing AI-generated outputs before they become official or are acted upon.',
-      'There is someone or a role responsible for maintaining the quality of our AI context and prompts.',
-      'We track when context files or prompts were last updated and flag ones that may be stale.',
-      'Our team has shared standards for what makes a good prompt or AI output in our specific context.',
-      'When AI produces something wrong or misleading, we have a way to capture that feedback and improve.',
-    ]
-  },
-  {
-    id:'workflow-integration',
-    name:'Workflow Integration',
-    icon:'⚡',
-    desc:'How deeply AI is integrated into your team\'s daily workflows.',
-    questions:[
-      'AI tools are consistently used across the team—not just by a few enthusiasts.',
-      'Our AI usage is integrated into regular workflows rather than used ad hoc when someone remembers.',
-      'We have standard places in our process where AI context is checked or updated (e.g., sprint start, handoffs).',
-      'Team members feel confident using AI tools because they know the context is reliable and up to date.',
-      'Our AI workflows have improved over time as we\'ve learned what works and what doesn\'t.',
-    ]
-  }
-];
-
-const labels = ['Not true','Somewhat true','Mostly true','Very true'];
+const ASSESSMENT_CONFIG_URL = './assessment-config.json';
+let assessmentConfig = null;
+let sections = [];
+let labels = [];
 let currentSection = 0;
 let answers = {}; // {sectionIdx: [scores]}
+
+function questionText(question) {
+  return typeof question === 'string' ? question : question.text;
+}
+
+function questionWeight(question) {
+  return typeof question === 'object' && question.weight ? question.weight : 1;
+}
+
+function maxAnswerScore() {
+  return Math.max(...assessmentConfig.answerScale.map(opt => opt.score));
+}
+
+function sectionMaxScore(section) {
+  return section.questions.reduce((sum, q) => sum + maxAnswerScore() * questionWeight(q), 0);
+}
+
+function assessmentMaxScore() {
+  return sections.reduce((sum, section) => sum + sectionMaxScore(section), 0);
+}
+
+function displayMaxScore() {
+  return assessmentConfig.scoring.displayMaxScore || assessmentMaxScore();
+}
+
+function answerOptions() {
+  return [...assessmentConfig.answerScale].sort((a, b) => a.score - b.score);
+}
+
+function normalizeScore(rawScore, rawMaxScore) {
+  if (assessmentConfig.scoring.normalization === 'percentage-rounded') {
+    return Math.round((rawScore / rawMaxScore) * displayMaxScore());
+  }
+  return rawScore;
+}
+
+async function loadAssessmentConfig() {
+  const res = await fetch(ASSESSMENT_CONFIG_URL, {cache: 'no-store'});
+  if (!res.ok) throw new Error('Unable to load assessment config');
+  assessmentConfig = await res.json();
+  sections = assessmentConfig.sections;
+  labels = assessmentConfig.answerScale.map(opt => opt.label);
+  window._vid = assessmentConfig.version;
+  window._assessmentRevisionId = assessmentConfig.revisionId;
+}
+
+async function initAssessment() {
+  const params = new URLSearchParams(window.location.search);
+  const pid = params.get('pid');
+  const retake = params.get('retake');
+  if (pid && /^[a-z0-9]{6,12}$/.test(pid) && retake !== '1') {
+    window.location.replace('/assessments/?pid=' + pid);
+    return;
+  }
+
+  try {
+    await loadAssessmentConfig();
+    const startBtn = document.getElementById('start-assessment-btn');
+    startBtn.disabled = false;
+  } catch(e) {
+    document.querySelector('.intro-sub').textContent =
+      'The assessment could not load. Please refresh and try again.';
+    document.getElementById('nav-label').textContent = 'Assessment unavailable';
+    console.error(e);
+  }
+}
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 function showScreen(id) {
@@ -719,19 +707,20 @@ function renderSection() {
     <div class="section-icon">${sec.icon}</div>
     <div>
       <div class="section-title">${sec.name}</div>
-      <div class="section-sub">${sec.desc}</div>
+      <div class="section-sub">${sec.description}</div>
     </div>
   </div>`;
 
   sec.questions.forEach((q,qi) => {
     html += `<div class="question-block">
-      <div class="question-text">${qi+1}. ${q}</div>
+      <div class="question-text">${qi+1}. ${questionText(q)}</div>
       <div class="question-options">`;
-    [0,1,2,3].forEach(score => {
+    answerOptions().forEach(option => {
+      const score = option.score;
       const sel = saved[qi] === score ? 'selected' : '';
       html += `<div class="q-option ${sel}" onclick="selectAnswer(${qi},${score},this)">
         <span class="opt-score">${score}</span>
-        <span class="opt-label">${labels[score]}</span>
+        <span class="opt-label">${option.label}</span>
       </div>`;
     });
     html += `</div></div>`;
@@ -790,16 +779,7 @@ function prevSection() {
   }
 }
 
-// ── PID REDIRECT — if returning user, send to /assessments/ ──────────────────
-// Exception: if retake=1 in URL, skip redirect and go straight to assessment
-window.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const pid = params.get('pid');
-  const retake = params.get('retake');
-  if (pid && /^[a-z0-9]{6,12}$/.test(pid) && retake !== '1') {
-    window.location.replace('/assessments/?pid=' + pid);
-  }
-});
+window.addEventListener('DOMContentLoaded', initAssessment);
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xrejbpbv';
 
 // ── ID ARCHITECTURE ───────────────────────────────────────────────────────────
@@ -824,9 +804,12 @@ const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xrejbpbv';
 // URL: dovetell.io/team-assessment?pid=8f3c2a1b
 // On submit generates: aid (fresh), reads vid (hardcoded), reads/creates uid
 
-const VID = 'v01'; // bump to v02 when questions change
-
 function generateShortId() {
+  if (window.crypto?.getRandomValues) {
+    const bytes = new Uint8Array(8);
+    window.crypto.getRandomValues(bytes);
+    return Array.from(bytes, b => b.toString(36).padStart(2, '0')).join('').slice(0, 10);
+  }
   return Math.random().toString(36).substring(2, 10);
 }
 
@@ -894,20 +877,26 @@ function finishAssessment() {
   sections.forEach((sec, i) => {
     const ans = answers[i] || [];
     let total = 0;
-    sec.questions.forEach((q, qi) => { total += ans[qi] !== undefined ? ans[qi] : 0; });
+    sec.questions.forEach((q, qi) => {
+      total += ans[qi] !== undefined ? ans[qi] * questionWeight(q) : 0;
+    });
     sectionScores.push(total);
   });
   window._sectionScores = sectionScores;
-  const totalScore = sectionScores.reduce((a,b) => a+b, 0);
-  const maxScore = sections.length * sections[0].questions.length * 3;
+  const rawTotalScore = sectionScores.reduce((a,b) => a+b, 0);
+  const rawMaxScore = assessmentMaxScore();
+  const totalScore = normalizeScore(rawTotalScore, rawMaxScore);
+  const maxScore = displayMaxScore();
   window._totalScore = totalScore;
   window._maxScore = maxScore;
+  window._rawTotalScore = rawTotalScore;
+  window._rawMaxScore = rawMaxScore;
 
   // Establish all four IDs
   window._uid = getOrCreateUid();   // permanent per browser
   window._pid = getOrCreatePid();   // per project, from URL or new
   window._aid = generateAid();      // fresh per submission
-  window._vid = VID;                // hardcoded version
+  window._vid = assessmentConfig.version;
   window._uniqueLink = generateUniqueLink(window._pid);
 
   document.getElementById('email-modal').classList.add('active');
@@ -959,12 +948,15 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
   const demo = getDemographics();
 
   const areaDetails = sections.map((sec, i) =>
-    `${sec.name}: ${sectionScores[i]}/${sec.questions.length * 3}`
+    `${sec.name}: ${sectionScores[i]}/${sectionMaxScore(sec)}`
   ).join(' | ');
 
   const rawAnswers = sections.map((sec, i) => {
     const ans = window._rawAnswers?.[i] || [];
-    const arr = sec.questions.map((q, qi) => ans[qi] !== undefined ? ans[qi] : null);
+    const arr = sec.questions.map((q, qi) => {
+      const score = ans[qi] !== undefined ? ans[qi] : null;
+      return `${q.id || 'q' + (qi+1)}=${score}`;
+    });
     return `${sec.name}: [${arr.join(',')}]`;
   }).join(' | ');
 
@@ -987,6 +979,7 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
         pid:  window._pid,   // projectId — per project
         aid:  window._aid,   // assessmentId — per run
         vid:  window._vid,   // versionId — question set version
+        revision_id: window._assessmentRevisionId,
         unique_link: window._uniqueLink,
         trigger,
         taken_at: new Date().toISOString(),
@@ -994,6 +987,7 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
         // Results
         level,
         total_score: `${totalScore}/${maxScore}`,
+        raw_score: `${window._rawTotalScore}/${window._rawMaxScore}`,
         section_breakdown: areaDetails,
         raw_answers: rawAnswers,
         skipped_questions: skipped.length > 0 ? skipped.join(', ') : 'none',
@@ -1019,11 +1013,14 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
       const runData = {
         aid: window._aid,
         vid: window._vid,
+        revisionId: window._assessmentRevisionId,
         pid: window._pid,
         uid: window._uid,
         level,
         score: totalScore,
         maxScore,
+        rawScore: window._rawTotalScore,
+        rawMaxScore: window._rawMaxScore,
         projectName: demo.project_name || '',
         takenAt: new Date().toISOString(),
       };
@@ -1047,10 +1044,10 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
 }
 
 function getLevel(score) {
-  if (score <= 22) return 'Scattered';
-  if (score <= 54) return 'Structured';
-  if (score <= 72) return 'Coordinated';
-  return 'Compounding';
+  const level = assessmentConfig.scoring.levels.find(l =>
+    score >= l.min && score <= l.max
+  );
+  return level ? level.name : assessmentConfig.scoring.levels[0].name;
 }
 
 async function emailMyResults() {
@@ -1089,25 +1086,18 @@ async function sendInlineEmail() {
 
 // ── RESULTS RENDERER ──────────────────────────────────────────────────────────
 function renderResults(sectionScores, totalScore, maxScore) {
-  let level, levelDesc, nextLevel, color, tip;
-  if (totalScore <= 12) {
-    level = 'Scattered'; levelDesc = 'Ad hoc AI use with isolated results. Context exists in individual chats and drives. No shared standards or reuse.';
-    nextLevel = 'Structured'; color = '#DC2626'; tip = 'Focus on creating one shared context file and saving your best prompts.';
-  } else if (totalScore <= 24) {
-    level = 'Structured'; levelDesc = 'Some repeatable practices but inconsistent. Context is scattered, handoffs vary, and reusable knowledge lives in individual tools.';
-    nextLevel = 'Coordinated'; color = '#D97706'; tip = 'Keep building foundations — standardize your handoffs and prompt library.';
-  } else if (totalScore <= 30) {
-    level = 'Coordinated'; levelDesc = 'Aligned team practices and shared context. Your team works together with AI — the foundation is solid.';
-    nextLevel = 'Compounding'; color = '#16A34A'; tip = 'You\'re ready for governance and continuous improvement loops.';
-  } else {
-    level = 'Compounding'; levelDesc = 'Systematic advantage and continuous lift. AI is deeply embedded in your team\'s operating rhythm.';
-    nextLevel = null; color = '#5865F2'; tip = 'You\'re at the frontier — share what\'s working with peers.';
-  }
+  const level = getLevel(totalScore);
+  const levelMeta = assessmentConfig.scoring.levels.find(l => l.name === level);
+  const levelDesc = levelMeta.description;
+  const nextLevel = levelMeta.nextLevel;
+  const color = levelMeta.color;
+  const tip = levelMeta.tip;
 
   const areaDetails = sections.map((sec, i) => ({
     name: sec.name, icon: sec.icon, score: sectionScores[i],
-    max: sec.questions.length * 3,
-    pct: Math.round((sectionScores[i] / (sec.questions.length * 3)) * 100)
+    max: sectionMaxScore(sec),
+    pct: Math.round((sectionScores[i] / sectionMaxScore(sec)) * 100),
+    areaDescriptions: sec.areaDescriptions
   }));
   const sorted = [...areaDetails].sort((a,b) => a.score - b.score);
   const gaps = sorted.slice(0,3);
@@ -1162,14 +1152,12 @@ function renderResults(sectionScores, totalScore, maxScore) {
   </div>
 
   <div class="level-scale">
-    ${['Scattered','Structured','Coordinated','Compounding'].map((l,i) => {
-      const ranges = ['0–22','23–54','55–72','73–90'];
-      const descs = ['Ad hoc use,\nisolated results','Some repeatable\npractices','Aligned practices,\nshared context','Systematic\nadvantage'];
-      const isCurrent = l === level;
+    ${assessmentConfig.scoring.levels.map(l => {
+      const isCurrent = l.name === level;
       return `<div class="level-item ${isCurrent ? 'current' : ''}">
-        <div class="level-name">${l}</div>
-        <div class="level-range">${ranges[i]}</div>
-        <div class="level-desc-small">${descs[i]}</div>
+        <div class="level-name">${l.name}</div>
+        <div class="level-range">${l.min}–${l.max}</div>
+        <div class="level-desc-small">${l.scaleDescription}</div>
       </div>`;
     }).join('')}
   </div>
@@ -1185,7 +1173,7 @@ function renderResults(sectionScores, totalScore, maxScore) {
           <span class="breakdown-score">${a.score}/${a.max}</span>
           <div class="breakdown-bar"><div class="breakdown-bar-fill" style="width:${a.pct}%"></div></div>
         </div>
-        <div class="breakdown-desc">${getAreaDesc(a.name, a.pct)}</div>
+        <div class="breakdown-desc">${getAreaDesc(a.areaDescriptions, a.pct)}</div>
       </div>`).join('')}
   </div>
 
@@ -1231,7 +1219,7 @@ function renderResults(sectionScores, totalScore, maxScore) {
   <div class="cta-banner">
     <div class="cta-text">
       <h3>Turn your score into action</h3>
-      <p>Get a personalized checklist and curated resources to help your team reach ${nextLevel || 'the next level'}—faster.</p>
+      <p>Get a recommended checklist and resources to help your team reach ${nextLevel || 'the next level'}—faster.</p>
     </div>
     <div class="cta-buttons-row">
       <button class="btn-white" onclick="showOffer()">
@@ -1256,51 +1244,34 @@ function renderResults(sectionScores, totalScore, maxScore) {
   window._sectionScores = sectionScores;
 }
 
-function getAreaDesc(name, pct) {
-  const descs = {
-    'Shared Context': pct >= 80 ? 'Strong shared context foundation.' : pct >= 60 ? 'Context exists but coverage is uneven.' : 'Context lives in individual silos.',
-    'Prompt Reuse': pct >= 80 ? 'Good prompt reuse culture.' : pct >= 60 ? 'Some reuse happening, not systematic.' : 'Prompts trapped in private chats.',
-    'Team Handoffs': pct >= 80 ? 'Handoffs preserve context well.' : pct >= 60 ? 'Handoffs happen but format varies.' : 'Context is lost between handoffs.',
-    'Knowledge Capture': pct >= 80 ? 'Knowledge is captured systematically.' : pct >= 60 ? 'Some capture, not consistent.' : 'Insights disappear after sessions.',
-    'Review & Governance': pct >= 80 ? 'Solid review process in place.' : pct >= 60 ? 'Some governance, ownership unclear.' : 'Outputs go unreviewed and stale.',
-    'Workflow Integration': pct >= 80 ? 'AI is deeply embedded in workflows.' : pct >= 60 ? 'AI used in key workflows, unevenly.' : 'AI use is ad hoc and individual.',
-  };
-  return descs[name] || 'See recommendations below.';
+function getAreaDesc(areaDescriptions, pct) {
+  if (pct >= 80) return areaDescriptions.high;
+  if (pct >= 60) return areaDescriptions.medium;
+  return areaDescriptions.low;
 }
 
 function getNextSteps(level, gaps) {
-  const steps = {
-    'Scattered': [
-      {title:'Create one shared team context file', desc:'Capture your mission, goals, audience, and key decisions your team\'s AI should always know.'},
-      {title:'Save your 3 best prompts in a shared location', desc:'Pick prompts that have worked well and document them so others can use and improve them.'},
-      {title:'Standardize one AI handoff template', desc:'Pick a simple, repeatable format so nothing gets lost between steps.'},
-    ],
-    'Structured': [
-      {title:'Formalize your prompt library with categories', desc:'Group prompts by workflow or role so anyone can find what they need without asking.'},
-      {title:'Add a review step for AI-generated outputs', desc:'Designate someone to spot-check and approve AI work before it becomes official.'},
-      {title:`Close your biggest gap: ${gaps[0]?.name}`, desc:`This area scored lowest — focus here for the fastest improvement.`},
-    ],
-    'Coordinated': [
-      {title:'Build a staleness monitor for your context files', desc:'Flag files that haven\'t been updated in 30+ days so your context stays current.'},
-      {title:'Create a governance checklist for AI workflows', desc:'Document what good looks like so standards are maintained as the team grows.'},
-      {title:'Set up a continuous improvement loop', desc:'Schedule a monthly review of what\'s working and what prompts need updating.'},
-    ],
-    'Compounding': [
-      {title:'Document your system for others to replicate', desc:'Your AI operating system is a competitive advantage — codify it so it scales.'},
-      {title:'Mentor a peer team through their assessment', desc:'Teaching what works reinforces your own practices and builds your reputation.'},
-      {title:'Explore context graph architecture', desc:'At this maturity level, queryable decision traces at scale become your next frontier.'},
-    ],
-  };
-  return steps[level] || steps['Structured'];
+  const gapName = gaps[0]?.name || 'your lowest-scoring area';
+  const steps = assessmentConfig.nextSteps[level] || assessmentConfig.nextSteps.Structured;
+  return steps.map(step => ({
+    title: step.title.replace('{{gapName}}', gapName),
+    desc: step.description.replace('{{gapName}}', gapName)
+  }));
 }
 
 function showOffer() {
   // Redirect to standalone recommendations page with all context as URL params
+  const demo = getDemographics();
   const params = new URLSearchParams({
     level:     window._level     || 'Structured',
     next:      window._nextLevel || '',
     score:     window._score     || 0,
-    max:       window._maxScore  || 90,
+    max:       window._maxScore  || displayMaxScore(),
+    rev:       window._assessmentRevisionId || '',
+    role:      demo.role || '',
+    team_size: demo.team_size || '',
+    ai_tool:   demo.ai_tool || '',
+    gap:       window._gaps?.[0]?.name || '',
     pid:       window._pid       || '',
     uid:       window._uid       || '',
     aid:       window._aid       || '',

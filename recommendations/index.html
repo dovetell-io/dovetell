@@ -122,30 +122,85 @@ footer{border-top:1px solid var(--border);padding:20px 0;display:flex;justify-co
 </div>
 
 <script>
-const nextStepsByLevel = {
-  'Scattered': [
-    {title:'Create one shared team context file', desc:'Capture your mission, goals, audience, and key decisions your team\'s AI should always know.'},
-    {title:'Save your 3 best prompts in a shared location', desc:'Pick prompts that have worked well and document them so others can use and improve them.'},
-    {title:'Standardize one AI handoff template', desc:'Pick a simple, repeatable format so nothing gets lost between steps.'},
-  ],
-  'Structured': [
-    {title:'Formalize your prompt library with categories', desc:'Group prompts by workflow or role so anyone can find what they need without asking.'},
-    {title:'Add a review step for AI-generated outputs', desc:'Designate someone to spot-check and approve AI work before it becomes official.'},
-    {title:'Close your biggest context gap', desc:'Pick the capability area that scored lowest and focus your next sprint there.'},
-  ],
-  'Coordinated': [
-    {title:'Build a staleness monitor for your context files', desc:'Flag files that haven\'t been updated in 30+ days so your context stays current.'},
-    {title:'Create a governance checklist for AI workflows', desc:'Document what good looks like so standards are maintained as the team grows.'},
-    {title:'Set up a continuous improvement loop', desc:'Schedule a monthly review of what\'s working and what prompts need updating.'},
-  ],
-  'Compounding': [
-    {title:'Document your system for others to replicate', desc:'Your AI operating system is a competitive advantage — codify it so it scales.'},
-    {title:'Mentor a peer team through their assessment', desc:'Teaching what works reinforces your own practices and builds your reputation.'},
-    {title:'Explore context graph architecture', desc:'At this maturity level, queryable decision traces at scale become your next frontier.'},
-  ],
+const ASSESSMENT_CONFIG_URL = '../team-assessment/assessment-config.json';
+const FALLBACK_CONFIG = {
+  revisionId: 'fallback',
+  nextSteps: {
+    Structured: [
+      {title:'Formalize your prompt library with categories', description:'Group prompts by workflow or role so anyone can find what they need without asking.'},
+      {title:'Add a review step for AI-generated outputs', description:'Designate someone to spot-check and approve AI work before it becomes official.'},
+      {title:'Close your biggest context gap', description:'Pick the capability area that scored lowest and focus your next sprint there.'},
+    ],
+  },
+  freeSampleRecommendations: {
+    default: {
+      name: 'Minimal Repo Context Starter',
+      description: 'A small starter folder for getting repo-owned context into place without adding process weight.',
+      includes: ['Core setup checklist','Minimal manifest','Session handoff template','Active task queue starter'],
+      bestFor: 'Solo developers, founders, and teams that want agents to stop starting cold.',
+      href: 'https://docs.dovetell.io/templates/free-samples',
+    },
+  },
 };
 
-window.addEventListener('DOMContentLoaded', () => {
+async function loadAssessmentConfig() {
+  try {
+    const res = await fetch(ASSESSMENT_CONFIG_URL, {cache: 'no-store'});
+    if (!res.ok) throw new Error(`Config load failed: ${res.status}`);
+    return await res.json();
+  } catch (error) {
+    console.warn('Using fallback recommendations config', error);
+    return FALLBACK_CONFIG;
+  }
+}
+
+function pickFreeSample(config, role, teamSize, aiTool) {
+  const samples = config.freeSampleRecommendations || FALLBACK_CONFIG.freeSampleRecommendations;
+  const normalizedRole = (role || '').toLowerCase();
+  const normalizedTeamSize = (teamSize || '').toLowerCase();
+  const normalizedTool = (aiTool || '').toLowerCase();
+
+  if (normalizedTool.includes('multiple')) {
+    return samples['migration-cleanup'] || samples.default;
+  }
+
+  if (normalizedTeamSize.includes('2') || normalizedTeamSize.includes('6') ||
+      normalizedTeamSize.includes('16') || normalizedTeamSize.includes('50')) {
+    return samples['small-team'] || samples.default;
+  }
+
+  if (normalizedRole.includes('product') || normalizedRole.includes('engineering lead')) {
+    return samples['small-team'] || samples.default;
+  }
+
+  return samples.default;
+}
+
+function applyStepTemplate(value, fallbackGapName) {
+  return (value || '').replace('{{gapName}}', fallbackGapName);
+}
+
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  })[char]);
+}
+
+function safeHref(value, fallback) {
+  try {
+    const url = new URL(value || fallback, window.location.href);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : fallback;
+  } catch(e) {
+    return fallback;
+  }
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  const config = await loadAssessmentConfig();
   const p = new URLSearchParams(window.location.search);
   const level     = p.get('level') || 'Structured';
   const nextLevel = p.get('next') || null;
@@ -156,36 +211,45 @@ window.addEventListener('DOMContentLoaded', () => {
   const pid       = p.get('pid') || '';
   const uid       = p.get('uid') || '';
   const aid       = p.get('aid') || '';
+  const role      = p.get('role') || '';
+  const teamSize  = p.get('team_size') || '';
+  const aiTool    = p.get('ai_tool') || '';
+  const gapName   = p.get('gap') || 'your lowest-scoring area';
 
+  const nextStepsByLevel = config.nextSteps || FALLBACK_CONFIG.nextSteps;
   const steps = nextStepsByLevel[level] || nextStepsByLevel['Structured'];
+  const freeSample = pickFreeSample(config, role, teamSize, aiTool);
+  const profileText = [role, teamSize, aiTool].filter(Boolean).join(' · ');
+  const freeSampleHref = safeHref(freeSample.href, 'https://docs.dovetell.io/templates/free-samples');
 
   document.getElementById('page-content').innerHTML = `
     <div class="rec-hero">
       <div class="eyebrow">★ Recommended for your team</div>
       <h1>${isTopLevel
         ? 'You\'re at <em>the frontier.</em> Here\'s what\'s next.'
-        : 'Here\'s how to move from <em>' + level + '</em> to <em>' + nextLevel + '</em>.'
+        : 'Here\'s how to move from <em>' + esc(level) + '</em> to <em>' + esc(nextLevel) + '</em>.'
       }</h1>
-      <p>Based on your maturity score of ${score}/${maxScore}, we've handpicked resources to help your team ${isTopLevel ? 'maintain your advantage and share what\'s working' : 'build shared context, streamline collaboration, and scale AI with confidence'}.</p>
+      <p>Based on your maturity score of ${score}/${maxScore}, these are the first resources to consider as your team ${isTopLevel ? 'maintains its advantage and shares what is working' : 'builds shared context, streamlines collaboration, and scales AI with confidence'}.</p>
+      ${profileText ? `<p style="font-size:12px;margin-top:10px;color:var(--muted)">Profile signal: ${esc(profileText)}</p>` : ''}
     </div>
 
     ${isTopLevel ? `
     <div class="journey-bar">
       <div class="journey-stop current">
         <div class="journey-icon">${score}</div>
-        ${level}
+        ${esc(level)}
       </div>
       <div class="journey-arrow">★ Top level</div>
     </div>` : `
     <div class="journey-bar">
       <div class="journey-stop current">
         <div class="journey-icon">${score}</div>
-        ${level}
+        ${esc(level)}
       </div>
       <div class="journey-arrow">→ → →</div>
       <div class="journey-stop target">
         <div class="journey-icon">🚀</div>
-        ${nextLevel}
+        ${esc(nextLevel)}
       </div>
     </div>`}
 
@@ -195,8 +259,8 @@ window.addEventListener('DOMContentLoaded', () => {
         <div style="display:flex;align-items:flex-start;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)">
           <div style="width:28px;height:28px;border-radius:8px;background:var(--blurple-pale);color:var(--blurple);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono)">${i+1}</div>
           <div>
-            <div style="font-size:13px;font-weight:700;margin-bottom:3px">${step.title}</div>
-            <div style="font-size:12px;color:var(--muted);line-height:1.55">${step.desc}</div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:3px">${esc(applyStepTemplate(step.title, gapName))}</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.55">${esc(applyStepTemplate(step.description, gapName))}</div>
           </div>
         </div>`).join('')}
     </div>
@@ -204,13 +268,14 @@ window.addEventListener('DOMContentLoaded', () => {
     <div class="tiers">
       <div class="tier-card">
         <div class="tier-badge free">Free</div>
-        <div class="tier-name">Team AI OS Checklist</div>
+        <div class="tier-name">${esc(freeSample.name)}</div>
         <div class="tier-price">$0</div>
-        <div class="tier-desc">A practical checklist to help your team set up the foundations for a shared AI operating system.</div>
+        <div class="tier-desc">${esc(freeSample.description)}</div>
         <div class="tier-includes">Includes</div>
-        ${['12-step implementation guide','Team-ready best practices','Print or use as a digital template'].map(i=>`
-          <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
-        <div class="tier-cta"><button class="btn-tier free-btn">Download free ↓</button></div>
+        ${freeSample.includes.map(i=>`
+          <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${esc(i)}</div>`).join('')}
+        <div style="font-size:11px;color:var(--muted);line-height:1.45;margin-top:8px">Best for: ${esc(freeSample.bestFor)}</div>
+        <div class="tier-cta"><a class="btn-tier free-btn" href="${esc(freeSampleHref)}">View free samples</a></div>
       </div>
       <div class="tier-card">
         <div class="tier-badge paid">Paid Kit</div>
@@ -220,7 +285,7 @@ window.addEventListener('DOMContentLoaded', () => {
         <div class="tier-includes">Includes</div>
         ${['Prompt library template','Team context file','Handoff template','Governance checklist'].map(i=>`
           <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
-        <div class="tier-cta"><a class="btn-tier paid-btn" href="https://dovetell.io" target="_blank">Buy on Gumroad →</a></div>
+        <div class="tier-cta"><button class="btn-tier paid-btn" type="button">Paid kit coming soon</button></div>
       </div>
       <div class="tier-card featured">
         <div class="tier-badge best">Best Value</div>
@@ -230,7 +295,7 @@ window.addEventListener('DOMContentLoaded', () => {
         <div class="tier-includes">Everything in Starter, plus</div>
         ${['Starter Kit with filled-in examples','Rollout guide','Facilitation script','Sample repo structure'].map(i=>`
           <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
-        <div class="tier-cta"><a class="btn-tier paid-btn" href="https://dovetell.io" target="_blank">Buy on Gumroad →</a></div>
+        <div class="tier-cta"><button class="btn-tier paid-btn" type="button">Paid kit coming soon</button></div>
       </div>
     </div>
 
@@ -255,7 +320,7 @@ window.addEventListener('DOMContentLoaded', () => {
       <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">Build shared context faster</div><div class="why-desc">Centralized templates and context files help everyone stay aligned from day one.</div></div>
     </div>
 
-    <div class="gumroad-note">🛒 Paid kits fulfilled securely via <a href="https://gumroad.com" target="_blank">Gumroad</a>.</div>
+    <div class="gumroad-note">Paid kits are not live yet. Pricing and fulfillment links will be added after the templates pass review.</div>
 
     <footer>
       <span class="footer-copy">© 2026 dovetell.io</span>

@@ -1,0 +1,406 @@
+{
+  "revisionId": "assessment-v01-rev-20260512a",
+  "version": "v01",
+  "status": "draft",
+  "effective": "2026-05-12T10:40:00Z",
+  "source": "jc/tech-lead/public-assessment-hardening-20260512",
+  "title": "Team AI Maturity Assessment",
+  "notes": [
+    "Initial extracted config from the original static assessment implementation.",
+    "Scoring uses an evidence-weighted raw score normalized to 100 for display.",
+    "Question IDs and section IDs are stable handles for future backend storage and score comparability."
+  ],
+  "answerScale": [
+    { "score": 0, "label": "Not true" },
+    { "score": 1, "label": "Somewhat true" },
+    { "score": 2, "label": "Mostly true" },
+    { "score": 3, "label": "Very true" }
+  ],
+  "scoring": {
+    "model": "evidence-weighted-normalized",
+    "rawMaxScore": 144,
+    "displayMaxScore": 100,
+    "normalization": "percentage-rounded",
+    "unansweredScore": 0,
+    "comparability": "Scores from assessment-v01-rev-20260512a and later use weighted raw scoring normalized to 100. Store rawScore, rawMaxScore, revisionId, and question-level answers for cross-revision interpretation.",
+    "weighting": {
+      "1": "General practice signal.",
+      "2": "Stronger evidence signal: documented, repeatable, reviewable, or maintained behavior."
+    },
+    "levels": [
+      {
+        "id": "scattered",
+        "name": "Scattered",
+        "min": 0,
+        "max": 24,
+        "color": "#DC2626",
+        "description": "Ad hoc AI use with isolated results. Context exists in individual chats and drives. No shared standards or reuse.",
+        "nextLevel": "Structured",
+        "tip": "Focus on creating one shared context file and saving your best prompts.",
+        "scaleDescription": "Ad hoc use,\nisolated results"
+      },
+      {
+        "id": "structured",
+        "name": "Structured",
+        "min": 25,
+        "max": 60,
+        "color": "#D97706",
+        "description": "Some repeatable practices but inconsistent. Context is scattered, handoffs vary, and reusable knowledge lives in individual tools.",
+        "nextLevel": "Coordinated",
+        "tip": "Keep building foundations — standardize your handoffs and prompt library.",
+        "scaleDescription": "Some repeatable\npractices"
+      },
+      {
+        "id": "coordinated",
+        "name": "Coordinated",
+        "min": 61,
+        "max": 80,
+        "color": "#16A34A",
+        "description": "Aligned team practices and shared context. Your team works together with AI — the foundation is solid.",
+        "nextLevel": "Compounding",
+        "tip": "You're ready for governance and continuous improvement loops.",
+        "scaleDescription": "Aligned practices,\nshared context"
+      },
+      {
+        "id": "compounding",
+        "name": "Compounding",
+        "min": 81,
+        "max": 100,
+        "color": "#5865F2",
+        "description": "Systematic advantage and continuous lift. AI is deeply embedded in your team's operating rhythm.",
+        "nextLevel": null,
+        "tip": "You're at the frontier — share what's working with peers.",
+        "scaleDescription": "Systematic\nadvantage"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "id": "shared-context",
+      "name": "Shared Context",
+      "icon": "👥",
+      "description": "How well your team creates and maintains shared AI context.",
+      "areaDescriptions": {
+        "high": "Strong shared context foundation.",
+        "medium": "Context exists but coverage is uneven.",
+        "low": "Context lives in individual silos."
+      },
+      "questions": [
+        {
+          "id": "shared-context-q01",
+          "text": "Our team has a shared document or file that describes our mission, goals, and key decisions that AI should always know.",
+          "weight": 2
+        },
+        {
+          "id": "shared-context-q02",
+          "text": "When a new team member joins, they can quickly get AI tools up to speed on our work without asking everyone for context.",
+          "weight": 1
+        },
+        {
+          "id": "shared-context-q03",
+          "text": "Team members use consistent background context when prompting AI tools—not whatever they happen to remember.",
+          "weight": 1
+        },
+        {
+          "id": "shared-context-q04",
+          "text": "When our team's priorities or decisions change, we update our shared AI context files to reflect this.",
+          "weight": 2
+        },
+        {
+          "id": "shared-context-q05",
+          "text": "Our AI context doesn't live in one person's head—it's documented and findable by anyone on the team.",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "prompt-reuse",
+      "name": "Prompt Reuse",
+      "icon": "💬",
+      "description": "How well your team creates, stores, and reuses high-value prompts.",
+      "areaDescriptions": {
+        "high": "Good prompt reuse culture.",
+        "medium": "Some reuse happening, not systematic.",
+        "low": "Prompts trapped in private chats."
+      },
+      "questions": [
+        {
+          "id": "prompt-reuse-q01",
+          "text": "We have a shared prompt library where team members store and find reusable prompts.",
+          "weight": 2
+        },
+        {
+          "id": "prompt-reuse-q02",
+          "text": "High-value prompts are not trapped in private chats—they're saved somewhere the team can access.",
+          "weight": 2
+        },
+        {
+          "id": "prompt-reuse-q03",
+          "text": "Our prompts include expected inputs, outputs, and instructions so others can use them without guessing.",
+          "weight": 2
+        },
+        {
+          "id": "prompt-reuse-q04",
+          "text": "Prompts are grouped by workflow, role, or task so people can find what they need quickly.",
+          "weight": 1
+        },
+        {
+          "id": "prompt-reuse-q05",
+          "text": "We regularly reuse and adapt prompts that worked well instead of starting from scratch.",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "team-handoffs",
+      "name": "Team Handoffs",
+      "icon": "🔄",
+      "description": "How well context is preserved when work moves between people.",
+      "areaDescriptions": {
+        "high": "Handoffs preserve context well.",
+        "medium": "Handoffs happen but format varies.",
+        "low": "Context is lost between handoffs."
+      },
+      "questions": [
+        {
+          "id": "team-handoffs-q01",
+          "text": "When work moves from one team member to another, there's a standard format for summarizing AI context and decisions.",
+          "weight": 2
+        },
+        {
+          "id": "team-handoffs-q02",
+          "text": "Handoff notes include what was tried, what worked, and what the AI needs to know to continue the work.",
+          "weight": 2
+        },
+        {
+          "id": "team-handoffs-q03",
+          "text": "People don't have to re-explain the same background context every time they start a new conversation with AI.",
+          "weight": 1
+        },
+        {
+          "id": "team-handoffs-q04",
+          "text": "Our handoff process captures key decisions and assumptions, not just task status.",
+          "weight": 1
+        },
+        {
+          "id": "team-handoffs-q05",
+          "text": "When a project is paused and restarted, the team can quickly reload context without losing progress.",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "knowledge-capture",
+      "name": "Knowledge Capture",
+      "icon": "📋",
+      "description": "How consistently your team records decisions and domain knowledge.",
+      "areaDescriptions": {
+        "high": "Knowledge is captured systematically.",
+        "medium": "Some capture, not consistent.",
+        "low": "Insights disappear after sessions."
+      },
+      "questions": [
+        {
+          "id": "knowledge-capture-q01",
+          "text": "Valuable insights and decisions from AI-assisted work are captured somewhere durable—not just in chat history.",
+          "weight": 2
+        },
+        {
+          "id": "knowledge-capture-q02",
+          "text": "When the AI produces something exceptional, we document what prompt or approach led to that result.",
+          "weight": 1
+        },
+        {
+          "id": "knowledge-capture-q03",
+          "text": "Domain-specific knowledge (definitions, constraints, policies) is written down and accessible to AI tools.",
+          "weight": 2
+        },
+        {
+          "id": "knowledge-capture-q04",
+          "text": "We have a way to capture and tag decisions so they can be referenced later without asking the person who made them.",
+          "weight": 2
+        },
+        {
+          "id": "knowledge-capture-q05",
+          "text": "Knowledge doesn't disappear when someone leaves the team or goes on leave.",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "review-governance",
+      "name": "Review & Governance",
+      "icon": "🛡️",
+      "description": "How your team reviews AI outputs and maintains standards.",
+      "areaDescriptions": {
+        "high": "Solid review process in place.",
+        "medium": "Some governance, ownership unclear.",
+        "low": "Outputs go unreviewed and stale."
+      },
+      "questions": [
+        {
+          "id": "review-governance-q01",
+          "text": "We have a clear process for reviewing AI-generated outputs before they become official or are acted upon.",
+          "weight": 2
+        },
+        {
+          "id": "review-governance-q02",
+          "text": "There is someone or a role responsible for maintaining the quality of our AI context and prompts.",
+          "weight": 2
+        },
+        {
+          "id": "review-governance-q03",
+          "text": "We track when context files or prompts were last updated and flag ones that may be stale.",
+          "weight": 2
+        },
+        {
+          "id": "review-governance-q04",
+          "text": "Our team has shared standards for what makes a good prompt or AI output in our specific context.",
+          "weight": 1
+        },
+        {
+          "id": "review-governance-q05",
+          "text": "When AI produces something wrong or misleading, we have a way to capture that feedback and improve.",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "workflow-integration",
+      "name": "Workflow Integration",
+      "icon": "⚡",
+      "description": "How deeply AI is integrated into your team's daily workflows.",
+      "areaDescriptions": {
+        "high": "AI is deeply embedded in workflows.",
+        "medium": "AI used in key workflows, unevenly.",
+        "low": "AI use is ad hoc and individual."
+      },
+      "questions": [
+        {
+          "id": "workflow-integration-q01",
+          "text": "AI tools are consistently used across the team—not just by a few enthusiasts.",
+          "weight": 1
+        },
+        {
+          "id": "workflow-integration-q02",
+          "text": "Our AI usage is integrated into regular workflows rather than used ad hoc when someone remembers.",
+          "weight": 2
+        },
+        {
+          "id": "workflow-integration-q03",
+          "text": "We have standard places in our process where AI context is checked or updated (e.g., sprint start, handoffs).",
+          "weight": 2
+        },
+        {
+          "id": "workflow-integration-q04",
+          "text": "Team members feel confident using AI tools because they know the context is reliable and up to date.",
+          "weight": 1
+        },
+        {
+          "id": "workflow-integration-q05",
+          "text": "Our AI workflows have improved over time as we've learned what works and what doesn't.",
+          "weight": 1
+        }
+      ]
+    }
+  ],
+  "freeSampleRecommendations": {
+    "default": {
+      "id": "minimal-repo-context-starter",
+      "name": "Minimal Repo Context Starter",
+      "description": "A small starter folder for getting repo-owned context into place without adding process weight.",
+      "bestFor": "Solo developers, founders, and teams that want agents to stop starting cold.",
+      "href": "https://docs.dovetell.io/templates/free-samples",
+      "includes": [
+        "Core setup checklist",
+        "Minimal manifest",
+        "Session handoff template",
+        "Active task queue starter"
+      ]
+    },
+    "small-team": {
+      "id": "shared-context-and-handoff-starter",
+      "name": "Shared Context + Handoff Starter",
+      "description": "A lightweight team starter for shared context, consistent handoffs, and reviewable next steps.",
+      "bestFor": "Small teams coordinating AI-assisted work across more than one person.",
+      "href": "https://docs.dovetell.io/templates/free-samples",
+      "includes": [
+        "Shared context starter",
+        "Team handoff template",
+        "Prompt reuse checklist",
+        "Review checklist"
+      ]
+    },
+    "migration-cleanup": {
+      "id": "workspace-cleanup-preview",
+      "name": "Workspace Cleanup Preview",
+      "description": "A preview checklist for separating public, private, package, and prototype context during cleanup.",
+      "bestFor": "Teams cleaning up migration residue, prototype history, or repo-role bleed.",
+      "href": "https://docs.dovetell.io/templates/free-samples",
+      "includes": [
+        "Repo-role sniff check",
+        "Public/private boundary checklist",
+        "Archive candidate prompts",
+        "Cleanup closeout checklist"
+      ]
+    }
+  },
+  "nextSteps": {
+    "Scattered": [
+      {
+        "title": "Create one shared team context file",
+        "description": "Capture your mission, goals, audience, and key decisions your team's AI should always know."
+      },
+      {
+        "title": "Save your 3 best prompts in a shared location",
+        "description": "Pick prompts that have worked well and document them so others can use and improve them."
+      },
+      {
+        "title": "Standardize one AI handoff template",
+        "description": "Pick a simple, repeatable format so nothing gets lost between steps."
+      }
+    ],
+    "Structured": [
+      {
+        "title": "Formalize your prompt library with categories",
+        "description": "Group prompts by workflow or role so anyone can find what they need without asking."
+      },
+      {
+        "title": "Add a review step for AI-generated outputs",
+        "description": "Designate someone to spot-check and approve AI work before it becomes official."
+      },
+      {
+        "title": "Close your biggest gap: {{gapName}}",
+        "description": "This area scored lowest — focus here for the fastest improvement."
+      }
+    ],
+    "Coordinated": [
+      {
+        "title": "Build a staleness monitor for your context files",
+        "description": "Flag files that haven't been updated in 30+ days so your context stays current."
+      },
+      {
+        "title": "Create a governance checklist for AI workflows",
+        "description": "Document what good looks like so standards are maintained as the team grows."
+      },
+      {
+        "title": "Set up a continuous improvement loop",
+        "description": "Schedule a monthly review of what's working and what prompts need updating."
+      }
+    ],
+    "Compounding": [
+      {
+        "title": "Document your system for others to replicate",
+        "description": "Your AI operating system is a competitive advantage — codify it so it scales."
+      },
+      {
+        "title": "Mentor a peer team through their assessment",
+        "description": "Teaching what works reinforces your own practices and builds your reputation."
+      },
+      {
+        "title": "Explore context graph architecture",
+        "description": "At this maturity level, queryable decision traces at scale become your next frontier."
+      }
+    ]
+  }
+}
