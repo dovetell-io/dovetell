@@ -90,6 +90,18 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 4
 .btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--blurple);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;padding:13px 28px;border-radius:9px;border:none;cursor:pointer;text-decoration:none;transition:all 0.2s}
 .btn-primary:hover{background:var(--blurple-dark)}
 
+/* PROJECT INDEX */
+.project-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:32px}
+.project-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:22px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;text-decoration:none;color:var(--text);transition:border-color 0.2s,box-shadow 0.2s}
+.project-card:hover{border-color:var(--blurple);box-shadow:0 8px 24px rgba(88,101,242,0.08)}
+.project-title{font-size:16px;font-weight:800;letter-spacing:-0.01em;margin-bottom:4px}
+.project-meta{font-size:12px;color:var(--muted);line-height:1.5}
+.project-arrow{font-size:20px;color:var(--muted)}
+.local-key-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin:22px 0 0;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.local-key-label{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.local-key-value{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--near-black)}
+.local-key-note{font-size:11px;color:var(--muted);line-height:1.5;max-width:440px}
+
 /* LEVEL SCALE */
 .level-scale{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:32px}
 .level-item{padding:14px 12px;text-align:center;border-right:1px solid var(--border)}
@@ -132,6 +144,8 @@ footer{border-top:1px solid var(--border);padding:20px 0;display:flex;justify-co
   nav{padding:16px 20px}
   .page{padding:32px 20px 80px}
   .score-card{grid-template-columns:1fr;text-align:center}
+  .project-card{grid-template-columns:1fr;text-align:center}
+  .local-key-box{flex-direction:column;text-align:center}
   .score-gauge{margin:0 auto}
   .score-actions{flex-direction:row;flex-wrap:wrap;justify-content:center}
   .level-scale{grid-template-columns:1fr 1fr}
@@ -173,6 +187,47 @@ function getHistory(pid) {
   try {
     const raw = localStorage.getItem('dovetell_history_' + pid);
     return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function getCurrentUid() {
+  try { return localStorage.getItem('dovetell_uid') || ''; } catch(e) { return ''; }
+}
+
+const localKeyWords = [
+  'amber','atlas','bright','cedar','cobalt','copper','delta','ember','fable','field',
+  'harbor','juniper','kindle','lantern','maple','meadow','north','orbit','prairie','quartz',
+  'river','signal','silver','summit','thread','violet','willow','yellow','zenith',
+];
+
+function generateLocalKey() {
+  const words = [];
+  for (let i = 0; i < 3; i += 1) {
+    const index = window.crypto?.getRandomValues
+      ? window.crypto.getRandomValues(new Uint8Array(1))[0] % localKeyWords.length
+      : Math.floor(Math.random() * localKeyWords.length);
+    words.push(localKeyWords[index]);
+  }
+  return words.join('-');
+}
+
+function getOrCreateLocalKey() {
+  try {
+    let localKey = localStorage.getItem('dovetell_local_key');
+    if (!localKey) {
+      localKey = generateLocalKey();
+      localStorage.setItem('dovetell_local_key', localKey);
+    }
+    return localKey;
+  } catch(e) { return generateLocalKey(); }
+}
+
+function getSavedPids(uid) {
+  if (!uid) return [];
+  try {
+    const raw = localStorage.getItem('dovetell_pids_' + uid);
+    const pids = raw ? JSON.parse(raw) : [];
+    return Array.isArray(pids) ? pids.filter(pid => /^[a-z0-9]{6,12}$/.test(pid)) : [];
   } catch(e) { return []; }
 }
 
@@ -219,6 +274,16 @@ function getNextLevel(level) {
 
 function getScoreColor(level) {
   return levelColors[level] || '#5865F2';
+}
+
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  })[char]);
 }
 
 // ── RENDER HELPERS ────────────────────────────────────────────────────────────
@@ -343,7 +408,7 @@ function renderWithPid(pid, lastRun, history) {
       <p class="hero-sub">${lastRun
         ? (()=>{
             const lvl = getLevel(lastRun.score);
-            const proj = lastRun.projectName ? '"' + lastRun.projectName + '" · ' : '';
+            const proj = lastRun.projectName ? '"' + esc(lastRun.projectName) + '" · ' : '';
             return proj + 'Last time you scored ' + lastRun.score + '/' + lastRun.maxScore + ' — ' + lvl + '. Retake to see how your team has matured.';
           })()
         : 'We found your project link. Take the assessment to start tracking your team\'s maturity over time.'
@@ -354,7 +419,7 @@ function renderWithPid(pid, lastRun, history) {
 
     <div class="link-section">
       <div class="link-box">
-        <div class="link-box-label">Your unique project link</div>
+        <div class="link-box-label">Your project link</div>
         <div class="link-box-url" onclick="copyLink(this, '${shareUrl}')">${shareUrl}</div>
         <div class="link-box-note">Tap to copy · Bookmark this to track progress over time</div>
       </div>
@@ -386,13 +451,80 @@ function renderWithPid(pid, lastRun, history) {
     </footer>`;
 }
 
+// ── RENDER: LOCAL PROJECT INDEX ───────────────────────────────────────────────
+function renderProjectIndex(projects, localKey) {
+  const cards = projects.map(project => {
+    const lastRun = project.lastRun;
+    const history = project.history || [];
+    const score = lastRun?.score ?? 0;
+    const maxScore = lastRun?.maxScore ?? 100;
+    const level = lastRun ? getLevel(score) : 'No runs yet';
+    const color = lastRun ? getScoreColor(level) : '#5865F2';
+    const date = lastRun?.takenAt
+      ? new Date(lastRun.takenAt).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})
+      : 'Not started';
+    const projectName = lastRun?.projectName || 'Assessment project';
+    const runText = history.length === 1 ? '1 assessment' : history.length + ' assessments';
+
+    return `
+      <a class="project-card" href="/assessments/?pid=${esc(project.pid)}">
+        ${lastRun ? buildGauge(score, maxScore, color) : '<div class="score-gauge"></div>'}
+        <div>
+          <div class="project-title">${esc(projectName)}</div>
+          <div class="project-meta">
+            <strong style="color:${color}">${level}</strong>${lastRun ? ' · ' + score + '/' + maxScore : ''}<br>
+            ${runText} · Last: ${date}<br>
+            <span class="score-pid">pid: ${esc(project.pid)}${lastRun?.aid ? ' · aid: ' + esc(lastRun.aid) : ''}</span>
+          </div>
+        </div>
+        <div class="project-arrow">→</div>
+      </a>`;
+  }).join('');
+
+  document.getElementById('page-content').innerHTML = `
+    <div class="hero">
+      <div class="eyebrow">&#8635; Local assessment history</div>
+      <h1>Your saved <em>assessments.</em></h1>
+      <p class="hero-sub">These project threads are saved in this browser. Accounts will make this portable later; for now this gives you a useful local history.</p>
+      <div class="local-key-box">
+        <div>
+          <div class="local-key-label">This browser key</div>
+          <div class="local-key-value">${localKey}</div>
+        </div>
+        <div class="local-key-note">Stored only in this browser. It is not added to project links. Clearing browser storage removes this index, but each project link still opens that project thread.</div>
+      </div>
+    </div>
+
+    <div class="last-score-section">
+      <div class="section-title">Saved project threads</div>
+      <div class="project-grid">${cards}</div>
+    </div>
+
+    <div class="new-project-card">
+      <h3>Start another thread?</h3>
+      <p>Use a fresh project for a new team, initiative, or workflow you want to track separately.</p>
+      <a class="btn-primary" href="/team-assessment/">
+        Start a new assessment →
+      </a>
+    </div>
+
+    <footer>
+      <span class="footer-copy">© 2026 dovetell.io</span>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/team-assessment">Assessment</a>
+      </div>
+    </footer>`;
+}
+
 // ── RENDER: NO PID ────────────────────────────────────────────────────────────
 function renderNoPid() {
   document.getElementById('page-content').innerHTML = `
     <div class="no-pid">
       <div class="no-pid-icon">🕊</div>
       <h2>No project found</h2>
-      <p>This page is for returning users who have a unique assessment link. Take the assessment to get yours.</p>
+      <p>This page is for returning users who have a project assessment link. Take the assessment to get yours.</p>
       <a class="btn-primary" href="/team-assessment/">
         Take the free assessment →
       </a>
@@ -413,6 +545,25 @@ window.addEventListener('DOMContentLoaded', () => {
   const pid = params.get('pid');
 
   if (!pid || !/^[a-z0-9]{6,12}$/.test(pid)) {
+    const uid = getCurrentUid();
+    const projects = getSavedPids(uid)
+      .map(savedPid => ({
+        pid: savedPid,
+        lastRun: getLastRun(savedPid),
+        history: getHistory(savedPid),
+      }))
+      .filter(project => project.lastRun || project.history.length > 0)
+      .sort((a, b) => {
+        const aDate = new Date(a.lastRun?.takenAt || a.history.at(-1)?.takenAt || 0).getTime();
+        const bDate = new Date(b.lastRun?.takenAt || b.history.at(-1)?.takenAt || 0).getTime();
+        return bDate - aDate;
+      });
+
+    if (projects.length > 0) {
+      renderProjectIndex(projects, getOrCreateLocalKey());
+      return;
+    }
+
     renderNoPid();
     return;
   }

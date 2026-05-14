@@ -1,0 +1,25 @@
+{
+  "event_kind": "recommendation",
+  "event_type": "view",
+  "public_token": "3c4eee7648daf2f46d1926a81347ea65",
+  "legacy_uid": "uid-test-001",
+  "legacy_pid": "pid-test-001",
+  "legacy_aid": "aid-test-001",
+  "revision_id": "assessment-v01-rev-20260512a",
+  "recommendation_key": "migration-cleanup",
+  "recommendation_name": "Workspace Cleanup Preview",
+  "level_id": "coordinated",
+  "display_score": 67,
+  "role": "Engineering Lead",
+  "team_size": "6-15",
+  "ai_tool": "Multiple",
+  "biggest_gap_name": "Team Handoffs",
+  "url_params": {
+    "level": "Coordinated",
+    "score": "67",
+    "max": "100",
+    "ai_tool": "Multiple"
+  },
+  "path": "/recommendations/",
+  "created_at": "2026-05-14T14:16:00Z"
+}

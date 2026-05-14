@@ -1,11 +1,11 @@
 # dovetell
 
-**Context orchestration for AI-assisted software teams.**
+**Shared team context for AI-assisted software work.**
 
 > Tell it once. Let it travel.
 
-dovetell is the governing layer that captures decisions, aligns intent,
-and keeps everyone from asking the same questions twice.
+dovetell helps teams turn scattered decisions, prompts, and standards into
+repo-owned context their coding agents can actually use.
 
 ---
 
@@ -32,6 +32,8 @@ contain public implementation files and a thin context pointer.
 | `privacy/` | Privacy policy |
 | `app-demo/` | Vision demo screens (not live product) |
 | `assets/` | Brand assets — logo, favicon, OG image |
+| `dev-docs/` | Repo-local developer wiki and implementation conventions |
+| `supabase/` | Public-safe draft schema and intake contract for assessment persistence |
 
 ---
 
@@ -94,6 +96,10 @@ Context lives in repo-owned markdown. For this public site, the implementation
 lives here and private operating context lives in the connected context repo.
 No content should be stored in Dovetell's database. The team owns the data.
 Always.
+
+Assessment and funnel metadata may be persisted as service state when the
+storage boundary is explicit. See `supabase/` for the draft Postgres schema and
+intake contract.
 
 ---
 

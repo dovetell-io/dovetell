@@ -1,0 +1,14 @@
+{
+  "event_kind": "content",
+  "event_type": "click",
+  "public_token": "3c4eee7648daf2f46d1926a81347ea65",
+  "legacy_uid": "uid-test-001",
+  "legacy_pid": "pid-test-001",
+  "legacy_aid": "aid-test-001",
+  "revision_id": "assessment-v01-rev-20260512a",
+  "content_key": "migration-cleanup",
+  "content_name": "Workspace Cleanup Preview",
+  "href": "https://docs.dovetell.io/templates/free-samples",
+  "path": "/recommendations/",
+  "created_at": "2026-05-14T14:17:00Z"
+}

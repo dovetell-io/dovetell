@@ -1,0 +1,50 @@
+{
+  "lead": {
+    "email": "test@example.com",
+    "marketing_consent": false,
+    "source": "assessment-gate"
+  },
+  "run": {
+    "legacy_uid": "uid-test-001",
+    "legacy_pid": "pid-test-001",
+    "legacy_aid": "aid-test-001",
+    "revision_id": "assessment-v01-rev-20260512a",
+    "version_id": "v01",
+    "raw_score": 96,
+    "raw_max_score": 144,
+    "display_score": 67,
+    "display_max_score": 100,
+    "level_id": "coordinated",
+    "level_name": "Coordinated",
+    "biggest_gap_id": "team-handoffs",
+    "biggest_gap_name": "Team Handoffs",
+    "project_name": "Test Team",
+    "role": "Engineering Lead",
+    "team_size": "6-15",
+    "company": "",
+    "industry": "Software / SaaS",
+    "ai_tool": "Multiple",
+    "discovery_source": "local-fixture",
+    "email_gate_trigger": "gate"
+  },
+  "answers": [
+    {
+      "section_id": "shared-context",
+      "section_name": "Shared Context",
+      "question_id": "shared-context-q01",
+      "answer_score": 2,
+      "question_weight": 2
+    },
+    {
+      "section_id": "team-handoffs",
+      "section_name": "Team Handoffs",
+      "question_id": "team-handoffs-q01",
+      "answer_score": 1,
+      "question_weight": 2
+    }
+  ],
+  "client": {
+    "path": "/team-assessment/",
+    "submitted_at": "2026-05-14T14:15:00Z"
+  }
+}

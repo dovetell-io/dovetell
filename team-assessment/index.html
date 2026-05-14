@@ -12,6 +12,7 @@
 <meta property="og:url" content="https://dovetell.io">
 <meta name="twitter:card" content="summary_large_image">
 <script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
+<script src="/assets/dovetell-config.js"></script>
 <link rel="stylesheet" href="/assets/preprod-banner.css"/>
 <script defer src="/assets/preprod-banner.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -554,7 +555,7 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
         </div>
         <div class="modal-trust-item">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          You'll get a unique link to retake and track your team's progress over time.
+          You'll get a project link to retake and track your team's progress over time.
         </div>
       </div>
       <div class="modal-mono-note">No account required. No password. Just your link.</div>
@@ -566,7 +567,7 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
     <div class="modal-success" id="modal-success-content">
       <div class="modal-success-icon">✉️</div>
       <h3>Results ready!</h3>
-      <p>Your unique link is below. Bookmark it to retake and track your progress over time.</p>
+      <p>Your project link is below. Bookmark it to retake and track your progress over time.</p>
       <div class="unique-link-label">Tap to copy</div>
       <div class="unique-link-box" id="success-link-display" onclick="copyLink(this)"></div>
       <p style="font-size:11px;color:var(--muted);margin-top:8px">Bookmark this link to retake and track your progress over time. Loading your results…</p>
@@ -784,9 +785,37 @@ function prevSection() {
 window.addEventListener('DOMContentLoaded', initAssessment);
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xrejbpbv';
 
+function getDovetellConfig() {
+  return window.DOVETELL_CONFIG || {};
+}
+
+function configuredEndpoint(key) {
+  const config = getDovetellConfig();
+  if (!config.persistenceEnabled) return '';
+  return (config[key] || '').trim();
+}
+
+async function postJsonIfConfigured(endpoint, payload) {
+  if (!endpoint) return null;
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) throw new Error(`Persistence failed: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.warn('dovetell persistence skipped', error);
+    return null;
+  }
+}
+
 // ── ID ARCHITECTURE ───────────────────────────────────────────────────────────
-// uid  — userId: permanent random ID for this browser/user. Generated once,
-//        stored in localStorage. Ties all projects for one person together.
+// uid  — anonymous browser ID. Generated once and stored in localStorage.
+//        Ties all local projects together on this device only.
+// local_key — human-readable label for this browser's local project index.
+//        It is never added to project links and is not authentication.
 // pid  — projectId: one per project/team. Generated once, travels in URL.
 //        Persists across retakes of the same project.
 // aid  — assessmentId: generated fresh every submission. One per completed run.
@@ -795,13 +824,12 @@ const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xrejbpbv';
 //        when questions change. Allows comparing scores across versions.
 //
 // Hierarchy:
-//   email
-//   └── uid
-//       ├── pid-a
-//       │   ├── aid-1 (vid=v01, score=14)
-//       │   └── aid-2 (vid=v01, score=18)
-//       └── pid-b
-//           └── aid-1 (vid=v01, score=16)
+//   local_key / uid
+//   ├── pid-a
+//   │   ├── aid-1 (vid=v01, score=14)
+//   │   └── aid-2 (vid=v01, score=18)
+//   └── pid-b
+//       └── aid-1 (vid=v01, score=16)
 //
 // URL: dovetell.io/team-assessment?pid=8f3c2a1b
 // On submit generates: aid (fresh), reads vid (hardcoded), reads/creates uid
@@ -815,7 +843,24 @@ function generateShortId() {
   return Math.random().toString(36).substring(2, 10);
 }
 
-// uid — permanent per browser, stored in localStorage
+const localKeyWords = [
+  'amber','atlas','bright','cedar','cobalt','copper','delta','ember','fable','field',
+  'harbor','juniper','kindle','lantern','maple','meadow','north','orbit','prairie','quartz',
+  'river','signal','silver','summit','thread','violet','willow','yellow','zenith',
+];
+
+function generateLocalKey() {
+  const words = [];
+  for (let i = 0; i < 3; i += 1) {
+    const index = window.crypto?.getRandomValues
+      ? window.crypto.getRandomValues(new Uint8Array(1))[0] % localKeyWords.length
+      : Math.floor(Math.random() * localKeyWords.length);
+    words.push(localKeyWords[index]);
+  }
+  return words.join('-');
+}
+
+// uid — permanent anonymous browser id, stored in localStorage
 function getOrCreateUid() {
   try {
     let uid = localStorage.getItem('dovetell_uid');
@@ -825,6 +870,18 @@ function getOrCreateUid() {
     }
     return uid;
   } catch(e) { return generateShortId(); }
+}
+
+// local key — human-readable label for this browser's local assessment index
+function getOrCreateLocalKey() {
+  try {
+    let localKey = localStorage.getItem('dovetell_local_key');
+    if (!localKey) {
+      localKey = generateLocalKey();
+      localStorage.setItem('dovetell_local_key', localKey);
+    }
+    return localKey;
+  } catch(e) { return generateLocalKey(); }
 }
 
 // pid — from URL if returning to existing project, else generate new
@@ -862,6 +919,120 @@ function getDemographics() {
   };
 }
 
+function levelMetaByName(levelName) {
+  return assessmentConfig.scoring.levels.find(level => level.name === levelName);
+}
+
+function buildAnswerPayload() {
+  return sections.flatMap((section, sectionIndex) => {
+    const sectionAnswers = window._rawAnswers?.[sectionIndex] || [];
+    return section.questions.map((question, questionIndex) => ({
+      section_id: section.id,
+      section_name: section.name,
+      question_id: question.id || `${section.id}-q${questionIndex + 1}`,
+      answer_score: sectionAnswers[questionIndex] ?? null,
+      question_weight: questionWeight(question),
+    }));
+  });
+}
+
+function buildAssessmentRunPayload(email, trigger, sectionScores, totalScore, maxScore) {
+  const demo = getDemographics();
+  const levelName = getLevel(totalScore);
+  const levelMeta = levelMetaByName(levelName);
+  const areaDetails = sections.map((section, index) => ({
+    id: section.id,
+    name: section.name,
+    score: sectionScores[index],
+    max: sectionMaxScore(section),
+  }));
+  const biggestGap = [...areaDetails].sort((a, b) => (a.score / a.max) - (b.score / b.max))[0];
+
+  return {
+    lead: {
+      email,
+      marketing_consent: false,
+      source: 'assessment-gate',
+    },
+    run: {
+      legacy_uid: window._uid,
+      legacy_pid: window._pid,
+      legacy_aid: window._aid,
+      revision_id: window._assessmentRevisionId,
+      version_id: window._vid,
+      raw_score: window._rawTotalScore,
+      raw_max_score: window._rawMaxScore,
+      display_score: totalScore,
+      display_max_score: maxScore,
+      level_id: levelMeta?.id || levelName.toLowerCase(),
+      level_name: levelName,
+      biggest_gap_id: biggestGap?.id || '',
+      biggest_gap_name: biggestGap?.name || '',
+      project_name: demo.project_name,
+      role: demo.role,
+      team_size: demo.team_size,
+      company: demo.company,
+      industry: demo.industry,
+      ai_tool: demo.ai_tool,
+      discovery_source: demo.source,
+      email_gate_trigger: trigger,
+    },
+    answers: buildAnswerPayload(),
+    client: {
+      path: window.location.pathname,
+      submitted_at: new Date().toISOString(),
+    },
+  };
+}
+
+async function persistAssessmentRun(email, trigger, sectionScores, totalScore, maxScore) {
+  if (window._persistedAssessmentRun || trigger !== 'gate') return window._persistedAssessmentRun || null;
+  const endpoint = configuredEndpoint('assessmentIntakeUrl');
+  const result = await postJsonIfConfigured(
+    endpoint,
+    buildAssessmentRunPayload(email, trigger, sectionScores, totalScore, maxScore)
+  );
+  if (result?.ok) {
+    window._persistedAssessmentRun = result;
+    if (result.public_token) window._publicToken = result.public_token;
+    if (result.claim_url) window._claimUrl = result.claim_url;
+  }
+  return result;
+}
+
+function saveAssessmentRunLocalStorage(demo, level, totalScore, maxScore) {
+  try {
+    const runData = {
+      aid: window._aid,
+      vid: window._vid,
+      revisionId: window._assessmentRevisionId,
+      pid: window._pid,
+      uid: window._uid,
+      level,
+      score: totalScore,
+      maxScore,
+      rawScore: window._rawTotalScore,
+      rawMaxScore: window._rawMaxScore,
+      publicToken: window._publicToken || '',
+      projectUrl: window._uniqueLink || '',
+      claimUrl: window._claimUrl || '',
+      projectName: demo.project_name || '',
+      takenAt: new Date().toISOString(),
+    };
+    localStorage.setItem('dovetell_run_' + window._pid, JSON.stringify(runData));
+    const histKey = 'dovetell_history_' + window._pid;
+    const hist = JSON.parse(localStorage.getItem(histKey) || '[]');
+    hist.push(runData);
+    localStorage.setItem(histKey, JSON.stringify(hist));
+    const pidsKey = 'dovetell_pids_' + window._uid;
+    const pids = JSON.parse(localStorage.getItem(pidsKey) || '[]');
+    if (!pids.includes(window._pid)) {
+      pids.push(window._pid);
+      localStorage.setItem(pidsKey, JSON.stringify(pids));
+    }
+  } catch(e) {}
+}
+
 // ── COPY LINK ─────────────────────────────────────────────────────────────────
 function copyLink(el) {
   const link = el.textContent;
@@ -896,6 +1067,7 @@ function finishAssessment() {
 
   // Establish all four IDs
   window._uid = getOrCreateUid();   // permanent per browser
+  window._localKey = getOrCreateLocalKey(); // human-readable local browser key
   window._pid = getOrCreatePid();   // per project, from URL or new
   window._aid = generateAid();      // fresh per submission
   window._vid = assessmentConfig.version;
@@ -925,11 +1097,20 @@ async function submitGate() {
 
   window._userEmail = email;
 
-  // Show unique link in success state before submitting
+  // Show project link in success state before submitting.
   const linkEl = document.getElementById('success-link-display');
   if (linkEl) linkEl.textContent = window._uniqueLink;
 
-  await sendToFormspree(email, 'gate', window._sectionScores, window._totalScore, window._maxScore);
+  const sendResult = await sendToFormspree(email, 'gate', window._sectionScores, window._totalScore, window._maxScore);
+  if (linkEl) linkEl.textContent = window._uniqueLink;
+  const successTitle = document.querySelector('#modal-success-content h3');
+  const successCopy = document.querySelector('#modal-success-content p');
+  if (successTitle && successCopy) {
+    successTitle.textContent = sendResult.emailDelivered ? 'Results saved' : 'Results saved locally';
+    successCopy.textContent = sendResult.emailDelivered
+      ? 'Your project link is below. Bookmark it to retake and track your progress over time.'
+      : 'Email delivery did not confirm, but your results are ready below.';
+  }
 
   document.getElementById('modal-form-content').style.display = 'none';
   document.getElementById('modal-success-content').style.display = 'block';
@@ -945,9 +1126,9 @@ async function submitGate() {
 }
 
 async function sendToFormspree(email, trigger, sectionScores, totalScore, maxScore) {
-  if (!FORMSPREE_ENDPOINT || FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) return;
   const level = getLevel(totalScore);
   const demo = getDemographics();
+  let emailDelivered = false;
 
   const areaDetails = sections.map((sec, i) =>
     `${sec.name}: ${sectionScores[i]}/${sectionMaxScore(sec)}`
@@ -970,8 +1151,8 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
     });
   });
 
-  try {
-    await fetch(FORMSPREE_ENDPOINT, {
+  if (FORMSPREE_ENDPOINT && !FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) try {
+    const formspreeResponse = await fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
       body: JSON.stringify({
@@ -1008,41 +1189,19 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
         _replyto: email,
       })
     });
-
-    // Save run to localStorage for /assessments/ page
-    // Structure: dovetell_pid_{pid} = array of aids
-    try {
-      const runData = {
-        aid: window._aid,
-        vid: window._vid,
-        revisionId: window._assessmentRevisionId,
-        pid: window._pid,
-        uid: window._uid,
-        level,
-        score: totalScore,
-        maxScore,
-        rawScore: window._rawTotalScore,
-        rawMaxScore: window._rawMaxScore,
-        projectName: demo.project_name || '',
-        takenAt: new Date().toISOString(),
-      };
-      // Save latest run per pid (for quick display)
-      localStorage.setItem('dovetell_run_' + window._pid, JSON.stringify(runData));
-      // Save run history per pid (for trajectory)
-      const histKey = 'dovetell_history_' + window._pid;
-      const hist = JSON.parse(localStorage.getItem(histKey) || '[]');
-      hist.push(runData);
-      localStorage.setItem(histKey, JSON.stringify(hist));
-      // Save uid → pids map (for future multi-project dashboard)
-      const pidsKey = 'dovetell_pids_' + window._uid;
-      const pids = JSON.parse(localStorage.getItem(pidsKey) || '[]');
-      if (!pids.includes(window._pid)) {
-        pids.push(window._pid);
-        localStorage.setItem(pidsKey, JSON.stringify(pids));
-      }
-    } catch(e) {}
+    emailDelivered = formspreeResponse.ok;
+    if (!formspreeResponse.ok) {
+      console.warn('Formspree rejected assessment email', formspreeResponse.status);
+    }
 
   } catch(e) { console.log('Formspree error', e); }
+
+  saveAssessmentRunLocalStorage(demo, level, totalScore, maxScore);
+  await persistAssessmentRun(email, trigger, sectionScores, totalScore, maxScore);
+  return {
+    emailDelivered,
+    persisted: Boolean(window._persistedAssessmentRun?.ok),
+  };
 }
 
 function getLevel(score) {
@@ -1071,9 +1230,14 @@ async function emailMyResults() {
 
   btn.disabled = true;
   btn.textContent = 'Sending…';
-  await sendToFormspree(email, 'email-results', window._sectionScores, window._totalScore, window._maxScore);
-  btn.className = 'btn-email-results sent';
-  btn.textContent = '✓ Sent to ' + email;
+  const sendResult = await sendToFormspree(email, 'email-results', window._sectionScores, window._totalScore, window._maxScore);
+  if (sendResult.emailDelivered) {
+    btn.className = 'btn-email-results sent';
+    btn.textContent = '✓ Sent to ' + email;
+  } else {
+    btn.disabled = false;
+    btn.textContent = 'Email not confirmed';
+  }
 }
 
 async function sendInlineEmail() {
@@ -1081,9 +1245,10 @@ async function sendInlineEmail() {
   const email = input?.value?.trim();
   if (!email || !email.includes('@')) { input.style.borderColor='#DC2626'; return; }
   window._userEmail = email;
-  await sendToFormspree(email, 'email-results-inline', window._sectionScores, window._totalScore, window._maxScore);
-  document.getElementById('email-results-bar').innerHTML = `
-    <div class="email-results-text"><strong>✓ Results sent!</strong>Check your inbox. Your score and gap analysis are on the way.</div>`;
+  const sendResult = await sendToFormspree(email, 'email-results-inline', window._sectionScores, window._totalScore, window._maxScore);
+  document.getElementById('email-results-bar').innerHTML = sendResult.emailDelivered
+    ? `<div class="email-results-text"><strong>✓ Results sent!</strong>Check your inbox. Your score and gap analysis are on the way.</div>`
+    : `<div class="email-results-text"><strong>Email not confirmed</strong>Your results are still saved in this browser. Try again in a moment.</div>`;
 }
 
 // ── RESULTS RENDERER ──────────────────────────────────────────────────────────
@@ -1111,10 +1276,10 @@ function renderResults(sectionScores, totalScore, maxScore) {
   const html = `
   <div class="email-results-bar" id="email-results-bar">
     <div class="email-results-text">
-      <strong>${window._userEmail ? 'Your unique assessment link' : 'Want these results in your inbox?'}</strong>
+      <strong>${window._userEmail ? 'Your project assessment link' : 'Want these results in your inbox?'}</strong>
       ${window._userEmail
         ? 'Bookmark this link to retake and track your progress over time.'
-        : 'Get your score, gap analysis, and a unique link to track your progress.'}
+        : 'Get your score, gap analysis, and a project link to track your progress.'}
     </div>
     ${window._userEmail
       ? `<div class="unique-link-box" style="font-size:11px;min-width:220px;text-align:center" onclick="copyLink(this)">${window._uniqueLink || ''}</div>`
@@ -1264,6 +1429,11 @@ function getNextSteps(level, gaps) {
 function showOffer() {
   // Redirect to standalone recommendations page with all context as URL params
   const demo = getDemographics();
+  if (window._publicToken) {
+    window.location.href = '/recommendations/?token=' + encodeURIComponent(window._publicToken);
+    return;
+  }
+
   const params = new URLSearchParams({
     level:     window._level     || 'Structured',
     next:      window._nextLevel || '',
@@ -1278,6 +1448,7 @@ function showOffer() {
     uid:       window._uid       || '',
     aid:       window._aid       || '',
   });
+  if (window._publicToken) params.set('token', window._publicToken);
   window.location.href = '/recommendations/?' + params.toString();
 }
 

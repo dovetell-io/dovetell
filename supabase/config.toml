@@ -1,0 +1,7 @@
+project_id = "xnazerbzmcfsvakiqgpd"
+
+[functions.assessment-runs]
+verify_jwt = false
+
+[functions.events]
+verify_jwt = false

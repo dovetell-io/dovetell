@@ -12,6 +12,7 @@
 <meta property="og:url" content="https://dovetell.io">
 <meta name="twitter:card" content="summary_large_image">
 <script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
+<script src="/assets/dovetell-config.js"></script>
 <link rel="stylesheet" href="/assets/preprod-banner.css"/>
 <script defer src="/assets/preprod-banner.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -201,26 +202,246 @@ function safeHref(value, fallback) {
   }
 }
 
+function getDovetellConfig() {
+  return window.DOVETELL_CONFIG || {};
+}
+
+function configuredEndpoint(key) {
+  const config = getDovetellConfig();
+  if (!config.persistenceEnabled) return '';
+  return (config[key] || '').trim();
+}
+
+async function postJsonIfConfigured(endpoint, payload) {
+  if (!endpoint) return null;
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) throw new Error(`Event persistence failed: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.warn('dovetell event persistence skipped', error);
+    return null;
+  }
+}
+
+function buildTrackingBase(params) {
+  return {
+    public_token: params.get('token') || '',
+    legacy_uid: params.get('uid') || '',
+    legacy_pid: params.get('pid') || '',
+    legacy_aid: params.get('aid') || '',
+    revision_id: params.get('rev') || '',
+    url_params: Object.fromEntries(params.entries()),
+    path: window.location.pathname,
+    created_at: new Date().toISOString(),
+  };
+}
+
+function trackingParamsFromContext(context) {
+  return new URLSearchParams({
+    token: context.token || '',
+    uid: context.uid || '',
+    pid: context.pid || '',
+    aid: context.aid || '',
+    rev: context.rev || '',
+    level: context.level || '',
+    score: context.score || '',
+    role: context.role || '',
+    team_size: context.teamSize || '',
+    ai_tool: context.aiTool || '',
+    gap: context.gapName || '',
+  });
+}
+
+function hasTrackingIdentity(paramsOrContext) {
+  if (paramsOrContext instanceof URLSearchParams) {
+    return Boolean(paramsOrContext.get('token') || paramsOrContext.get('aid'));
+  }
+  return Boolean(paramsOrContext?.token || paramsOrContext?.aid);
+}
+
+function eventEndpoint() {
+  return configuredEndpoint('recommendationEventUrl') || configuredEndpoint('contentEventUrl');
+}
+
+async function trackRecommendationView(params, recommendation) {
+  if (!hasTrackingIdentity(params)) return;
+  await postJsonIfConfigured(eventEndpoint(), {
+    event_kind: 'recommendation',
+    ...buildTrackingBase(params),
+    event_type: 'view',
+    recommendation_key: recommendation.key || 'default',
+    recommendation_name: recommendation.name || '',
+    level_id: (params.get('level') || '').toLowerCase(),
+    display_score: parseInt(params.get('score') || '0'),
+    role: params.get('role') || '',
+    team_size: params.get('team_size') || '',
+    ai_tool: params.get('ai_tool') || '',
+    biggest_gap_name: params.get('gap') || '',
+  });
+}
+
+async function trackContentEvent(params, recommendation, eventType, href) {
+  if (!hasTrackingIdentity(params)) return;
+  await postJsonIfConfigured(eventEndpoint(), {
+    event_kind: 'content',
+    ...buildTrackingBase(params),
+    event_type: eventType,
+    content_key: recommendation.key || 'default',
+    content_name: recommendation.name || '',
+    href,
+  });
+}
+
+async function fetchRunContextByToken(token) {
+  const endpoint = configuredEndpoint('assessmentIntakeUrl');
+  if (!token || !endpoint) return null;
+
+  try {
+    const url = new URL(endpoint);
+    url.searchParams.set('token', token);
+    const response = await fetch(url.href, {
+      method: 'GET',
+      headers: {'Accept': 'application/json'},
+    });
+    if (!response.ok) throw new Error(`Run context failed: ${response.status}`);
+    const data = await response.json();
+    return data?.ok ? data.run : null;
+  } catch (error) {
+    console.warn('dovetell run context unavailable', error);
+    return null;
+  }
+}
+
+function nextLevelFor(config, levelName) {
+  return (config.scoring?.levels || []).find(level => level.name === levelName)?.nextLevel || '';
+}
+
+async function buildRecommendationContext(params, config) {
+  const token = params.get('token') || '';
+  const run = await fetchRunContextByToken(token);
+  const level = run?.level || params.get('level') || 'Structured';
+  const nextLevel = params.get('next') || nextLevelFor(config, level);
+
+  return {
+    token,
+    level,
+    nextLevel,
+    score: parseInt(run?.score ?? params.get('score') ?? '0'),
+    maxScore: parseInt(run?.max ?? params.get('max') ?? '100'),
+    pid: run?.pid || params.get('pid') || '',
+    uid: run?.uid || params.get('uid') || '',
+    aid: run?.aid || params.get('aid') || '',
+    rev: run?.rev || params.get('rev') || '',
+    role: run?.role || params.get('role') || '',
+    teamSize: run?.team_size || params.get('team_size') || '',
+    aiTool: run?.ai_tool || params.get('ai_tool') || '',
+    gapName: run?.gap || params.get('gap') || 'your lowest-scoring area',
+    usedTokenContext: Boolean(run),
+  };
+}
+
+function tierItemHtml(value) {
+  return `<div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${esc(value)}</div>`;
+}
+
+function freeSampleCardHtml(freeSample, freeSampleHref, featured = false) {
+  return `
+    <div class="tier-card ${featured ? 'featured' : ''}">
+      <div class="tier-badge free">Free</div>
+      <div class="tier-name">${esc(freeSample.name)}</div>
+      <div class="tier-price">$0</div>
+      <div class="tier-desc">${esc(freeSample.description)}</div>
+      <div class="tier-includes">Includes</div>
+      ${freeSample.includes.map(tierItemHtml).join('')}
+      <div style="font-size:11px;color:var(--muted);line-height:1.45;margin-top:8px">Best for: ${esc(freeSample.bestFor)}</div>
+      <div class="tier-cta"><a class="btn-tier free-btn" id="free-sample-link" href="${esc(freeSampleHref)}">View free samples</a></div>
+    </div>`;
+}
+
+function growthTierCardsHtml(freeSample, freeSampleHref) {
+  return `
+    <div class="tiers">
+      ${freeSampleCardHtml(freeSample, freeSampleHref)}
+      <div class="tier-card">
+        <div class="tier-badge paid">Paid Kit</div>
+        <div class="tier-name">Starter Kit</div>
+        <div class="tier-price">$49</div>
+        <div class="tier-desc">Everything you need to get started standardizing how your team works with AI.</div>
+        <div class="tier-includes">Includes</div>
+        ${['Prompt library template','Team context file','Handoff template','Governance checklist'].map(tierItemHtml).join('')}
+        <div class="tier-cta"><button class="btn-tier paid-btn" type="button">Paid kit coming soon</button></div>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-badge best">Best Value</div>
+        <div class="tier-name">Pro Kit</div>
+        <div class="tier-price">$99</div>
+        <div class="tier-desc">Go further, faster with templates, examples, and a step-by-step rollout plan.</div>
+        <div class="tier-includes">Everything in Starter, plus</div>
+        ${['Starter Kit with filled-in examples','Rollout guide','Facilitation script','Sample repo structure'].map(tierItemHtml).join('')}
+        <div class="tier-cta"><button class="btn-tier paid-btn" type="button">Paid kit coming soon</button></div>
+      </div>
+    </div>`;
+}
+
+function topLevelCardsHtml(freeSample, freeSampleHref) {
+  return `
+    <div class="tiers" style="grid-template-columns:1.2fr 1fr">
+      ${freeSampleCardHtml(freeSample, freeSampleHref, true)}
+      <div class="tier-card">
+        <div class="tier-badge free">No upgrade needed</div>
+        <div class="tier-name">Maintain the system</div>
+        <div class="tier-price">$0</div>
+        <div class="tier-desc">A top score means the next move is documentation, calibration, and keeping what works visible.</div>
+        <div class="tier-includes">Recommended focus</div>
+        ${['Capture examples from current workflows','Review stale prompts and context monthly','Share your operating model with the team','Retake after a workflow or tool change'].map(tierItemHtml).join('')}
+      </div>
+    </div>`;
+}
+
+function reviewCardHtml(isTopLevel) {
+  return `
+    <div class="review-card">
+      <div class="review-icon">📅</div>
+      <div class="review-body">
+        <div class="review-title">${isTopLevel ? 'Optional Benchmark Review' : 'Setup Review'} <span class="review-price">${isTopLevel ? 'Optional' : '$299'}</span></div>
+        <div class="review-desc">${isTopLevel
+          ? 'Use this only if you want an outside read on whether your strong internal practices are durable, teachable, and ready to scale.'
+          : 'Book a 60-minute session with a dovetell expert to review your setup, identify gaps, and get tailored recommendations for your team.'}</div>
+        <div class="review-features">
+          <span class="review-feat">✓ Personalized review of your results</span>
+          <span class="review-feat">✓ Prioritized action plan</span>
+          <span class="review-feat">✓ Q&A with an AI workflow expert</span>
+        </div>
+      </div>
+      <button class="btn-review">${isTopLevel ? 'Join review waitlist →' : 'Book review →'}</button>
+    </div>`;
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
   const config = await loadAssessmentConfig();
   const p = new URLSearchParams(window.location.search);
-  const level     = p.get('level') || 'Structured';
-  const nextLevel = p.get('next') || null;
+  const context = await buildRecommendationContext(p, config);
+  const level     = context.level;
+  const nextLevel = context.nextLevel || null;
   const isTopLevel = level === 'Compounding' || !nextLevel;
   const headlineNext = isTopLevel ? 'the frontier' : nextLevel;
-  const score     = parseInt(p.get('score') || '0');
-  const maxScore  = parseInt(p.get('max')   || '90');
-  const pid       = p.get('pid') || '';
-  const uid       = p.get('uid') || '';
-  const aid       = p.get('aid') || '';
-  const role      = p.get('role') || '';
-  const teamSize  = p.get('team_size') || '';
-  const aiTool    = p.get('ai_tool') || '';
-  const gapName   = p.get('gap') || 'your lowest-scoring area';
+  const score     = context.score;
+  const maxScore  = context.maxScore;
+  const pid       = context.pid;
+  const role      = context.role;
+  const teamSize  = context.teamSize;
+  const aiTool    = context.aiTool;
+  const gapName   = context.gapName;
 
   const nextStepsByLevel = config.nextSteps || FALLBACK_CONFIG.nextSteps;
   const steps = nextStepsByLevel[level] || nextStepsByLevel['Structured'];
   const freeSample = pickFreeSample(config, role, teamSize, aiTool);
+  freeSample.key = Object.entries(config.freeSampleRecommendations || {}).find(([, value]) => value === freeSample)?.[0] || 'default';
   const profileText = [role, teamSize, aiTool].filter(Boolean).join(' · ');
   const freeSampleHref = safeHref(freeSample.href, 'https://docs.dovetell.io/templates/free-samples');
 
@@ -267,53 +488,9 @@ window.addEventListener('DOMContentLoaded', async () => {
         </div>`).join('')}
     </div>
 
-    <div class="tiers">
-      <div class="tier-card">
-        <div class="tier-badge free">Free</div>
-        <div class="tier-name">${esc(freeSample.name)}</div>
-        <div class="tier-price">$0</div>
-        <div class="tier-desc">${esc(freeSample.description)}</div>
-        <div class="tier-includes">Includes</div>
-        ${freeSample.includes.map(i=>`
-          <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${esc(i)}</div>`).join('')}
-        <div style="font-size:11px;color:var(--muted);line-height:1.45;margin-top:8px">Best for: ${esc(freeSample.bestFor)}</div>
-        <div class="tier-cta"><a class="btn-tier free-btn" href="${esc(freeSampleHref)}">View free samples</a></div>
-      </div>
-      <div class="tier-card">
-        <div class="tier-badge paid">Paid Kit</div>
-        <div class="tier-name">Starter Kit</div>
-        <div class="tier-price">$49</div>
-        <div class="tier-desc">Everything you need to get started standardizing how your team works with AI.</div>
-        <div class="tier-includes">Includes</div>
-        ${['Prompt library template','Team context file','Handoff template','Governance checklist'].map(i=>`
-          <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
-        <div class="tier-cta"><button class="btn-tier paid-btn" type="button">Paid kit coming soon</button></div>
-      </div>
-      <div class="tier-card featured">
-        <div class="tier-badge best">Best Value</div>
-        <div class="tier-name">Pro Kit</div>
-        <div class="tier-price">$99</div>
-        <div class="tier-desc">Go further, faster with templates, examples, and a step-by-step rollout plan.</div>
-        <div class="tier-includes">Everything in Starter, plus</div>
-        ${['Starter Kit with filled-in examples','Rollout guide','Facilitation script','Sample repo structure'].map(i=>`
-          <div class="tier-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`).join('')}
-        <div class="tier-cta"><button class="btn-tier paid-btn" type="button">Paid kit coming soon</button></div>
-      </div>
-    </div>
+    ${isTopLevel ? topLevelCardsHtml(freeSample, freeSampleHref) : growthTierCardsHtml(freeSample, freeSampleHref)}
 
-    <div class="review-card">
-      <div class="review-icon">📅</div>
-      <div class="review-body">
-        <div class="review-title">Setup Review <span class="review-price">$299</span></div>
-        <div class="review-desc">Book a 60-minute session with a dovetell expert to review your setup, identify gaps, and get tailored recommendations for your team.</div>
-        <div class="review-features">
-          <span class="review-feat">✓ Personalized review of your results</span>
-          <span class="review-feat">✓ Prioritized action plan</span>
-          <span class="review-feat">✓ Q&A with an AI workflow expert</span>
-        </div>
-      </div>
-      <button class="btn-review">Book review →</button>
-    </div>
+    ${reviewCardHtml(isTopLevel)}
 
     <div style="font-size:15px;font-weight:800;letter-spacing:-0.01em;margin-bottom:16px;text-align:center">Why these recommendations</div>
     <div class="why-grid">
@@ -332,6 +509,12 @@ window.addEventListener('DOMContentLoaded', async () => {
         ${pid ? '<a href="/assessments/?pid=' + pid + '">My assessments</a>' : ''}
       </div>
     </footer>`;
+
+  const trackingParams = trackingParamsFromContext(context);
+  trackRecommendationView(trackingParams, freeSample);
+  document.getElementById('free-sample-link')?.addEventListener('click', () => {
+    trackContentEvent(trackingParams, freeSample, 'click', freeSampleHref);
+  });
 });
 </script>
 </body>
