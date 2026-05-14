@@ -64,8 +64,7 @@ Today the assessment:
 - loads versioned content from `team-assessment/assessment-config.json`
 - computes weighted raw score and normalized display score
 - generates browser-local `uid`, `pid`, and per-run `aid`
-- sends email-gated results through Supabase/Resend, with Formspree available
-  only as a temporary fallback
+- sends email-gated results through Supabase/Resend
 - saves a local run history for `/assessments/`
 - passes score/profile/gap params to `/recommendations/`
 
@@ -143,7 +142,7 @@ When the Supabase project and Edge Function exist:
    `contentEventUrl` in `assets/dovetell-config.js`. The recommendation and
    content URLs can both point to `/functions/v1/events`.
 6. Flip `persistenceEnabled` only in preprod first.
-7. Confirm Formspree and localStorage still work as fallbacks.
+7. Confirm localStorage still works as the browser fallback.
 8. Add account claim after auth is selected.
 
 The function returns a user-facing `project_url`, a `public_token`, and a later
@@ -154,6 +153,5 @@ account-claim `claim_url`. It does not require an authenticated user yet.
 - Email magic link vs OAuth-first for account claim.
 - Whether to use Supabase anonymous users for pre-account assessment runs.
 - Retention policy for unclaimed runs and unverified leads.
-- Whether Formspree remains parallel during the first persistence rollout.
 - Whether the shared event-ingest function needs rate limiting before public
   production traffic.

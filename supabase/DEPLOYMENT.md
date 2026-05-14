@@ -153,7 +153,7 @@ Keep production disabled until preprod completes an end-to-end assessment run.
 1. Complete an assessment.
 2. Submit email gate.
 3. Confirm results still render even if persistence fails.
-4. Confirm Formspree still receives the submission if left enabled.
+4. Confirm Resend reports the assessment email as sent.
 5. Confirm localStorage still stores the run.
 6. Confirm Supabase rows were written.
 7. Open recommendations.
@@ -169,11 +169,12 @@ Set:
 persistenceEnabled: false
 ```
 
-The assessment flow should continue through Formspree and localStorage.
+The assessment flow should continue through localStorage. Email delivery is
+disabled while persistence is off unless another server-side sender is enabled.
 
 ## Do Not Do Yet
 
 - Do not add the service role key to the repo.
 - Do not enable persistence on production before preprod verification.
-- Do not replace Formspree until Supabase writes are proven reliable.
+- Do not reintroduce browser-side form posting for assessment results.
 - Do not build the authenticated dashboard until account claim is designed.

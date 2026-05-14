@@ -751,7 +751,7 @@ function renderSection() {
 function selectAnswer(qi, score, el) {
   if (!answers[currentSection]) answers[currentSection] = [];
   answers[currentSection][qi] = score;
-  // Mirror to window._rawAnswers for Formspree submission
+  // Mirror to window._rawAnswers for persistence and score detail
   if (!window._rawAnswers) window._rawAnswers = {};
   if (!window._rawAnswers[currentSection]) window._rawAnswers[currentSection] = [];
   window._rawAnswers[currentSection][qi] = score;
@@ -783,7 +783,6 @@ function prevSection() {
 }
 
 window.addEventListener('DOMContentLoaded', initAssessment);
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xrejbpbv';
 
 function getDovetellConfig() {
   return window.DOVETELL_CONFIG || {};
@@ -1129,82 +1128,12 @@ async function submitGate() {
 async function submitAssessmentContact(email, trigger, sectionScores, totalScore, maxScore) {
   const level = getLevel(totalScore);
   const demo = getDemographics();
-  let emailDelivered = false;
-  let persisted = false;
-
-  const areaDetails = sections.map((sec, i) =>
-    `${sec.name}: ${sectionScores[i]}/${sectionMaxScore(sec)}`
-  ).join(' | ');
-
-  const rawAnswers = sections.map((sec, i) => {
-    const ans = window._rawAnswers?.[i] || [];
-    const arr = sec.questions.map((q, qi) => {
-      const score = ans[qi] !== undefined ? ans[qi] : null;
-      return `${q.id || 'q' + (qi+1)}=${score}`;
-    });
-    return `${sec.name}: [${arr.join(',')}]`;
-  }).join(' | ');
-
-  const skipped = [];
-  sections.forEach((sec, i) => {
-    const ans = window._rawAnswers?.[i] || [];
-    sec.questions.forEach((q, qi) => {
-      if (ans[qi] === undefined) skipped.push(`${sec.name} Q${qi+1}`);
-    });
-  });
-
-  if (FORMSPREE_ENDPOINT && !FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) try {
-    const formspreeResponse = await fetch(FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-      body: JSON.stringify({
-        // Full ID set
-        email,
-        uid:  window._uid,   // userId — permanent per browser
-        pid:  window._pid,   // projectId — per project
-        aid:  window._aid,   // assessmentId — per run
-        vid:  window._vid,   // versionId — question set version
-        revision_id: window._assessmentRevisionId,
-        unique_link: window._uniqueLink,
-        trigger,
-        taken_at: new Date().toISOString(),
-
-        // Results
-        level,
-        total_score: `${totalScore}/${maxScore}`,
-        raw_score: `${window._rawTotalScore}/${window._rawMaxScore}`,
-        section_breakdown: areaDetails,
-        raw_answers: rawAnswers,
-        skipped_questions: skipped.length > 0 ? skipped.join(', ') : 'none',
-        skip_count: skipped.length,
-
-        // Demographics
-        project_name: demo.project_name || '—',
-        role:         demo.role         || '—',
-        team_size: demo.team_size || '—',
-        company:   demo.company   || '—',
-        industry:  demo.industry  || '—',
-        ai_tool:   demo.ai_tool   || '—',
-        source:    demo.source    || '—',
-
-        _subject: `dovetell — ${level} (${totalScore}/${maxScore}) · pid:${window._pid} · aid:${window._aid} · ${demo.role || 'unknown'} · ${demo.company || 'unknown'} — ${email}`,
-        _replyto: email,
-      })
-    });
-    emailDelivered = formspreeResponse.ok;
-    if (!formspreeResponse.ok) {
-      console.warn('Formspree rejected assessment email', formspreeResponse.status);
-    }
-
-  } catch(e) { console.log('Formspree error', e); }
 
   saveAssessmentRunLocalStorage(demo, level, totalScore, maxScore);
   const persistResult = await persistAssessmentRun(email, trigger, sectionScores, totalScore, maxScore);
-  persisted = Boolean(persistResult?.ok);
-  emailDelivered = emailDelivered || Boolean(persistResult?.email_delivered);
   return {
-    emailDelivered,
-    persisted,
+    emailDelivered: Boolean(persistResult?.email_delivered),
+    persisted: Boolean(persistResult?.ok),
   };
 }
 
