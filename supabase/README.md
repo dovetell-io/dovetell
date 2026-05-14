@@ -64,7 +64,8 @@ Today the assessment:
 - loads versioned content from `team-assessment/assessment-config.json`
 - computes weighted raw score and normalized display score
 - generates browser-local `uid`, `pid`, and per-run `aid`
-- sends email-gated results to Formspree
+- sends email-gated results through Supabase/Resend, with Formspree available
+  only as a temporary fallback
 - saves a local run history for `/assessments/`
 - passes score/profile/gap params to `/recommendations/`
 
@@ -134,8 +135,9 @@ When the Supabase project and Edge Function exist:
 
 1. Apply `assessment-funnel-schema.sql`.
 2. Set `project_id` in `supabase/config.toml`.
-3. Store `DOVETELL_SUPABASE_SERVICE_ROLE_KEY` as a function secret. Supabase
-   provides `SUPABASE_URL` to hosted Edge Functions automatically.
+3. Store `DOVETELL_SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`,
+   `DOVETELL_EMAIL_FROM`, and `DOVETELL_PUBLIC_SITE_URL` as function secrets.
+   Supabase provides `SUPABASE_URL` to hosted Edge Functions automatically.
 4. Deploy `assessment-runs` and `events`.
 5. Set `assessmentIntakeUrl`, `recommendationEventUrl`, and
    `contentEventUrl` in `assets/dovetell-config.js`. The recommendation and
@@ -144,8 +146,8 @@ When the Supabase project and Edge Function exist:
 7. Confirm Formspree and localStorage still work as fallbacks.
 8. Add account claim after auth is selected.
 
-The function returns a `public_token` and `claim_url`. It does not require an
-authenticated user yet.
+The function returns a user-facing `project_url`, a `public_token`, and a later
+account-claim `claim_url`. It does not require an authenticated user yet.
 
 ## Open Decisions
 

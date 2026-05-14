@@ -73,9 +73,18 @@ server-side database credentials stay out of the public site.
   "run_id": "00000000-0000-0000-0000-000000000000",
   "lead_id": "00000000-0000-0000-0000-000000000000",
   "public_token": "hex-token",
-  "claim_url": "https://dovetell.io/assessments/?token=hex-token"
+  "project_url": "https://dovetell.io/assessments/?pid=project-id",
+  "claim_url": "https://dovetell.io/assessments/?token=hex-token",
+  "email_delivered": true,
+  "email_status": "sent"
 }
 ```
+
+`project_url` is the user-facing project thread link. `claim_url` is reserved
+for later account/app claim behavior.
+
+`email_status` may be `sent`, `failed`, or `skipped_missing_resend_key`.
+Persistence must not fail only because email delivery fails.
 
 ## Public Read Context
 

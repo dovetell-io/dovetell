@@ -52,10 +52,18 @@ preprod pass.
 
 ```sh
 supabase secrets set DOVETELL_SUPABASE_SERVICE_ROLE_KEY="[secret-key]"
+supabase secrets set RESEND_API_KEY="[resend-api-key]"
+supabase secrets set DOVETELL_EMAIL_FROM="dovetell <hello@dovetell.io>"
+supabase secrets set DOVETELL_PUBLIC_SITE_URL="https://dovetell.io"
 ```
 
 Supabase provides `SUPABASE_URL` to hosted Edge Functions automatically. The
 custom secret name avoids the reserved `SUPABASE_` prefix.
+
+`RESEND_API_KEY` enables server-side assessment email delivery from the
+`assessment-runs` function. `DOVETELL_EMAIL_FROM` must use a sender/domain
+accepted by Resend. `DOVETELL_PUBLIC_SITE_URL` controls the project link host in
+emails and function responses.
 
 5. Deploy functions:
 

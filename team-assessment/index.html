@@ -995,6 +995,7 @@ async function persistAssessmentRun(email, trigger, sectionScores, totalScore, m
   if (result?.ok) {
     window._persistedAssessmentRun = result;
     if (result.public_token) window._publicToken = result.public_token;
+    if (result.project_url) window._uniqueLink = result.project_url;
     if (result.claim_url) window._claimUrl = result.claim_url;
   }
   return result;
@@ -1101,7 +1102,7 @@ async function submitGate() {
   const linkEl = document.getElementById('success-link-display');
   if (linkEl) linkEl.textContent = window._uniqueLink;
 
-  const sendResult = await sendToFormspree(email, 'gate', window._sectionScores, window._totalScore, window._maxScore);
+  const sendResult = await submitAssessmentContact(email, 'gate', window._sectionScores, window._totalScore, window._maxScore);
   if (linkEl) linkEl.textContent = window._uniqueLink;
   const successTitle = document.querySelector('#modal-success-content h3');
   const successCopy = document.querySelector('#modal-success-content p');
@@ -1125,10 +1126,11 @@ async function submitGate() {
   }, 2500);
 }
 
-async function sendToFormspree(email, trigger, sectionScores, totalScore, maxScore) {
+async function submitAssessmentContact(email, trigger, sectionScores, totalScore, maxScore) {
   const level = getLevel(totalScore);
   const demo = getDemographics();
   let emailDelivered = false;
+  let persisted = false;
 
   const areaDetails = sections.map((sec, i) =>
     `${sec.name}: ${sectionScores[i]}/${sectionMaxScore(sec)}`
@@ -1197,10 +1199,12 @@ async function sendToFormspree(email, trigger, sectionScores, totalScore, maxSco
   } catch(e) { console.log('Formspree error', e); }
 
   saveAssessmentRunLocalStorage(demo, level, totalScore, maxScore);
-  await persistAssessmentRun(email, trigger, sectionScores, totalScore, maxScore);
+  const persistResult = await persistAssessmentRun(email, trigger, sectionScores, totalScore, maxScore);
+  persisted = Boolean(persistResult?.ok);
+  emailDelivered = emailDelivered || Boolean(persistResult?.email_delivered);
   return {
     emailDelivered,
-    persisted: Boolean(window._persistedAssessmentRun?.ok),
+    persisted,
   };
 }
 
@@ -1230,7 +1234,7 @@ async function emailMyResults() {
 
   btn.disabled = true;
   btn.textContent = 'Sending…';
-  const sendResult = await sendToFormspree(email, 'email-results', window._sectionScores, window._totalScore, window._maxScore);
+  const sendResult = await submitAssessmentContact(email, 'email-results', window._sectionScores, window._totalScore, window._maxScore);
   if (sendResult.emailDelivered) {
     btn.className = 'btn-email-results sent';
     btn.textContent = '✓ Sent to ' + email;
@@ -1245,7 +1249,7 @@ async function sendInlineEmail() {
   const email = input?.value?.trim();
   if (!email || !email.includes('@')) { input.style.borderColor='#DC2626'; return; }
   window._userEmail = email;
-  const sendResult = await sendToFormspree(email, 'email-results-inline', window._sectionScores, window._totalScore, window._maxScore);
+  const sendResult = await submitAssessmentContact(email, 'email-results-inline', window._sectionScores, window._totalScore, window._maxScore);
   document.getElementById('email-results-bar').innerHTML = sendResult.emailDelivered
     ? `<div class="email-results-text"><strong>✓ Results sent!</strong>Check your inbox. Your score and gap analysis are on the way.</div>`
     : `<div class="email-results-text"><strong>Email not confirmed</strong>Your results are still saved in this browser. Try again in a moment.</div>`;

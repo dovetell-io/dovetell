@@ -86,6 +86,10 @@ function isInteger(value: unknown) {
   return typeof value === 'number' && Number.isInteger(value);
 }
 
+function publicSiteUrl() {
+  return (Deno.env.get('DOVETELL_PUBLIC_SITE_URL') || 'https://dovetell.io').replace(/\/$/, '');
+}
+
 function supabaseEnvironment(request: Request) {
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
   const serviceRoleKey = Deno.env.get('DOVETELL_SUPABASE_SERVICE_ROLE_KEY')
@@ -145,6 +149,70 @@ function validatePayload(payload: IntakePayload) {
   });
 
   return errors;
+}
+
+async function sendAssessmentEmail(params: {
+  email: string;
+  projectUrl: string;
+  score: number;
+  maxScore: number;
+  level: string;
+  projectName: string;
+}) {
+  const resendApiKey = Deno.env.get('RESEND_API_KEY');
+  if (!resendApiKey) {
+    return { delivered: false, status: 'skipped_missing_resend_key' };
+  }
+
+  const from = Deno.env.get('DOVETELL_EMAIL_FROM') || 'dovetell <hello@dovetell.io>';
+  const subject = `Your dovetell assessment link`;
+  const projectLabel = params.projectName || 'your project';
+  const html = `
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1A1A2E">
+      <h2 style="margin:0 0 12px">Your dovetell assessment is ready</h2>
+      <p>You scored <strong>${params.score}/${params.maxScore}</strong> (${params.level}) for ${projectLabel}.</p>
+      <p>Use this project link to return, retake the assessment, and track progress over time:</p>
+      <p><a href="${params.projectUrl}">${params.projectUrl}</a></p>
+      <p style="font-size:13px;color:#6B7280">No account is required. This link opens this project thread.</p>
+    </div>`;
+  const text = [
+    'Your dovetell assessment is ready',
+    '',
+    `You scored ${params.score}/${params.maxScore} (${params.level}) for ${projectLabel}.`,
+    '',
+    'Use this project link to return, retake the assessment, and track progress over time:',
+    params.projectUrl,
+    '',
+    'No account is required. This link opens this project thread.',
+  ].join('\n');
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from,
+        to: params.email,
+        subject,
+        html,
+        text,
+      }),
+    });
+
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      console.warn('Resend rejected assessment email', response.status, detail.slice(0, 500));
+      return { delivered: false, status: 'failed' };
+    }
+
+    return { delivered: true, status: 'sent' };
+  } catch (error) {
+    console.warn('Resend assessment email failed', error);
+    return { delivered: false, status: 'failed' };
+  }
 }
 
 Deno.serve(async (request) => {
@@ -299,17 +367,31 @@ Deno.serve(async (request) => {
     return jsonResponse(request, 500, { ok: false, error: 'assessment_answers_insert_failed' });
   }
 
-  const claimUrl = `https://dovetell.io/assessments/?token=${runRow.assessment_run_public_token}`;
+  const baseUrl = publicSiteUrl();
+  const projectUrl = `${baseUrl}/assessments/?pid=${encodeURIComponent(cleanText(run.legacy_pid, 80))}`;
+  const claimUrl = `${baseUrl}/assessments/?token=${runRow.assessment_run_public_token}`;
   await supabase
     .from('assessment_runs')
     .update({ assessment_run_claim_url: claimUrl })
     .eq('assessment_run_id', runRow.assessment_run_id);
+
+  const emailResult = await sendAssessmentEmail({
+    email,
+    projectUrl,
+    score: Number(run.display_score),
+    maxScore: Number(run.display_max_score),
+    level: cleanText(run.level_name, 80),
+    projectName: cleanText(run.project_name, 120),
+  });
 
   return jsonResponse(request, 200, {
     ok: true,
     run_id: runRow.assessment_run_id,
     lead_id: leadRow.lead_id,
     public_token: runRow.assessment_run_public_token,
+    project_url: projectUrl,
     claim_url: claimUrl,
+    email_delivered: emailResult.delivered,
+    email_status: emailResult.status,
   });
 });
