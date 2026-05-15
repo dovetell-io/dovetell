@@ -54,6 +54,7 @@ preprod pass.
 supabase secrets set DOVETELL_SUPABASE_SERVICE_ROLE_KEY="[secret-key]"
 supabase secrets set RESEND_API_KEY="[resend-api-key]"
 supabase secrets set DOVETELL_EMAIL_FROM="dovetell <hello@dovetell.io>"
+supabase secrets set DOVETELL_EMAIL_BCC="hello@dovetell.io"
 supabase secrets set DOVETELL_PUBLIC_SITE_URL="[public-site-url]"
 ```
 
@@ -62,9 +63,10 @@ custom secret name avoids the reserved `SUPABASE_` prefix.
 
 `RESEND_API_KEY` enables server-side assessment email delivery from the
 `assessment-runs` function. `DOVETELL_EMAIL_FROM` must use a sender/domain
-accepted by Resend. `DOVETELL_PUBLIC_SITE_URL` controls the project link host in
-emails and function responses. Use the preprod host for preprod testing and
-`https://dovetell.io` for production.
+accepted by Resend. `DOVETELL_EMAIL_BCC` controls the internal submission copy
+and defaults to `hello@dovetell.io` if unset. `DOVETELL_PUBLIC_SITE_URL`
+controls the project link host in emails and function responses. Use the
+preprod host for preprod testing and `https://dovetell.io` for production.
 
 5. Deploy functions:
 

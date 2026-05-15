@@ -135,8 +135,9 @@ When the Supabase project and Edge Function exist:
 1. Apply `assessment-funnel-schema.sql`.
 2. Set `project_id` in `supabase/config.toml`.
 3. Store `DOVETELL_SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`,
-   `DOVETELL_EMAIL_FROM`, and `DOVETELL_PUBLIC_SITE_URL` as function secrets.
-   Supabase provides `SUPABASE_URL` to hosted Edge Functions automatically.
+   `DOVETELL_EMAIL_FROM`, `DOVETELL_EMAIL_BCC`, and
+   `DOVETELL_PUBLIC_SITE_URL` as function secrets. Supabase provides
+   `SUPABASE_URL` to hosted Edge Functions automatically.
 4. Deploy `assessment-runs` and `events`.
 5. Set `assessmentIntakeUrl`, `recommendationEventUrl`, and
    `contentEventUrl` in `assets/dovetell-config.js`. The recommendation and

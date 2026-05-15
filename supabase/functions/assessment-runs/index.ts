@@ -175,6 +175,8 @@ async function sendAssessmentEmail(params: {
   }
 
   const from = Deno.env.get('DOVETELL_EMAIL_FROM') || 'dovetell <hello@dovetell.io>';
+  const bcc = cleanEmail(Deno.env.get('DOVETELL_EMAIL_BCC') || 'hello@dovetell.io');
+  const shouldBcc = Boolean(bcc && bcc !== cleanEmail(params.email));
   const subject = 'Your dovetell assessment link';
   const projectLabel = escapeHtml(params.projectName || 'your project');
   const level = escapeHtml(params.level);
@@ -251,19 +253,24 @@ async function sendAssessmentEmail(params: {
   ].join('\n');
 
   try {
+    const emailPayload: Record<string, unknown> = {
+      from,
+      to: params.email,
+      subject,
+      html,
+      text,
+    };
+    if (shouldBcc) {
+      emailPayload.bcc = [bcc];
+    }
+
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${resendApiKey}`,
       },
-      body: JSON.stringify({
-        from,
-        to: params.email,
-        subject,
-        html,
-        text,
-      }),
+      body: JSON.stringify(emailPayload),
     });
 
     if (!response.ok) {
