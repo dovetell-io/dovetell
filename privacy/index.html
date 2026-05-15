@@ -7,10 +7,13 @@
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <meta property="og:image" content="https://dovetell.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:title" content="dovetell — Tell it once. Let it travel.">
 <meta property="og:description" content="The context orchestration layer for AI-assisted software teams.">
 <meta property="og:url" content="https://dovetell.io">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://dovetell.io/assets/og.png">
 <script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
 <link rel="stylesheet" href="/assets/preprod-banner.css"/>
 <script defer src="/assets/preprod-banner.js"></script>
@@ -126,7 +129,7 @@ footer a{color:var(--blurple);text-decoration:none}
 
   <div class="eyebrow">Legal</div>
   <h1>Privacy Policy</h1>
-  <p class="updated">Last updated: May 1, 2026</p>
+  <p class="updated">Last updated: May 15, 2026</p>
 
   <!-- Plain English summary -->
   <div class="plain-box">
@@ -138,7 +141,7 @@ footer a{color:var(--blurple);text-decoration:none}
   <!-- Who we are -->
   <div class="section">
     <h2>Who we are</h2>
-    <p>dovetell is a context orchestration layer for AI-assisted software teams, built by John Chromchak in Mount Pleasant, SC. You can reach us at <strong>hello@dovetell.io</strong>.</p>
+    <p>dovetell helps AI-assisted software teams turn scattered project context into reusable, repo-owned context, built by John Chromchak in Mount Pleasant, SC. You can reach us at <strong>hello@dovetell.io</strong>.</p>
     <p>This policy applies to dovetell.io and all pages on that domain, including the Team AI Maturity Assessment.</p>
   </div>
 
@@ -193,7 +196,9 @@ footer a{color:var(--blurple);text-decoration:none}
     <h2>Who we share it with</h2>
     <p>We use a small number of third-party services to operate dovetell. Each receives only the minimum data needed:</p>
     <ul>
-      <li><strong>Formspree</strong> — processes form submissions (assessment gate, waitlist). Your submission data passes through their servers. <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener" style="color:var(--blurple)">Formspree privacy policy →</a></li>
+      <li><strong>Supabase</strong> — stores assessment submissions and saved assessment-link metadata. <a href="https://supabase.com/privacy" target="_blank" rel="noopener" style="color:var(--blurple)">Supabase privacy policy →</a></li>
+      <li><strong>Resend</strong> — sends assessment result emails and saved assessment links. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener" style="color:var(--blurple)">Resend privacy policy →</a></li>
+      <li><strong>Formspree</strong> — processes waitlist submissions. Your waitlist email passes through their servers. <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener" style="color:var(--blurple)">Formspree privacy policy →</a></li>
       <li><strong>Plausible Analytics</strong> — privacy-first analytics. No personal data shared. <a href="https://plausible.io/privacy" target="_blank" rel="noopener" style="color:var(--blurple)">Plausible privacy policy →</a></li>
       <li><strong>GitHub Pages</strong> — hosts this website. GitHub may log IP addresses as part of standard server operation. <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" style="color:var(--blurple)">GitHub privacy policy →</a></li>
       <li><strong>Gumroad</strong> — processes purchases. If you buy something, Gumroad handles payment and delivery. We receive your email to fulfill the order. <a href="https://gumroad.com/privacy" target="_blank" rel="noopener" style="color:var(--blurple)">Gumroad privacy policy →</a></li>
@@ -204,8 +209,8 @@ footer a{color:var(--blurple);text-decoration:none}
   <!-- Data retention -->
   <div class="section">
     <h2>How long we keep it</h2>
-    <p>Assessment submissions are stored in Formspree for as long as we maintain the account. Waitlist emails are stored until you unsubscribe or ask us to delete them.</p>
-    <p>When we build a proper backend (Postgres database), we'll migrate this data and update this policy accordingly.</p>
+    <p>Assessment submissions are stored in Supabase for as long as we operate the assessment or until you ask us to delete them. Waitlist emails are stored until you unsubscribe or ask us to delete them.</p>
+    <p>If we materially change the backend or data model, we'll update this policy accordingly.</p>
   </div>
 
   <!-- Your rights -->

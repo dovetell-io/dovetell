@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dovetell OG card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{width:1200px;height:630px;margin:0}
+body{font-family:"Plus Jakarta Sans",Arial,sans-serif;background:#111223;color:#f7f7ff}
+.card{position:relative;width:1200px;height:630px;overflow:hidden;background:#111223}
+.panel{position:absolute;inset:54px;border:1px solid rgba(247,247,255,.14);border-radius:18px;background:linear-gradient(135deg,rgba(247,247,255,.07),rgba(247,247,255,.025));padding:54px 60px}
+.brand{display:flex;align-items:center;gap:16px;margin-bottom:72px}
+.brand img{width:54px;height:54px;border-radius:12px}
+.wordmark{font-size:34px;font-weight:800;color:#fff}
+.tag{margin-left:12px;padding:8px 11px;border:1px solid rgba(207,211,255,.28);border-radius:8px;color:#cfd3ff;font:600 14px "JetBrains Mono",monospace}
+h1{width:760px;margin:0;color:#fff;font-size:72px;line-height:1.02;font-weight:800;letter-spacing:0}
+.sub{width:640px;margin-top:26px;color:rgba(247,247,255,.74);font-size:26px;line-height:1.45;font-weight:500}
+.flow{position:absolute;right:66px;bottom:70px;width:322px;display:grid;gap:12px}
+.step{display:flex;align-items:center;gap:12px;border:1px solid rgba(247,247,255,.13);border-radius:10px;background:rgba(17,18,35,.78);padding:13px 15px;color:rgba(247,247,255,.86);font:600 15px "JetBrains Mono",monospace}
+.dot{width:13px;height:13px;border-radius:50%;background:#5865f2;box-shadow:0 0 0 5px rgba(88,101,242,.16)}
+.step:nth-child(2) .dot{background:#d97706;box-shadow:0 0 0 5px rgba(217,119,6,.14)}
+.step:nth-child(3) .dot{background:#16834a;box-shadow:0 0 0 5px rgba(22,131,74,.14)}
+.footer{position:absolute;left:60px;bottom:48px;color:#cfd3ff;font:600 18px "JetBrains Mono",monospace}
+</style>
+</head>
+<body>
+<main class="card">
+  <section class="panel">
+    <div class="brand">
+      <img src="favicon.png" alt="">
+      <div class="wordmark">dovetell</div>
+      <div class="tag">repo-owned context</div>
+    </div>
+    <h1>Tell it once. Let it travel.</h1>
+    <p class="sub">Shared team context for AI-assisted software work.</p>
+    <div class="flow" aria-hidden="true">
+      <div class="step"><span class="dot"></span><span>scattered input</span></div>
+      <div class="step"><span class="dot"></span><span>reviewed context</span></div>
+      <div class="step"><span class="dot"></span><span>agent-ready handoff</span></div>
+    </div>
+    <div class="footer">dovetell.io</div>
+  </section>
+</main>
+</body>
+</html>

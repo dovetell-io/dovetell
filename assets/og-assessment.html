@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dovetell assessment OG card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{width:1200px;height:630px;margin:0}
+body{font-family:"Plus Jakarta Sans",Arial,sans-serif;background:#fbfbff;color:#111223}
+.card{position:relative;width:1200px;height:630px;overflow:hidden;background:#fbfbff}
+.top{position:absolute;left:58px;right:58px;top:44px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:14px;font-size:30px;font-weight:800}
+.brand img{width:48px;height:48px;border-radius:11px}
+.pill{border:1px solid #dfe2ee;border-radius:8px;padding:9px 12px;color:#5865f2;background:#eef0ff;font:600 14px "JetBrains Mono",monospace}
+h1{position:absolute;left:64px;top:150px;width:700px;margin:0;font-size:66px;line-height:1.03;font-weight:800;letter-spacing:0}
+.sub{position:absolute;left:68px;top:378px;width:620px;margin:0;color:#4f566f;font-size:25px;line-height:1.45}
+.result{position:absolute;right:72px;top:154px;width:330px;border:1px solid #dfe2ee;border-radius:18px;background:#fff;padding:26px;box-shadow:0 16px 44px rgba(17,18,35,.08)}
+.label{color:#62677e;font:700 13px "JetBrains Mono",monospace;text-transform:uppercase;margin-bottom:20px}
+.score{display:flex;align-items:flex-end;gap:8px;margin-bottom:22px}
+.num{font-size:82px;line-height:.9;font-weight:800;color:#5865f2}
+.den{font:700 20px "JetBrains Mono",monospace;color:#62677e;margin-bottom:7px}
+.bar{height:12px;background:#eceef3;border-radius:999px;overflow:hidden;margin-bottom:18px}
+.fill{width:64%;height:100%;background:#5865f2;border-radius:999px}
+.mini{display:grid;gap:10px}
+.line{display:flex;align-items:center;gap:9px;color:#202236;font:600 14px "JetBrains Mono",monospace}
+.dot{width:10px;height:10px;border-radius:50%;background:#16834a}
+.line:nth-child(2) .dot{background:#d97706}
+.line:nth-child(3) .dot{background:#c2413f}
+.footer{position:absolute;left:68px;bottom:54px;color:#5865f2;font:700 18px "JetBrains Mono",monospace}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="top">
+    <div class="brand"><img src="favicon.png" alt=""><span>dovetell</span></div>
+    <div class="pill">5 minute assessment</div>
+  </div>
+  <h1>How reusable is your team’s AI context?</h1>
+  <p class="sub">Find where context breaks, then start with one practical repo-native fix.</p>
+  <aside class="result" aria-hidden="true">
+    <div class="label">sample result</div>
+    <div class="score"><div class="num">64</div><div class="den">/100</div></div>
+    <div class="bar"><div class="fill"></div></div>
+    <div class="mini">
+      <div class="line"><span class="dot"></span><span>shared context</span></div>
+      <div class="line"><span class="dot"></span><span>handoff gaps</span></div>
+      <div class="line"><span class="dot"></span><span>decision drift</span></div>
+    </div>
+  </aside>
+  <div class="footer">dovetell.io/team-assessment</div>
+</main>
+</body>
+</html>

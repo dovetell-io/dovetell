@@ -82,6 +82,15 @@ function cleanEmail(value: unknown) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : '';
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function isInteger(value: unknown) {
   return typeof value === 'number' && Number.isInteger(value);
 }
@@ -154,6 +163,7 @@ function validatePayload(payload: IntakePayload) {
 async function sendAssessmentEmail(params: {
   email: string;
   projectUrl: string;
+  claimUrl: string;
   score: number;
   maxScore: number;
   level: string;
@@ -165,25 +175,79 @@ async function sendAssessmentEmail(params: {
   }
 
   const from = Deno.env.get('DOVETELL_EMAIL_FROM') || 'dovetell <hello@dovetell.io>';
-  const subject = `Your dovetell assessment link`;
-  const projectLabel = params.projectName || 'your project';
+  const subject = 'Your dovetell assessment link';
+  const projectLabel = escapeHtml(params.projectName || 'your project');
+  const level = escapeHtml(params.level);
+  const projectUrl = escapeHtml(params.projectUrl);
+  const claimUrl = escapeHtml(params.claimUrl);
+  const preview = `Your ${params.score}/${params.maxScore} ${params.level} result and project link are ready.`;
   const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1A1A2E">
-      <h2 style="margin:0 0 12px">Your dovetell assessment is ready</h2>
-      <p>You scored <strong>${params.score}/${params.maxScore}</strong> (${params.level}) for ${projectLabel}.</p>
-      <p>Use this project link to return, retake the assessment, and track progress over time:</p>
-      <p><a href="${params.projectUrl}">${params.projectUrl}</a></p>
-      <p style="font-size:13px;color:#6B7280">No account is required. This link opens this project thread.</p>
-    </div>`;
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>${subject}</title>
+      </head>
+      <body style="margin:0;padding:0;background:#f5f6fb;color:#16182b;font-family:Inter,Arial,sans-serif;">
+        <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${escapeHtml(preview)}</div>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f5f6fb;padding:28px 12px;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border:1px solid #e2e5f0;border-radius:14px;overflow:hidden;">
+                <tr>
+                  <td style="background:#111223;padding:24px 28px;color:#f7f7ff;">
+                    <div style="font-size:22px;font-weight:800;letter-spacing:0;">dovetell</div>
+                    <div style="margin-top:8px;font-size:13px;line-height:1.5;color:#cfd3ff;">Tell it once. Let it travel.</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:32px 28px 12px;">
+                    <p style="margin:0 0 10px;font-size:12px;line-height:1.4;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5865f2;">Assessment saved</p>
+                    <h1 style="margin:0 0 14px;font-size:28px;line-height:1.15;color:#111223;">Your assessment link is ready.</h1>
+                    <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#4f566f;">You scored <strong style="color:#111223;">${params.score}/${params.maxScore}</strong> and landed in <strong style="color:#111223;">${level}</strong> for ${projectLabel}. Use the link below to return to this project thread, retake the assessment, and compare progress over time.</p>
+                    <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 24px;">
+                      <tr>
+                        <td>
+                          <a href="${projectUrl}" style="display:inline-block;background:#5865f2;color:#ffffff;text-decoration:none;border-radius:8px;padding:13px 18px;font-size:14px;font-weight:800;">Open assessment link</a>
+                        </td>
+                      </tr>
+                    </table>
+                    <div style="border:1px solid #dfe2ee;border-radius:10px;background:#fbfbff;padding:16px 18px;margin:0 0 22px;">
+                      <div style="font-size:12px;font-weight:800;color:#111223;margin-bottom:6px;">Project link</div>
+                      <a href="${projectUrl}" style="font-size:13px;line-height:1.5;color:#5865f2;word-break:break-all;">${projectUrl}</a>
+                    </div>
+                    <p style="margin:0 0 12px;font-size:14px;line-height:1.7;color:#4f566f;">A good next step: pick the weakest area from your results and make one small piece of context easier for your next AI session to reuse.</p>
+                    <p style="margin:0 0 18px;font-size:14px;line-height:1.7;color:#4f566f;">No account is required. This link opens this project thread. The private claim link is included below in case the browser-local project link is not enough on another device.</p>
+                    <div style="border-top:1px solid #edf0f7;padding-top:16px;">
+                      <div style="font-size:12px;font-weight:800;color:#6b7280;margin-bottom:6px;">Claim link</div>
+                      <a href="${claimUrl}" style="font-size:12px;line-height:1.5;color:#6b7280;word-break:break-all;">${claimUrl}</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:20px 28px 28px;">
+                    <p style="margin:0;font-size:12px;line-height:1.6;color:#6b7280;">You received this because you requested your dovetell assessment results. Reply to this email if something looks off.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>`;
   const text = [
     'Your dovetell assessment is ready',
     '',
-    `You scored ${params.score}/${params.maxScore} (${params.level}) for ${projectLabel}.`,
+    `You scored ${params.score}/${params.maxScore} (${params.level}) for ${params.projectName || 'your project'}.`,
     '',
     'Use this project link to return, retake the assessment, and track progress over time:',
     params.projectUrl,
     '',
-    'No account is required. This link opens this project thread.',
+    'Claim link:',
+    params.claimUrl,
+    '',
+    'No account is required. Reply if something looks off.',
   ].join('\n');
 
   try {
@@ -378,6 +442,7 @@ Deno.serve(async (request) => {
   const emailResult = await sendAssessmentEmail({
     email,
     projectUrl,
+    claimUrl,
     score: Number(run.display_score),
     maxScore: Number(run.display_max_score),
     level: cleanText(run.level_name, 80),
