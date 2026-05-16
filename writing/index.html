@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Writing - dovetell</title>
+<link rel="canonical" href="https://preprod.dovetell.io/writing/">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta name="description" content="Owned essays and field notes on context debt, reviewed team memory, and AI-assisted software work.">
+<meta property="og:image" content="https://preprod.dovetell.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:title" content="Writing - dovetell">
+<meta property="og:description" content="Owned essays and field notes on context debt, reviewed team memory, and AI-assisted software work.">
+<meta property="og:url" content="https://preprod.dovetell.io/writing/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://preprod.dovetell.io/assets/og.png">
+<script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
+<link rel="stylesheet" href="/assets/preprod-banner.css"/>
+<script defer src="/assets/preprod-banner.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#111223;--paper:#fbfbff;--paper-2:#f1f2f8;--line:#dfe2ee;--muted:#62677e;--blurple:#5865f2;--blurple-dark:#3742c5;--green:#16834a;--sans:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+body{min-height:100vh;font-family:var(--sans);color:var(--ink);background:var(--paper)}
+a{color:inherit}
+.shell{width:min(1060px,calc(100% - 48px));margin:0 auto}
+nav{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(17,18,35,.92);backdrop-filter:blur(14px)}
+.nav-inner{height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.wordmark{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:20px;font-weight:800}
+.wordmark img{width:30px;height:30px;border-radius:7px}
+.nav-links{display:flex;align-items:center;gap:22px}
+.nav-links a{color:rgba(247,247,255,.72);font-size:13px;font-weight:600;text-decoration:none}
+.nav-links a:hover{color:#fff}.nav-cta{color:#fff!important;background:var(--blurple);border-radius:8px;padding:10px 15px}.nav-cta:hover{background:var(--blurple-dark)}
+.hero{background:var(--ink);color:#fff;padding:82px 0 64px}
+.kicker{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;color:#cfd3ff;font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase}.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+h1{max-width:780px;font-size:clamp(42px,7vw,76px);line-height:1.02;font-weight:800;letter-spacing:0;margin-bottom:20px}
+.hero p{max-width:660px;color:rgba(247,247,255,.72);font-size:18px;line-height:1.7}
+.writing-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding:54px 0 86px}
+.writing-card{display:block;border:1px solid var(--line);border-radius:8px;background:#fff;padding:24px;text-decoration:none;transition:border-color .2s,transform .2s}
+.writing-card:hover{border-color:rgba(88,101,242,.5);transform:translateY(-2px)}
+.card-meta{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blurple);margin-bottom:14px}
+.writing-card h2{font-size:24px;line-height:1.18;margin-bottom:12px}
+.writing-card p{color:var(--muted);font-size:14px;line-height:1.65}
+.note{border-top:1px solid var(--line);background:var(--paper-2);padding:34px 0;color:var(--muted);font-size:14px;line-height:1.7}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);background:#fff}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.footer-links{display:flex;gap:18px;flex-wrap:wrap}.footer-links a{font-size:12px;text-decoration:none}.footer-links a:hover{color:var(--ink)}
+@media(max-width:760px){.shell{width:min(100% - 36px,1060px)}.writing-grid{grid-template-columns:1fr}.nav-links{gap:10px}.nav-links a:not(.nav-cta){display:none}}
+@media(max-width:560px){.shell{width:min(100% - 28px,1060px)}.hero{padding:58px 0 44px}.nav-inner{height:auto;min-height:62px;padding:10px 0}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="shell nav-inner">
+    <a class="wordmark" href="/">
+      <img src="/assets/favicon.png" alt="" aria-hidden="true">
+      <span>dovetell</span>
+    </a>
+    <div class="nav-links">
+      <a href="/framework">Framework</a>
+      <a href="/writing">Writing</a>
+      <a href="/team-assessment">Assessment</a>
+      <a href="/why">Why?</a>
+      <a class="nav-cta" href="https://docs.dovetell.io/templates/free-samples">View sample</a>
+    </div>
+  </div>
+</nav>
+<main>
+  <header class="hero">
+    <div class="shell">
+      <div class="kicker"><span class="status-dot"></span>Owned writing / preprod</div>
+      <h1>Essays for AI-assisted teams trying to stop starting cold.</h1>
+      <p>Public-safe, crawlable writing on context debt, reviewed team memory, and repo-owned context. No CMS. No heavyweight publishing system.</p>
+    </div>
+  </header>
+  <section class="shell writing-grid" aria-label="Writing">
+
+      <a class="writing-card" href="/writing/context-debt/">
+        <div class="card-meta">2026-05-16</div>
+        <h2>Context Debt Is The Hidden Tax On AI-Assisted Teams</h2>
+        <p>Why scattered, stale, and unreviewed team context gets more expensive when AI agents start acting on it.</p>
+      </a>
+  </section>
+  <section class="note">
+    <div class="shell">This is a preprod experiment: markdown source is promoted into static HTML so the site can own canonical SEO pages without adding publishing infrastructure.</div>
+  </section>
+</main>
+<footer>
+  <div class="shell footer-inner">
+    <div>dovetell · Tell it once. Let it travel.</div>
+    <div class="footer-links">
+      <a href="/framework">Framework</a>
+      <a href="/writing">Writing</a>
+      <a href="/team-assessment">Assessment</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

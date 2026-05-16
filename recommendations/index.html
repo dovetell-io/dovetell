@@ -54,7 +54,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 4
 .journey-icon{width:36px;height:36px;border-radius:8px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800}
 .journey-stop.current .journey-icon{background:var(--blurple-pale);color:var(--blurple)}
 .journey-stop.target .journey-icon{background:var(--blurple);color:#fff}
+.journey-label{display:block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.journey-value{display:block}
 .journey-arrow{color:var(--muted);padding:0 16px;font-size:18px}
+.journey-arrow-mobile{display:none}
 
 .tiers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
 .tier-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column}
@@ -108,7 +111,12 @@ footer{border-top:1px solid var(--border);padding:20px 0;display:flex;justify-co
   .tiers{grid-template-columns:1fr}
   .review-card{flex-direction:column}
   .why-grid{grid-template-columns:1fr}
-  .journey-bar{flex-wrap:wrap;gap:8px}
+  .journey-bar{display:grid;grid-template-columns:1fr;gap:12px;padding:16px;overflow:visible}
+  .journey-stop{width:100%;white-space:normal;align-items:center}
+  .journey-icon{width:42px;height:42px}
+  .journey-arrow{display:none}
+  .journey-status{display:block;padding:0 0 0 52px;font-size:13px}
+  .journey-arrow-mobile{display:block;text-align:left;color:var(--muted);font-family:var(--mono);font-size:18px;line-height:1;padding-left:15px}
   footer{flex-direction:column;gap:12px;text-align:center}
 }
 </style>
@@ -463,19 +471,20 @@ window.addEventListener('DOMContentLoaded', async () => {
     <div class="journey-bar">
       <div class="journey-stop current">
         <div class="journey-icon">${score}</div>
-        ${esc(level)}
+        <div><span class="journey-label">Current</span><span class="journey-value">${esc(level)}</span></div>
       </div>
-      <div class="journey-arrow">★ Top level</div>
+      <div class="journey-arrow journey-status">★ Top level</div>
     </div>` : `
     <div class="journey-bar">
       <div class="journey-stop current">
         <div class="journey-icon">${score}</div>
-        ${esc(level)}
+        <div><span class="journey-label">Current</span><span class="journey-value">${esc(level)}</span></div>
       </div>
       <div class="journey-arrow">→ → →</div>
+      <div class="journey-arrow-mobile" aria-hidden="true">↓</div>
       <div class="journey-stop target">
-        <div class="journey-icon">🚀</div>
-        ${esc(nextLevel)}
+        <div class="journey-icon" aria-hidden="true">🚀</div>
+        <div><span class="journey-label">Recommended move</span><span class="journey-value">${esc(nextLevel)}</span></div>
       </div>
     </div>`}
 

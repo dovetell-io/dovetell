@@ -26,6 +26,8 @@ contain public implementation files and a thin context pointer.
 | `index.html` | Homepage |
 | `framework/` | The dovetell framework diagram |
 | `why/` | "Why not just X?" positioning page |
+| `writing/` | Preprod owned-writing SEO experiment |
+| `content/writing/` | Markdown sources for generated writing pages |
 | `team-assessment/` | Team AI Maturity Assessment |
 | `assessments/` | Returning user dashboard |
 | `recommendations/` | Personalized offer page |

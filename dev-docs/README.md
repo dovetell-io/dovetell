@@ -15,6 +15,7 @@ to preserve while working in this repo.
 - [Database naming conventions](database-naming-conventions.md)
 - [Resend assessment email template](resend-assessment-email-template.md)
 - [Social preview assets](social-preview-assets.md)
+- [Writing pages](writing-pages.md)
 
 ## Promotion Note
 
