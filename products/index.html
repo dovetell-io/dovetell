@@ -6,10 +6,10 @@
 <title>Products - dovetell</title>
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta name="description" content="Explore dovetell template packs for repo-owned AI context, from free samples to Team HQ governance packages."/>
+<meta name="description" content="Explore dovetell template packs for repo-owned AI context: Starter, Project HQ, and Team HQ."/>
 <meta property="og:image" content="https://preprod.dovetell.io/assets/og.png">
 <meta property="og:title" content="dovetell products">
-<meta property="og:description" content="Template packs and coming app workflows for repo-owned AI context.">
+<meta property="og:description" content="Template packs for repo-owned AI context: Starter, Project HQ, and Team HQ.">
 <meta property="og:url" content="https://preprod.dovetell.io/products/">
 <meta name="twitter:card" content="summary_large_image">
 <script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
@@ -66,7 +66,19 @@ section{padding:74px 0}
 .section-head{max-width:760px;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:0;margin-bottom:18px;overflow-wrap:break-word}
 .section-copy{max-width:680px;color:var(--muted);font-size:16px;line-height:1.75;overflow-wrap:break-word}
 .product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:36px}
+.product-grid>*{min-width:0}
+.sample-callout{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px;align-items:center;border:1px solid var(--line);border-radius:8px;background:#fff;padding:22px;margin-top:32px}
+.sample-callout h3{font-size:20px;margin-bottom:8px}
+.sample-callout p{color:var(--muted);font-size:14px;line-height:1.65}
+.definition-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:28px}
+.definition-card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:22px}
+.definition-card h3{font-size:18px;margin-bottom:8px}
+.definition-card p{color:var(--muted);font-size:14px;line-height:1.65}
+.docs-note{max-width:760px;border-left:4px solid var(--blurple);background:#f7f7ff;padding:18px 20px;margin-top:24px}
+.docs-note h3{font-size:17px;margin-bottom:8px}
+.docs-note p{color:var(--muted);font-size:14px;line-height:1.7}
 .product-card{display:flex;flex-direction:column;min-height:100%;border:1px solid var(--line);border-radius:8px;background:#fff;padding:22px}
+.product-card,.sample-callout,.definition-card,.docs-note,.status-panel,.app-preview{max-width:100%;overflow-wrap:break-word}
 .product-card.featured{border-color:var(--blurple);box-shadow:0 0 0 4px rgba(88,101,242,.08)}
 .product-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .product-card h3{font-size:20px;line-height:1.2}
@@ -89,8 +101,8 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
 .footer-links{display:flex;flex-wrap:wrap;gap:18px}
 .footer-links a{font-size:13px;text-decoration:none}
 .footer-links a:hover{color:#fff}
-@media(max-width:920px){.shell{width:calc(100% - 28px)}.hero-grid,.app-card{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}h1{max-width:340px;font-size:38px;line-height:1.08}.hero-copy{max-width:340px;font-size:16px;overflow-wrap:anywhere}.status-panel{max-width:340px}.status-panel p{overflow-wrap:anywhere}.section-head{max-width:340px;font-size:34px}.section-copy{max-width:340px;overflow-wrap:anywhere}}
-@media(max-width:620px){.shell{width:calc(100% - 28px)}.nav-inner{height:auto;min-height:62px;padding:10px 0}.nav-links{gap:10px}.nav-links a{display:none}.hero{padding:58px 0 46px}h1{max-width:340px;font-size:34px;line-height:1.08}.hero-copy{max-width:340px;font-size:16px;overflow-wrap:anywhere}.status-panel{max-width:340px}.status-panel p{overflow-wrap:anywhere}.hero-actions .button{width:100%;max-width:340px}.product-grid{grid-template-columns:1fr}.section-head{max-width:340px;font-size:30px}.section-copy{max-width:340px;overflow-wrap:anywhere}section{padding:58px 0}.footer-inner{flex-direction:column;align-items:flex-start}}
+@media(max-width:920px){.shell{width:calc(100% - 28px)}.hero-grid,.app-card,.sample-callout,.definition-grid{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}h1{max-width:340px;font-size:38px;line-height:1.08}.hero-copy{max-width:340px;font-size:16px;overflow-wrap:anywhere}.status-panel{max-width:340px}.status-panel p{overflow-wrap:anywhere}.section-head{max-width:340px;font-size:34px}.section-copy{max-width:340px;overflow-wrap:anywhere}}
+@media(max-width:620px){.shell{width:calc(100% - 28px)}.nav-inner{height:auto;min-height:62px;padding:10px 0}.nav-links{gap:10px}.nav-links a{display:none}.hero{padding:58px 0 46px}h1{max-width:340px;font-size:34px;line-height:1.08}.hero-copy{max-width:340px;font-size:16px;overflow-wrap:anywhere}.status-panel{max-width:340px}.status-panel p{overflow-wrap:anywhere}.hero-actions .button{width:100%;max-width:340px}.product-grid{grid-template-columns:1fr}.sample-callout .button{width:100%}.section-head{max-width:340px;font-size:30px}.section-copy{max-width:340px;overflow-wrap:anywhere}section{padding:58px 0}.footer-inner{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -125,13 +137,13 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
         </div>
       </div>
       <aside class="status-panel">
-        <h2>Public product state</h2>
-        <p>Template packs are the current product surface. The app is the coming workflow layer for reviewing, coordinating, and writing context back safely.</p>
+        <h2>What is available</h2>
+        <p>Start with a template pack, then use the assessment if you want help deciding which level fits your current context pressure.</p>
         <div class="status-list">
-          <div class="status-row"><span class="chip now">now</span><span>Sample files and package guidance</span></div>
+          <div class="status-row"><span class="chip now">now</span><span>Free sample set</span></div>
           <div class="status-row"><span class="chip now">now</span><span>Team assessment and recommendations</span></div>
-          <div class="status-row"><span class="chip soon">soon</span><span>Paid pack fulfillment links</span></div>
-          <div class="status-row"><span class="chip soon">soon</span><span>Authenticated context dashboard</span></div>
+          <div class="status-row"><span class="chip soon">next</span><span>Starter, Project HQ, and Team HQ packs</span></div>
+          <div class="status-row"><span class="chip soon">next</span><span>App waitlist for review and write-back workflows</span></div>
         </div>
       </aside>
     </div>
@@ -145,31 +157,12 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
         The package ladder is not about more files for their own sake. Each level adds only the structure needed to keep context reusable, reviewable, and aligned with the work.
       </p>
       <div class="product-grid">
-        <article class="product-card">
-          <div class="product-top">
-            <h3>Sample</h3>
-            <span class="chip free">free</span>
-          </div>
-          <div class="price">$0</div>
-          <p class="desc">A public, readable proof of the repo-owned context pattern.</p>
-          <div class="list-label">Best for</div>
-          <ul>
-            <li>Inspecting the category before buying anything</li>
-            <li>Trying a tiny handoff and task loop</li>
-            <li>Teaching the basic pattern to a teammate</li>
-          </ul>
-          <div class="product-actions">
-            <a class="button light" href="https://docs.dovetell.io/templates/free-samples">View free samples</a>
-            <p class="note">Hosted in public docs.</p>
-          </div>
-        </article>
-
         <article class="product-card featured">
           <div class="product-top">
             <h3>Starter</h3>
-            <span class="chip now">first pack</span>
+            <span class="chip now">start here</span>
           </div>
-          <div class="price">Coming soon</div>
+          <div class="price">Opening soon</div>
           <p class="desc">A compact package for one project that needs durable AI context without ceremony.</p>
           <div class="list-label">Includes</div>
           <ul>
@@ -179,16 +172,16 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
           </ul>
           <div class="product-actions">
             <a class="button primary" href="/team-assessment">Get a recommendation</a>
-            <p class="note">Gumroad link will appear here when the reviewed pack is live.</p>
+            <p class="note">For solo projects, small builds, and teams proving the loop.</p>
           </div>
         </article>
 
         <article class="product-card">
           <div class="product-top">
             <h3>Project HQ</h3>
-            <span class="chip soon">next</span>
+            <span class="chip soon">docs</span>
           </div>
-          <div class="price">Coming soon</div>
+          <div class="price">Opening soon</div>
           <p class="desc">For active projects that need governed docs, document lineage, and cleanup paths.</p>
           <div class="list-label">Adds</div>
           <ul>
@@ -205,10 +198,10 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
         <article class="product-card">
           <div class="product-top">
             <h3>Team HQ</h3>
-            <span class="chip soon">advanced</span>
+            <span class="chip soon">team</span>
           </div>
-          <div class="price">Coming soon</div>
-          <p class="desc">For teams coordinating across roles, repos, centerlines, and active governance work.</p>
+          <div class="price">Opening soon</div>
+          <p class="desc">For teams coordinating across roles, repos, active work lanes, and governance checkpoints.</p>
           <div class="list-label">Adds</div>
           <ul>
             <li>Centerlines, centerline items, triggers, and events</li>
@@ -220,25 +213,37 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
             <p class="note">Useful when coordination cost is already real.</p>
           </div>
         </article>
+      </div>
+      <div class="sample-callout">
+        <div>
+          <h3>Not sure yet? Try the sample set first.</h3>
+          <p>The free sample set spans the same basic idea: repo-owned context that a human or coding agent can read, resume from, and improve without starting cold.</p>
+        </div>
+        <a class="button light" href="https://docs.dovetell.io/templates/free-samples">View free samples</a>
+      </div>
+    </div>
+  </section>
 
-        <article class="product-card">
-          <div class="product-top">
-            <h3>Enterprise HQ</h3>
-            <span class="chip soon">later</span>
-          </div>
-          <div class="price">Planned</div>
-          <p class="desc">A later organizational layer for policy, permissions, reporting, and compliance-adjacent workflows.</p>
-          <div class="list-label">Not for</div>
-          <ul>
-            <li>Solo projects that only need continuity</li>
-            <li>Early teams still proving the basic loop</li>
-            <li>Adding governance before pressure is real</li>
-          </ul>
-          <div class="product-actions">
-            <a class="button light" href="mailto:hello@dovetell.io">Ask about fit</a>
-            <p class="note">Enterprise HQ should be earned by organizational complexity.</p>
-          </div>
-        </article>
+  <section>
+    <div class="shell">
+      <div class="section-kicker">Plain language</div>
+      <h2 class="section-head">What is a centerline?</h2>
+      <p class="section-copy">
+        A centerline is an active lane of work with a clear objective and a small set of control documents. It helps a team notice when useful work is still aligned, when a tangent should be parked, and when the lane itself needs to change.
+      </p>
+      <div class="definition-grid">
+        <div class="definition-card">
+          <h3>Centerline</h3>
+          <p>The active lane: what we are trying to keep straight while work is moving.</p>
+        </div>
+        <div class="definition-card">
+          <h3>Required docs</h3>
+          <p>The alignment controls: the docs that define what straight and true means for that lane.</p>
+        </div>
+      </div>
+      <div class="docs-note">
+        <h3>Docs-as-code keeps the lane inspectable.</h3>
+        <p>Required docs live with the repo as stable document pointers, so a centerline can reference the product direction, implementation plan, UX decisions, or governance notes that keep the work honest. When a required doc is missing, that is a signal to create or identify the control before the team treats the lane as governed.</p>
       </div>
     </div>
   </section>
@@ -246,18 +251,17 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
   <section class="app-band">
     <div class="shell app-card">
       <div>
-        <div class="section-kicker">Coming soon</div>
-        <h2 class="section-head">The app will make the workflow easier, not own the truth.</h2>
+        <div class="section-kicker">App waitlist</div>
+        <h2 class="section-head">A workflow layer for teams that want help maintaining context.</h2>
         <p class="section-copy">
-          The dovetell app is the planned layer for connecting repos, reviewing proposed context changes, tracking drift, and writing approved updates back to files your team owns.
+          The template packs work on their own. The app waitlist is for teams that want a guided review, drift, and write-back workflow around those repo-owned files.
         </p>
         <div class="hero-actions">
           <a class="button primary" href="/#waitlist">Join the waitlist</a>
-          <a class="button light" href="/app-demo/projects.html">Preview the app direction</a>
         </div>
       </div>
-      <div class="app-preview" aria-label="App workflow preview">
-        <div class="preview-label">app workflow preview</div>
+      <div class="app-preview" aria-label="Workflow areas">
+        <div class="preview-label">workflow areas</div>
         <div class="preview-row"><span>connect repo</span><span>source</span></div>
         <div class="preview-row"><span>detect drift</span><span>signal</span></div>
         <div class="preview-row"><span>review change</span><span>human</span></div>
