@@ -184,11 +184,12 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
       <span>dovetell</span>
     </a>
     <div class="nav-links">
+      <a href="/products">Products</a>
       <a href="/framework">Framework</a>
       <a href="/writing">Writing</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/why">Why?</a>
-      <a class="nav-cta" href="https://docs.dovetell.io/templates/free-samples">View sample</a>
+      <a class="nav-cta" href="/products">View packs</a>
     </div>
   </div>
 </nav>
@@ -216,6 +217,7 @@ ${content}
   <div class="shell footer-inner">
     <div>dovetell · Tell it once. Let it travel.</div>
     <div class="footer-links">
+      <a href="/products">Products</a>
       <a href="/framework">Framework</a>
       <a href="/writing">Writing</a>
       <a href="/team-assessment">Assessment</a>
@@ -296,11 +298,12 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
       <span>dovetell</span>
     </a>
     <div class="nav-links">
+      <a href="/products">Products</a>
       <a href="/framework">Framework</a>
       <a href="/writing">Writing</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/why">Why?</a>
-      <a class="nav-cta" href="https://docs.dovetell.io/templates/free-samples">View sample</a>
+      <a class="nav-cta" href="/products">View packs</a>
     </div>
   </div>
 </nav>
@@ -323,6 +326,7 @@ ${cards}
   <div class="shell footer-inner">
     <div>dovetell · Tell it once. Let it travel.</div>
     <div class="footer-links">
+      <a href="/products">Products</a>
       <a href="/framework">Framework</a>
       <a href="/writing">Writing</a>
       <a href="/team-assessment">Assessment</a>

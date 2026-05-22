@@ -24,6 +24,7 @@ contain public implementation files and a thin context pointer.
 | Path | Description |
 |------|-------------|
 | `index.html` | Homepage |
+| `products/` | Public product and template-pack ladder |
 | `framework/` | The dovetell framework diagram |
 | `why/` | "Why not just X?" positioning page |
 | `writing/` | Preprod owned-writing SEO experiment |

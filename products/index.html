@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Products - dovetell</title>
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta name="description" content="Explore dovetell template packs for repo-owned AI context, from free samples to Team HQ governance packages."/>
+<meta property="og:image" content="https://preprod.dovetell.io/assets/og.png">
+<meta property="og:title" content="dovetell products">
+<meta property="og:description" content="Template packs and coming app workflows for repo-owned AI context.">
+<meta property="og:url" content="https://preprod.dovetell.io/products/">
+<meta name="twitter:card" content="summary_large_image">
+<script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
+<link rel="stylesheet" href="/assets/preprod-banner.css"/>
+<script defer src="/assets/preprod-banner.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#111223;--ink-2:#202236;--paper:#fbfbff;--paper-2:#f1f2f8;
+  --line:#dfe2ee;--text:#f7f7ff;--muted:#62677e;--muted-light:#a9adc5;
+  --blurple:#5865f2;--blurple-dark:#3742c5;--blurple-soft:#eef0ff;
+  --green:#16834a;--green-soft:#e7f7ee;--amber:#b45309;--amber-soft:#fff5dc;
+  --sans:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+}
+html{scroll-behavior:smooth}
+body{min-height:100vh;font-family:var(--sans);color:var(--ink);background:var(--paper);overflow-x:hidden}
+a{color:inherit}
+.shell{width:min(1120px,calc(100% - 48px));margin:0 auto}
+nav{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(17,18,35,.92);backdrop-filter:blur(14px)}
+.nav-inner{height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.wordmark{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:20px;font-weight:800}
+.wordmark img{width:30px;height:30px;border-radius:7px}
+.nav-links{display:flex;align-items:center;gap:22px}
+.nav-links a{color:rgba(247,247,255,.72);font-size:13px;font-weight:600;text-decoration:none}
+.nav-links a:hover,.nav-links a[aria-current="page"]{color:#fff}
+.nav-cta{color:#fff!important;background:var(--blurple);border-radius:8px;padding:10px 15px}
+.nav-cta:hover{background:var(--blurple-dark)}
+.hero{background:var(--ink);color:var(--text);padding:86px 0 64px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,430px);gap:54px;align-items:end}
+.hero-grid>*{min-width:0}
+.eyebrow{display:inline-flex;width:max-content;max-width:100%;margin-bottom:18px;padding:7px 10px;border:1px solid rgba(255,255,255,.14);border-radius:6px;color:#cfd3ff;background:rgba(255,255,255,.05);font-family:var(--mono);font-size:11px;font-weight:600}
+h1{max-width:780px;color:#fff;font-size:clamp(40px,6vw,72px);line-height:1.02;letter-spacing:0;font-weight:800;overflow-wrap:break-word}
+.hero-copy{max-width:650px;margin-top:22px;color:rgba(247,247,255,.76);font-size:18px;line-height:1.7}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.button{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border-radius:8px;border:1px solid transparent;font-size:14px;font-weight:800;text-decoration:none}
+.button.primary{color:#fff;background:var(--blurple)}
+.button.primary:hover{background:var(--blurple-dark)}
+.button.secondary{color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.05)}
+.button.light{color:var(--ink);border-color:var(--line);background:#fff}
+.status-panel{border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(255,255,255,.05);padding:20px}
+.status-panel h2{font-size:18px;margin-bottom:10px}
+.status-panel p{color:rgba(247,247,255,.7);line-height:1.6;font-size:14px}
+.status-list{display:grid;gap:9px;margin-top:16px}
+.status-row{display:grid;grid-template-columns:84px 1fr;gap:10px;align-items:start;color:rgba(247,247,255,.84);font-size:13px;line-height:1.45}
+.chip{display:inline-flex;align-items:center;justify-content:center;border-radius:6px;padding:4px 7px;font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase}
+.chip.now{background:var(--green-soft);color:var(--green)}
+.chip.soon{background:var(--amber-soft);color:var(--amber)}
+.chip.free{background:#fff;color:var(--muted)}
+section{padding:74px 0}
+.section-kicker{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blurple);margin-bottom:12px}
+.section-head{max-width:760px;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:0;margin-bottom:18px;overflow-wrap:break-word}
+.section-copy{max-width:680px;color:var(--muted);font-size:16px;line-height:1.75;overflow-wrap:break-word}
+.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:36px}
+.product-card{display:flex;flex-direction:column;min-height:100%;border:1px solid var(--line);border-radius:8px;background:#fff;padding:22px}
+.product-card.featured{border-color:var(--blurple);box-shadow:0 0 0 4px rgba(88,101,242,.08)}
+.product-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.product-card h3{font-size:20px;line-height:1.2}
+.price{font-size:24px;font-weight:800;color:var(--blurple);margin-bottom:8px}
+.desc{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:18px}
+.list-label{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.product-card ul{display:grid;gap:8px;list-style:none;margin-bottom:20px}
+.product-card li{position:relative;padding-left:18px;color:var(--ink-2);font-size:13px;line-height:1.45}
+.product-card li::before{content:'';position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--blurple)}
+.product-actions{margin-top:auto;display:grid;gap:8px}
+.note{color:var(--muted);font-size:12px;line-height:1.5}
+.app-band{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.app-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,430px);gap:36px;align-items:center;border:1px solid var(--line);border-radius:8px;background:#fff;padding:28px}
+.app-card>*{min-width:0}
+.app-preview{border:1px solid var(--line);border-radius:8px;background:var(--ink);padding:18px;color:#fff}
+.preview-label{font-family:var(--mono);font-size:11px;color:#cfd3ff;margin-bottom:12px}
+.preview-row{display:flex;justify-content:space-between;gap:12px;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:10px 11px;margin-top:8px;font-family:var(--mono);font-size:12px;color:rgba(247,247,255,.84)}
+footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.footer-links{display:flex;flex-wrap:wrap;gap:18px}
+.footer-links a{font-size:13px;text-decoration:none}
+.footer-links a:hover{color:#fff}
+@media(max-width:920px){.shell{width:calc(100% - 28px)}.hero-grid,.app-card{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}h1{max-width:340px;font-size:38px;line-height:1.08}.hero-copy{max-width:340px;font-size:16px;overflow-wrap:anywhere}.status-panel{max-width:340px}.status-panel p{overflow-wrap:anywhere}.section-head{max-width:340px;font-size:34px}.section-copy{max-width:340px;overflow-wrap:anywhere}}
+@media(max-width:620px){.shell{width:calc(100% - 28px)}.nav-inner{height:auto;min-height:62px;padding:10px 0}.nav-links{gap:10px}.nav-links a{display:none}.hero{padding:58px 0 46px}h1{max-width:340px;font-size:34px;line-height:1.08}.hero-copy{max-width:340px;font-size:16px;overflow-wrap:anywhere}.status-panel{max-width:340px}.status-panel p{overflow-wrap:anywhere}.hero-actions .button{width:100%;max-width:340px}.product-grid{grid-template-columns:1fr}.section-head{max-width:340px;font-size:30px}.section-copy{max-width:340px;overflow-wrap:anywhere}section{padding:58px 0}.footer-inner{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="shell nav-inner">
+    <a class="wordmark" href="/">
+      <img src="/assets/favicon.png" alt="" aria-hidden="true">
+      <span>dovetell</span>
+    </a>
+    <div class="nav-links">
+      <a href="/products" aria-current="page">Products</a>
+      <a href="/framework">Framework</a>
+      <a href="/writing">Writing</a>
+      <a href="/team-assessment">Assessment</a>
+      <a class="nav-cta" href="#templates">View packs</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <header class="hero">
+    <div class="shell hero-grid">
+      <div>
+        <div class="eyebrow">Template packs available without the assessment</div>
+        <h1>Pick the amount of context governance your project has earned.</h1>
+        <p class="hero-copy">
+          dovetell template packs help AI-assisted teams keep decisions, tasks, handoffs, and alignment controls close to the repo. Start small, then add governance only when repetition, drift, or coordination pressure makes it useful.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#templates">Compare template packs</a>
+          <a class="button secondary" href="/team-assessment">Not sure? Take the assessment</a>
+        </div>
+      </div>
+      <aside class="status-panel">
+        <h2>Public product state</h2>
+        <p>Template packs are the current product surface. The app is the coming workflow layer for reviewing, coordinating, and writing context back safely.</p>
+        <div class="status-list">
+          <div class="status-row"><span class="chip now">now</span><span>Sample files and package guidance</span></div>
+          <div class="status-row"><span class="chip now">now</span><span>Team assessment and recommendations</span></div>
+          <div class="status-row"><span class="chip soon">soon</span><span>Paid pack fulfillment links</span></div>
+          <div class="status-row"><span class="chip soon">soon</span><span>Authenticated context dashboard</span></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <section id="templates">
+    <div class="shell">
+      <div class="section-kicker">Template packs</div>
+      <h2 class="section-head">From a small starter loop to Team HQ governance.</h2>
+      <p class="section-copy">
+        The package ladder is not about more files for their own sake. Each level adds only the structure needed to keep context reusable, reviewable, and aligned with the work.
+      </p>
+      <div class="product-grid">
+        <article class="product-card">
+          <div class="product-top">
+            <h3>Sample</h3>
+            <span class="chip free">free</span>
+          </div>
+          <div class="price">$0</div>
+          <p class="desc">A public, readable proof of the repo-owned context pattern.</p>
+          <div class="list-label">Best for</div>
+          <ul>
+            <li>Inspecting the category before buying anything</li>
+            <li>Trying a tiny handoff and task loop</li>
+            <li>Teaching the basic pattern to a teammate</li>
+          </ul>
+          <div class="product-actions">
+            <a class="button light" href="https://docs.dovetell.io/templates/free-samples">View free samples</a>
+            <p class="note">Hosted in public docs.</p>
+          </div>
+        </article>
+
+        <article class="product-card featured">
+          <div class="product-top">
+            <h3>Starter</h3>
+            <span class="chip now">first pack</span>
+          </div>
+          <div class="price">Coming soon</div>
+          <p class="desc">A compact package for one project that needs durable AI context without ceremony.</p>
+          <div class="list-label">Includes</div>
+          <ul>
+            <li>Project manifest and active task queue</li>
+            <li>Decision and handoff templates</li>
+            <li>Lightweight rules, risks, and changelog structure</li>
+          </ul>
+          <div class="product-actions">
+            <a class="button primary" href="/team-assessment">Get a recommendation</a>
+            <p class="note">Gumroad link will appear here when the reviewed pack is live.</p>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <div class="product-top">
+            <h3>Project HQ</h3>
+            <span class="chip soon">next</span>
+          </div>
+          <div class="price">Coming soon</div>
+          <p class="desc">For active projects that need governed docs, document lineage, and cleanup paths.</p>
+          <div class="list-label">Adds</div>
+          <ul>
+            <li>Document registry and stable doc pointers</li>
+            <li>Docs-as-code lanes for core, dev, user, UX, and business context</li>
+            <li>Promotion triggers for when informal memory should become a document</li>
+          </ul>
+          <div class="product-actions">
+            <a class="button light" href="/framework">See the framework</a>
+            <p class="note">For projects with repeated explanation, drift, or cleanup pressure.</p>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <div class="product-top">
+            <h3>Team HQ</h3>
+            <span class="chip soon">advanced</span>
+          </div>
+          <div class="price">Coming soon</div>
+          <p class="desc">For teams coordinating across roles, repos, centerlines, and active governance work.</p>
+          <div class="list-label">Adds</div>
+          <ul>
+            <li>Centerlines, centerline items, triggers, and events</li>
+            <li>Required docs as alignment controls</li>
+            <li>Cross-repo package locks and operational provenance</li>
+          </ul>
+          <div class="product-actions">
+            <a class="button light" href="/team-assessment">Check fit first</a>
+            <p class="note">Useful when coordination cost is already real.</p>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <div class="product-top">
+            <h3>Enterprise HQ</h3>
+            <span class="chip soon">later</span>
+          </div>
+          <div class="price">Planned</div>
+          <p class="desc">A later organizational layer for policy, permissions, reporting, and compliance-adjacent workflows.</p>
+          <div class="list-label">Not for</div>
+          <ul>
+            <li>Solo projects that only need continuity</li>
+            <li>Early teams still proving the basic loop</li>
+            <li>Adding governance before pressure is real</li>
+          </ul>
+          <div class="product-actions">
+            <a class="button light" href="mailto:hello@dovetell.io">Ask about fit</a>
+            <p class="note">Enterprise HQ should be earned by organizational complexity.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="app-band">
+    <div class="shell app-card">
+      <div>
+        <div class="section-kicker">Coming soon</div>
+        <h2 class="section-head">The app will make the workflow easier, not own the truth.</h2>
+        <p class="section-copy">
+          The dovetell app is the planned layer for connecting repos, reviewing proposed context changes, tracking drift, and writing approved updates back to files your team owns.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="/#waitlist">Join the waitlist</a>
+          <a class="button light" href="/app-demo/projects.html">Preview the app direction</a>
+        </div>
+      </div>
+      <div class="app-preview" aria-label="App workflow preview">
+        <div class="preview-label">app workflow preview</div>
+        <div class="preview-row"><span>connect repo</span><span>source</span></div>
+        <div class="preview-row"><span>detect drift</span><span>signal</span></div>
+        <div class="preview-row"><span>review change</span><span>human</span></div>
+        <div class="preview-row"><span>write back</span><span>approved</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="shell footer-inner">
+    <div>dovetell - Tell it once. Let it travel.</div>
+    <div class="footer-links">
+      <a href="/products">Products</a>
+      <a href="/framework">Framework</a>
+      <a href="/writing">Writing</a>
+      <a href="/team-assessment">Assessment</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

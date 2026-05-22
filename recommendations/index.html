@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Your Recommendations — dovetell</title>
+<title>Your Recommendations - dovetell</title>
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <meta property="og:image" content="https://preprod.dovetell.io/assets/og-starter.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:title" content="dovetell - Starter context recommendations">
-<meta property="og:description" content="Turn assessment results into a practical starting point for reusable project context.">
+<meta property="og:title" content="dovetell - Template pack recommendations">
+<meta property="og:description" content="Turn assessment results into the right dovetell package level for reusable project context.">
 <meta property="og:url" content="https://preprod.dovetell.io/recommendations/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://preprod.dovetell.io/assets/og-starter.png">
@@ -379,22 +379,22 @@ function growthTierCardsHtml(freeSample, freeSampleHref) {
     <div class="tiers">
       ${freeSampleCardHtml(freeSample, freeSampleHref)}
       <div class="tier-card">
-        <div class="tier-badge paid">Paid Kit</div>
-        <div class="tier-name">Starter Kit</div>
-        <div class="tier-price">$49</div>
-        <div class="tier-desc">Everything you need to get started standardizing how your team works with AI.</div>
+        <div class="tier-badge paid">Template Pack</div>
+        <div class="tier-name">Starter</div>
+        <div class="tier-price">Soon</div>
+        <div class="tier-desc">A compact package for one project that needs durable AI context without ceremony.</div>
         <div class="tier-includes">Includes</div>
-        ${['Prompt library template','Team context file','Handoff template','Governance checklist'].map(tierItemHtml).join('')}
-        <div class="tier-cta"><button class="btn-tier paid-btn" type="button">Paid kit coming soon</button></div>
+        ${['Project manifest','Decision and task templates','Session handoff','Lightweight governance checklist'].map(tierItemHtml).join('')}
+        <div class="tier-cta"><a class="btn-tier paid-btn" href="/products/">View products</a></div>
       </div>
       <div class="tier-card featured">
-        <div class="tier-badge best">Best Value</div>
-        <div class="tier-name">Pro Kit</div>
-        <div class="tier-price">$99</div>
-        <div class="tier-desc">Go further, faster with templates, examples, and a step-by-step rollout plan.</div>
+        <div class="tier-badge best">Governed Docs</div>
+        <div class="tier-name">Project HQ</div>
+        <div class="tier-price">Soon</div>
+        <div class="tier-desc">For active projects that need governed docs, document lineage, and cleanup paths.</div>
         <div class="tier-includes">Everything in Starter, plus</div>
-        ${['Starter Kit with filled-in examples','Rollout guide','Facilitation script','Sample repo structure'].map(tierItemHtml).join('')}
-        <div class="tier-cta"><button class="btn-tier paid-btn" type="button">Paid kit coming soon</button></div>
+        ${['Document registry','Stable doc pointers','Docs-as-code lanes','Documentation trigger model'].map(tierItemHtml).join('')}
+        <div class="tier-cta"><a class="btn-tier paid-btn" href="/products/">View products</a></div>
       </div>
     </div>`;
 }
@@ -511,12 +511,13 @@ window.addEventListener('DOMContentLoaded', async () => {
       <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">Build shared context faster</div><div class="why-desc">Centralized templates and context files help everyone stay aligned from day one.</div></div>
     </div>
 
-    <div class="gumroad-note">Paid kits are not live yet. Pricing and fulfillment links will be added after the templates pass review.</div>
+    <div class="gumroad-note">Paid template packs are not live yet. See the <a href="/products/">products page</a> for the current package ladder and coming Gumroad fulfillment path.</div>
 
     <footer>
       <span class="footer-copy">© 2026 dovetell.io</span>
       <div class="footer-links">
         <a href="/">Home</a>
+        <a href="/products">Products</a>
         <a href="/privacy">Privacy</a>
         ${pid ? '<a href="/assessments/?pid=' + pid + '">My assessments</a>' : ''}
       </div>
