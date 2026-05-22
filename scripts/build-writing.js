@@ -186,7 +186,7 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
     <div class="nav-links">
       <a href="/products">Products</a>
       <a href="/framework">Framework</a>
-      <a href="/writing">Writing</a>
+      <a href="/writing">Writings</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/why">Why?</a>
       <a class="nav-cta" href="/products">View packs</a>
@@ -196,7 +196,7 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
 <main>
   <header class="article-hero">
     <div class="shell">
-      <div class="kicker"><span class="status-dot"></span>Writing / preprod</div>
+      <div class="kicker"><span class="status-dot"></span>Writings</div>
       <h1>${escapeHtml(article.title)}</h1>
       <p class="dek">${escapeHtml(article.description)}</p>
       <div class="meta">${escapeHtml(article.date)}</div>
@@ -208,8 +208,8 @@ ${content}
     </article>
     <aside class="side-note" aria-label="Writing note">
       <h2>Why this exists</h2>
-      <p>Owned, crawlable writing gives dovetell a public home for category ideas before any heavier publishing system exists.</p>
-      <a href="/writing/">Back to writing</a>
+      <p>This essay introduces the problem dovetell is built around: teams lose momentum when important context is scattered, stale, or trapped in someone else's memory.</p>
+      <a href="/writing/">Back to writings</a>
     </aside>
   </div>
 </main>
@@ -219,7 +219,7 @@ ${content}
     <div class="footer-links">
       <a href="/products">Products</a>
       <a href="/framework">Framework</a>
-      <a href="/writing">Writing</a>
+      <a href="/writing">Writings</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/privacy">Privacy</a>
     </div>
@@ -242,7 +242,7 @@ function indexShell(articles) {
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Writing - dovetell</title>
+<title>Writings - dovetell</title>
 <link rel="canonical" href="${SITE_URL}/writing/">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -250,7 +250,7 @@ function indexShell(articles) {
 <meta property="og:image" content="${SITE_URL}/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:title" content="Writing - dovetell">
+<meta property="og:title" content="Writings - dovetell">
 <meta property="og:description" content="Owned essays and field notes on context debt, reviewed team memory, and AI-assisted software work.">
 <meta property="og:url" content="${SITE_URL}/writing/">
 <meta name="twitter:card" content="summary_large_image">
@@ -300,7 +300,7 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
     <div class="nav-links">
       <a href="/products">Products</a>
       <a href="/framework">Framework</a>
-      <a href="/writing">Writing</a>
+      <a href="/writing">Writings</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/why">Why?</a>
       <a class="nav-cta" href="/products">View packs</a>
@@ -310,16 +310,16 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
 <main>
   <header class="hero">
     <div class="shell">
-      <div class="kicker"><span class="status-dot"></span>Owned writing / preprod</div>
+      <div class="kicker"><span class="status-dot"></span>Writings</div>
       <h1>Essays for AI-assisted teams trying to stop starting cold.</h1>
-      <p>Public-safe, crawlable writing on context debt, reviewed team memory, and repo-owned context. No CMS. No heavyweight publishing system.</p>
+      <p>Field notes on context debt, reviewed team memory, and the habits that help AI-assisted teams preserve what they learn.</p>
     </div>
   </header>
-  <section class="shell writing-grid" aria-label="Writing">
+  <section class="shell writing-grid" aria-label="Writings">
 ${cards}
   </section>
   <section class="note">
-    <div class="shell">This is a preprod experiment: markdown source is promoted into static HTML so the site can own canonical SEO pages without adding publishing infrastructure.</div>
+    <div class="shell">Start with the core essays, then use the products and framework pages when you are ready to put the pattern into a repo.</div>
   </section>
 </main>
 <footer>
@@ -328,7 +328,7 @@ ${cards}
     <div class="footer-links">
       <a href="/products">Products</a>
       <a href="/framework">Framework</a>
-      <a href="/writing">Writing</a>
+      <a href="/writing">Writings</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/privacy">Privacy</a>
     </div>
