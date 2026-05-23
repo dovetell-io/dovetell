@@ -6,10 +6,10 @@
 <title>Products - dovetell</title>
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta name="description" content="Explore dovetell template packs for repo-owned AI context: Starter, Project HQ, and Team HQ."/>
+<meta name="description" content="Explore dovetell products for repo-owned AI context: Starter, Project HQ, and Team HQ."/>
 <meta property="og:image" content="https://preprod.dovetell.io/assets/og.png">
 <meta property="og:title" content="dovetell products">
-<meta property="og:description" content="Template packs for repo-owned AI context: Starter, Project HQ, and Team HQ.">
+<meta property="og:description" content="Dovetell products for repo-owned AI context: Starter, Project HQ, and Team HQ.">
 <meta property="og:url" content="https://preprod.dovetell.io/products/">
 <meta name="twitter:card" content="summary_large_image">
 <script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
@@ -21,17 +21,17 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ink:#111223;--ink-2:#202236;--paper:#fbfbff;--paper-2:#f1f2f8;
-  --line:#dfe2ee;--text:#f7f7ff;--muted:#62677e;--muted-light:#a9adc5;
-  --blurple:#5865f2;--blurple-dark:#3742c5;--blurple-soft:#eef0ff;
-  --green:#16834a;--green-soft:#e7f7ee;--amber:#b45309;--amber-soft:#fff5dc;
+  --ink:#14263A;--ink-2:#172D45;--paper:#F8F5F1;--paper-2:#F1F3F7;
+  --line:#D9DDE6;--text:#f7f7ff;--muted:#516173;--muted-light:#9DA7B5;
+  --blurple:#5865F2;--blurple-dark:#3237C8;--blurple-soft:#EEF0FF;
+  --green:#22C55E;--green-soft:#DCFCE7;--amber:#F59E0B;--amber-soft:#FFF7ED;
   --sans:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
 }
 html{scroll-behavior:smooth}
 body{min-height:100vh;font-family:var(--sans);color:var(--ink);background:var(--paper);overflow-x:hidden}
 a{color:inherit}
 .shell{width:min(1120px,calc(100% - 48px));margin:0 auto}
-nav{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(17,18,35,.92);backdrop-filter:blur(14px)}
+nav{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(20,38,58,.94);backdrop-filter:blur(14px)}
 .nav-inner{height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .wordmark{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:20px;font-weight:800}
 .wordmark img{width:30px;height:30px;border-radius:7px}
@@ -40,23 +40,23 @@ nav{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.0
 .nav-links a:hover,.nav-links a[aria-current="page"]{color:#fff}
 .nav-cta{color:#fff!important;background:var(--blurple);border-radius:8px;padding:10px 15px}
 .nav-cta:hover{background:var(--blurple-dark)}
-.hero{background:var(--ink);color:var(--text);padding:86px 0 64px}
+.hero{background:var(--paper);color:var(--ink);padding:80px 0 64px}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,430px);gap:54px;align-items:end}
 .hero-grid>*{min-width:0}
-.eyebrow{display:inline-flex;width:max-content;max-width:100%;margin-bottom:18px;padding:7px 10px;border:1px solid rgba(255,255,255,.14);border-radius:6px;color:#cfd3ff;background:rgba(255,255,255,.05);font-family:var(--mono);font-size:11px;font-weight:600}
-h1{max-width:780px;color:#fff;font-size:clamp(40px,6vw,72px);line-height:1.02;letter-spacing:0;font-weight:800;overflow-wrap:break-word}
-.hero-copy{max-width:650px;margin-top:22px;color:rgba(247,247,255,.76);font-size:18px;line-height:1.7}
+.eyebrow{display:inline-flex;width:max-content;max-width:100%;margin-bottom:18px;padding:7px 10px;border:1px solid rgba(88,101,242,.22);border-radius:6px;color:var(--blurple);background:var(--blurple-soft);font-family:var(--mono);font-size:11px;font-weight:600}
+h1{max-width:780px;color:var(--ink);font-size:clamp(40px,6vw,64px);line-height:1.04;letter-spacing:0;font-weight:800;overflow-wrap:break-word}
+.hero-copy{max-width:650px;margin-top:22px;color:var(--muted);font-size:18px;line-height:1.7}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
 .button{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border-radius:8px;border:1px solid transparent;font-size:14px;font-weight:800;text-decoration:none}
 .button.primary{color:#fff;background:var(--blurple)}
 .button.primary:hover{background:var(--blurple-dark)}
-.button.secondary{color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.05)}
+.button.secondary{color:var(--ink);border-color:var(--line);background:#fff}
 .button.light{color:var(--ink);border-color:var(--line);background:#fff}
-.status-panel{border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(255,255,255,.05);padding:20px}
+.status-panel{border:1px solid var(--line);border-radius:8px;background:#fff;padding:20px;box-shadow:0 18px 52px rgba(20,38,58,.08)}
 .status-panel h2{font-size:18px;margin-bottom:10px}
-.status-panel p{color:rgba(247,247,255,.7);line-height:1.6;font-size:14px}
+.status-panel p{color:var(--muted);line-height:1.6;font-size:14px}
 .status-list{display:grid;gap:9px;margin-top:16px}
-.status-row{display:grid;grid-template-columns:84px 1fr;gap:10px;align-items:start;color:rgba(247,247,255,.84);font-size:13px;line-height:1.45}
+.status-row{display:grid;grid-template-columns:84px 1fr;gap:10px;align-items:start;color:var(--ink-2);font-size:13px;line-height:1.45}
 .chip{display:inline-flex;align-items:center;justify-content:center;border-radius:6px;padding:4px 7px;font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase}
 .chip.now{background:var(--green-soft);color:var(--green)}
 .chip.soon{background:var(--amber-soft);color:var(--amber)}
@@ -117,7 +117,8 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
       <a href="/framework">Framework</a>
       <a href="/writing">Writings</a>
       <a href="/team-assessment">Assessment</a>
-      <a class="nav-cta" href="/products">View packs</a>
+      <a href="/why">Why?</a>
+      <a class="nav-cta" href="/products">View products</a>
     </div>
   </div>
 </nav>
@@ -126,23 +127,23 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
   <header class="hero">
     <div class="shell hero-grid">
       <div>
-        <div class="eyebrow">Template packs available without the assessment</div>
+        <div class="eyebrow">Products available without the assessment</div>
         <h1>Pick the amount of context governance your project has earned.</h1>
         <p class="hero-copy">
-          dovetell template packs help AI-assisted teams keep decisions, tasks, handoffs, and alignment controls close to the repo. Start small, then add governance only when repetition, drift, or coordination pressure makes it useful.
+          dovetell products help AI-assisted teams keep decisions, tasks, handoffs, and alignment controls close to the repo. Start small, then add governance only when repetition, drift, or coordination pressure makes it useful.
         </p>
         <div class="hero-actions">
-          <a class="button primary" href="#templates">Compare template packs</a>
+          <a class="button primary" href="#templates">Compare products</a>
           <a class="button secondary" href="/team-assessment">Not sure? Take the assessment</a>
         </div>
       </div>
       <aside class="status-panel">
         <h2>What is available</h2>
-        <p>Start with a template pack, then use the assessment if you want help deciding which level fits your current context pressure.</p>
+        <p>Start with the product that matches your context pressure, then use the assessment if you want help deciding which level fits.</p>
         <div class="status-list">
           <div class="status-row"><span class="chip now">now</span><span>Free sample set</span></div>
           <div class="status-row"><span class="chip now">now</span><span>Team assessment and recommendations</span></div>
-          <div class="status-row"><span class="chip soon">next</span><span>Starter, Project HQ, and Team HQ packs</span></div>
+          <div class="status-row"><span class="chip soon">next</span><span>Starter, Project HQ, and Team HQ product paths</span></div>
           <div class="status-row"><span class="chip soon">next</span><span>Guided review and write-back workflows</span></div>
         </div>
       </aside>
@@ -151,7 +152,7 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
 
   <section id="templates">
     <div class="shell">
-      <div class="section-kicker">Template packs</div>
+      <div class="section-kicker">Products</div>
       <h2 class="section-head">From a small starter loop to Team HQ governance.</h2>
       <p class="section-copy">
         The package ladder is not about more files for their own sake. Each level adds only the structure needed to keep context reusable, reviewable, and aligned with the work.
@@ -254,7 +255,7 @@ footer{background:var(--ink);color:rgba(247,247,255,.72);padding:28px 0}
         <div class="section-kicker">Next workflow</div>
         <h2 class="section-head">A workflow layer for teams that want help maintaining context.</h2>
         <p class="section-copy">
-          The template packs work on their own. The next workflow is for teams that want guided review, drift, and write-back around repo-owned files.
+          The products work on their own. The next workflow is for teams that want guided review, drift, and write-back around repo-owned files.
         </p>
         <div class="hero-actions">
           <a class="button primary" href="/#waitlist">Join the list</a>
