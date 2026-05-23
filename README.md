@@ -49,6 +49,12 @@ context repo, `dovetell-gtm`, or in a future private Dovetell context repo.
 Temporary private or not-yet-routed material belongs in `transfer/`, which is
 ignored by git and excluded from initial context assessment.
 
+Brand alignment lives in `.dovetell-context/brand-alignment-centerline.md`
+with drift inventory in `.dovetell-context/brand-drift-inventory.md`.
+The canonical brand source is `dovetell-hq/doc-2f79b64a` and centerline
+`cl-2f79b64a`. Do not update public CSS, icons, OG images, or product-status
+copy without checking that centerline.
+
 ---
 
 ## ID and naming conventions

@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>dovetell - Shared team context for AI-assisted software work</title>
+<title>dovetell - Recoverable intent for AI-assisted projects</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:image" content="https://preprod.dovetell.io/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:title" content="dovetell - Tell it once. Let it travel.">
-<meta property="og:description" content="Shared team context for AI-assisted software work.">
+<meta property="og:description" content="Make project context easier to resume.">
 <meta property="og:url" content="https://preprod.dovetell.io">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://preprod.dovetell.io/assets/og.png">
-<meta name="description" content="dovetell helps AI-assisted software teams turn scattered decisions, prompts, and standards into repo-owned context their coding agents can actually use."/>
+<meta name="description" content="dovetell helps AI-assisted projects preserve recoverable intent: decisions, drift, handoffs, and repo-owned context that make the next session safer to resume."/>
 <script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
 <link rel="stylesheet" href="/assets/preprod-banner.css"/>
 <script defer src="/assets/preprod-banner.js"></script>
@@ -24,22 +24,22 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ink:#111223;
-  --ink-2:#202236;
-  --paper:#fbfbff;
-  --paper-2:#f1f2f8;
-  --line:#dfe2ee;
+  --ink:#14263A;
+  --ink-2:#172D45;
+  --paper:#F8F5F1;
+  --paper-2:#F1F3F7;
+  --line:#D9DDE6;
   --text:#f7f7ff;
-  --muted:#a9adc5;
-  --muted-dark:#62677e;
-  --blurple:#5865f2;
-  --blurple-dark:#3742c5;
+  --muted:#9DA7B5;
+  --muted-dark:#516173;
+  --blurple:#5865F2;
+  --blurple-dark:#3237C8;
   --blurple-soft:#eef0ff;
-  --amber:#d97706;
+  --amber:#F59E0B;
   --amber-soft:#fff5dc;
-  --green:#16834a;
+  --green:#22C55E;
   --green-soft:#e7f7ee;
-  --red:#c2413f;
+  --red:#EF4444;
   --red-soft:#fdeceb;
   --gray-soft:#eceef3;
   --sans:'Plus Jakarta Sans',system-ui,sans-serif;
@@ -64,7 +64,7 @@ nav{
   top:0;
   z-index:20;
   border-bottom:1px solid rgba(255,255,255,.08);
-  background:rgba(17,18,35,.9);
+  background:rgba(20,38,58,.94);
   backdrop-filter:blur(14px);
 }
 .nav-inner{
@@ -108,7 +108,7 @@ nav{
   align-items:center;
   overflow:hidden;
   background:
-    linear-gradient(90deg,rgba(17,18,35,.98) 0%,rgba(17,18,35,.93) 44%,rgba(17,18,35,.72) 100%),
+    linear-gradient(90deg,rgba(20,38,58,.98) 0%,rgba(20,38,58,.94) 44%,rgba(23,45,69,.72) 100%),
     url('/assets/framework.png') right 7% center/920px auto no-repeat;
 }
 .hero::after{
@@ -194,7 +194,7 @@ h1{
 .proof-panel{
   border:1px solid rgba(255,255,255,.14);
   border-radius:8px;
-  background:rgba(17,18,35,.72);
+  background:rgba(20,38,58,.76);
   backdrop-filter:blur(12px);
   padding:18px;
 }
@@ -491,13 +491,13 @@ footer{
   <header class="hero dark-band">
     <div class="shell hero-inner">
       <div>
-        <div class="eyebrow"><span class="status-dot"></span>Available now: public samples + assessment</div>
-        <h1>Shared team context for AI-assisted software work.</h1>
+        <div class="eyebrow"><span class="status-dot"></span>Starter is public. Project HQ is gated.</div>
+        <h1>Make project context easier to resume.</h1>
         <p class="hero-copy">
-          <strong>dovetell</strong> helps teams turn scattered decisions, prompts, and standards into repo-owned context their coding agents can actually use.
+          <strong>dovetell</strong> helps AI-assisted projects preserve recoverable intent: decisions, drift, handoffs, and repo-owned context that make the next session safer to resume.
         </p>
         <div class="hero-actions">
-          <a class="button primary" href="/products">Compare template packs <span aria-hidden="true">-></span></a>
+          <a class="button primary" href="/products">View Starter <span aria-hidden="true">-></span></a>
           <a class="button secondary" href="/team-assessment">Take the team assessment</a>
         </div>
       </div>
@@ -511,7 +511,7 @@ footer{
             <div class="file-row"><span>project-context/session-handoff.md</span><span>resume</span></div>
           </div>
         </div>
-        <p class="hero-note">The first proof surface is intentionally simple: readable markdown near the work, with enough structure for a human or coding agent to resume safely.</p>
+        <p class="hero-note">The first proof surface is intentionally small: readable markdown near the work, with enough structure for a human or coding agent to resume safely.</p>
       </div>
     </div>
   </header>

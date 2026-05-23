@@ -13,6 +13,13 @@ Primary connected context repo:
 
 - `dovetell-gtm`
 
+Core brand alignment pointer:
+
+- `.dovetell-context/brand-alignment-centerline.md`
+- `.dovetell-context/brand-drift-inventory.md`
+- centerline: `cl-2f79b64a`
+- canonical source: `dovetell-hq/doc-2f79b64a`
+
 Use `dovetell-gtm` for private GTM, positioning, validation, pricing, launch
 thinking, and product operating context that informs this public repo.
 
