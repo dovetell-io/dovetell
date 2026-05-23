@@ -374,9 +374,10 @@
     /* ── Animations ── */
     @media (max-width: 680px) {
       .failure-grid { grid-template-columns: 1fr; }
-      nav { gap: 12px; }
-      .nav-links { gap: 12px; flex-wrap: wrap; }
-      .nav-links a:not(.nav-pill) { font-size: 12px; }
+      nav { gap: 12px; min-height: 62px; margin-bottom: 58px; }
+      .nav-links { gap: 10px; flex-wrap: nowrap; }
+      .nav-links a:not(.nav-pill) { display: none; }
+      .nav-pill { display: inline-flex; white-space: nowrap; }
       .page { padding: 0 20px 64px; }
       h1 { font-size: 32px; }
       .hero-sub { font-size: 13px; }
@@ -409,6 +410,7 @@
       <a href="/">Home</a>
       <a href="/products">Products</a>
       <a href="/framework" aria-current="page">Framework</a>
+      <a href="/writing">Writings</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/why">Why?</a>
       <a class="nav-pill" href="/products">View products</a>

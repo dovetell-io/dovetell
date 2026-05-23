@@ -48,8 +48,8 @@ body{font-family:var(--sans);color:var(--text);background:var(--white);min-heigh
 
 /* NAV */
 nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);z-index:100}
-.wordmark{font-size:20px;font-weight:800;letter-spacing:-0.03em;color:var(--near-black);text-decoration:none}
-.wordmark span{color:var(--blurple)}
+.wordmark{display:inline-flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:0;color:var(--near-black);text-decoration:none}
+.wordmark img{width:30px;height:30px;border-radius:7px}
 .nav-status{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--muted)}
 .status-dot{width:8px;height:8px;border-radius:50%;background:var(--blurple);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
@@ -349,7 +349,10 @@ footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify
 <body>
 
 <nav>
-  <a class="wordmark" href="#">dove<span>tell</span></a>
+  <a class="wordmark" href="/">
+    <img src="/assets/favicon.png" alt="" aria-hidden="true">
+    <span>dovetell</span>
+  </a>
   <div class="nav-status">
     <div class="status-dot"></div>
     <span id="nav-label">Assessment</span>
