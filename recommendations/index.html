@@ -141,7 +141,7 @@ const FALLBACK_CONFIG = {
   revisionId: 'fallback',
   nextSteps: {
     Structured: [
-      {title:'Formalize your prompt library with categories', description:'Group prompts by workflow or role so anyone can find what they need without asking.'},
+      {title:'Formalize reusable context by workflow', description:'Group reusable prompts, decisions, and handoff notes so anyone can find what they need without asking.'},
       {title:'Add a review step for AI-generated outputs', description:'Designate someone to spot-check and approve AI work before it becomes official.'},
       {title:'Close your biggest context gap', description:'Pick the capability area that scored lowest and focus your next sprint there.'},
     ],
@@ -429,7 +429,7 @@ function reviewCardHtml(isTopLevel) {
           <span class="review-feat">✓ Q&A with an AI workflow expert</span>
         </div>
       </div>
-      <button class="btn-review">${isTopLevel ? 'Join review waitlist →' : 'Book review →'}</button>
+      <button class="btn-review">${isTopLevel ? 'Join review list →' : 'Book review →'}</button>
     </div>`;
 }
 

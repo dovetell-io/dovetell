@@ -58,7 +58,7 @@ Keep the important context close to the work. Make it readable by humans. Make i
 
 ## Start Small
 
-This does not require a large platform on day one.
+This does not require a large product surface on day one.
 
 A practical first step is a small repo-owned context folder:
 

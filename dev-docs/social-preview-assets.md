@@ -56,4 +56,3 @@ This regenerates the three 1200 x 630 PNG assets.
 The current assets are deliberately text-led and conservative. They are good
 enough for the May launch, but the next pass should consider a tighter custom
 illustration system once the landing page visual language stabilizes.
-
