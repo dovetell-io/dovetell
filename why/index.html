@@ -10,11 +10,11 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:title" content="Why not just…? — dovetell">
-<meta property="og:description" content="dovetell isn't a replacement for Cursor, Claude Code, or your wiki. It's what makes them work better for your specific team.">
+<meta property="og:description" content="dovetell is the recoverable context layer beneath the tools your team already uses.">
 <meta property="og:url" content="https://preprod.dovetell.io/why/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://preprod.dovetell.io/assets/og.png">
-<meta name="description" content="dovetell isn't a replacement for Cursor, Claude Code, or your wiki. It's what makes them work better for your specific team."/>
+<meta name="description" content="dovetell is the recoverable context layer beneath the tools your team already uses."/>
 <script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
 <link rel="stylesheet" href="/assets/preprod-banner.css"/>
 <script defer src="/assets/preprod-banner.js"></script>
@@ -25,16 +25,19 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --blurple:#5865F2;
-  --blurple-dark:#3B45C4;
-  --blurple-light:#D8DAFD;
+  --blurple-dark:#3237C8;
+  --blurple-light:#EEF0FF;
   --blurple-pale:rgba(88,101,242,0.08);
-  --near-black:#1A1A2E;
-  --surface:#20203a;
-  --surface-2:#272745;
-  --muted:rgba(216,218,253,0.5);
-  --text:#e8e9f8;
+  --midnight:#14263A;
+  --deep-navy:#172D45;
+  --warm-surface:#F8F5F1;
+  --surface:#FFFFFF;
+  --surface-2:#F1F3F7;
+  --line:#D9DDE6;
+  --muted:#516173;
+  --text:#14263A;
   --white:#ffffff;
-  --border:rgba(255,255,255,0.07);
+  --border:#D9DDE6;
   --sans:'Plus Jakarta Sans',sans-serif;
   --mono:'JetBrains Mono',monospace;
 }
@@ -43,27 +46,9 @@ html{scroll-behavior:smooth}
 body{
   font-family:var(--sans);
   color:var(--text);
-  background:var(--near-black);
+  background:var(--warm-surface);
   min-height:100vh;
   overflow-x:hidden;
-}
-
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 10%,rgba(88,101,242,0.14) 0%,transparent 65%),
-    radial-gradient(ellipse 60% 50% at 80% 85%,rgba(59,69,196,0.10) 0%,transparent 65%);
-  pointer-events:none;z-index:0;
-}
-body::after{
-  content:'';
-  position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(88,101,242,0.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(88,101,242,0.04) 1px,transparent 1px);
-  background-size:52px 52px;
-  pointer-events:none;z-index:0;
 }
 
 .wrap{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:0 32px}
@@ -71,9 +56,9 @@ body::after{
 /* NAV */
 nav{
   position:sticky;top:0;z-index:100;
-  background:rgba(26,26,46,0.85);
+  background:rgba(20,38,58,0.94);
   backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid rgba(255,255,255,0.08);
 }
 .nav-inner{
   max-width:1040px;margin:0 auto;padding:0 32px;
@@ -81,16 +66,17 @@ nav{
   height:60px;
 }
 .wordmark{
-  font-size:19px;font-weight:800;letter-spacing:-0.03em;
-  color:var(--text);text-decoration:none;
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:20px;font-weight:800;letter-spacing:0;
+  color:#fff;text-decoration:none;
 }
-.wordmark em{font-style:normal;color:var(--blurple)}
+.wordmark img{width:30px;height:30px;border-radius:7px}
 .nav-links{display:flex;align-items:center;gap:28px}
 .nav-links a{
-  font-size:13px;font-weight:500;color:var(--muted);
+  font-size:13px;font-weight:600;color:rgba(247,247,255,0.72);
   text-decoration:none;transition:color 0.2s;letter-spacing:0.01em;
 }
-.nav-links a:hover{color:var(--text)}
+.nav-links a:hover,.nav-links a[aria-current="page"]{color:#fff}
 .nav-cta{
   background:var(--blurple);color:#fff !important;
   padding:8px 18px;border-radius:7px;font-weight:700 !important;
@@ -100,7 +86,7 @@ nav{
 
 /* PAGE HERO */
 .page-hero{
-  padding:80px 0 56px;
+  padding:72px 0 32px;
   opacity:0;animation:fadeUp 0.8s ease 0.05s forwards;
 }
 .hero-eyebrow{
@@ -111,9 +97,9 @@ nav{
   border-radius:4px;padding:5px 12px;margin-bottom:28px;
 }
 h1{
-  font-size:clamp(36px,5.5vw,60px);
-  font-weight:800;letter-spacing:-0.04em;line-height:1.05;
-  margin-bottom:20px;max-width:720px;
+  font-size:clamp(34px,5vw,54px);
+  font-weight:800;letter-spacing:0;line-height:1.05;
+  margin-bottom:20px;max-width:700px;
 }
 h1 em{font-style:normal;color:var(--blurple)}
 .page-sub{
@@ -122,7 +108,7 @@ h1 em{font-style:normal;color:var(--blurple)}
 }
 
 /* SECTION SHARED */
-section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
+section{padding:48px 0}
 .section-label{
   font-family:var(--mono);font-size:10px;letter-spacing:0.14em;
   text-transform:uppercase;color:var(--blurple);margin-bottom:16px;opacity:0.8;
@@ -132,7 +118,7 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
 .pattern{
   margin-bottom:48px;
   border:1px solid var(--border);
-  border-radius:16px;
+  border-radius:8px;
   overflow:hidden;
   transition:border-color 0.2s;
 }
@@ -152,7 +138,7 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
   border-radius:4px;padding:3px 10px;white-space:nowrap;
 }
 .pattern-header h2{
-  font-size:18px;font-weight:800;letter-spacing:-0.02em;
+  font-size:18px;font-weight:800;letter-spacing:0;
 }
 .pattern-header h2 em{font-style:normal;color:var(--blurple)}
 
@@ -163,7 +149,7 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
 .pattern-col{padding:28px;}
 .pattern-col+.pattern-col{
   border-left:1px solid var(--border);
-  background:rgba(88,101,242,0.04);
+  background:#FBFAF7;
 }
 .pattern-col-label{
   font-family:var(--mono);font-size:10px;letter-spacing:0.1em;
@@ -179,12 +165,20 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
   font-size:13px;color:var(--text);line-height:1.55;
   display:flex;gap:10px;align-items:flex-start;
 }
+.pattern-col code{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--blurple);
+  background:var(--blurple-light);
+  border-radius:4px;
+  padding:1px 4px;
+}
 .pattern-col ul li::before{
   content:'';flex-shrink:0;
   width:5px;height:5px;border-radius:50%;
   margin-top:6px;
 }
-.pattern-col:first-child ul li::before{background:rgba(216,218,253,0.3)}
+.pattern-col:first-child ul li::before{background:#9DA7B5}
 .pattern-col:last-child ul li::before{background:var(--blurple)}
 
 .pattern-footer{
@@ -206,15 +200,10 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
   padding:48px;margin-top:16px;
   position:relative;overflow:hidden;
 }
-.verdict::before{
-  content:'';position:absolute;top:-60px;right:-60px;
-  width:240px;height:240px;
-  background:radial-gradient(circle,rgba(88,101,242,0.12) 0%,transparent 70%);
-}
 .verdict-inner{position:relative;z-index:1}
 .verdict h2{
   font-size:clamp(22px,3vw,32px);font-weight:800;
-  letter-spacing:-0.03em;margin-bottom:16px;
+  letter-spacing:0;margin-bottom:16px;
 }
 .verdict h2 em{font-style:normal;color:var(--blurple)}
 .verdict p{
@@ -228,7 +217,7 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
   font-family:var(--sans);font-size:14px;font-weight:700;
   padding:14px 28px;border-radius:9px;border:none;
   cursor:pointer;text-decoration:none;
-  transition:all 0.2s;letter-spacing:-0.01em;
+  transition:all 0.2s;letter-spacing:0;
 }
 .btn-hero:hover{background:var(--blurple-dark);transform:translateY(-2px);box-shadow:0 8px 28px rgba(88,101,242,0.35)}
 .btn-ghost{
@@ -236,10 +225,10 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
   background:transparent;color:var(--text);
   font-family:var(--sans);font-size:14px;font-weight:600;
   padding:14px 24px;border-radius:9px;
-  border:1px solid rgba(255,255,255,0.15);
+  border:1px solid var(--border);
   text-decoration:none;transition:all 0.2s;
 }
-.btn-ghost:hover{border-color:rgba(88,101,242,0.5);color:var(--blurple-light)}
+.btn-ghost:hover{border-color:rgba(88,101,242,0.5);color:var(--blurple)}
 
 /* FOOTER */
 .site-footer{
@@ -249,7 +238,7 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
   flex-wrap:wrap;gap:16px;
 }
 .footer-left{display:flex;align-items:center;gap:20px}
-.footer-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
+.footer-wordmark{font-size:15px;font-weight:800;letter-spacing:0;color:var(--text)}
 .footer-wordmark em{font-style:normal;color:var(--blurple)}
 .footer-tagline{font-family:var(--mono);font-size:11px;color:var(--muted);font-style:italic}
 .footer-links{display:flex;gap:20px}
@@ -284,13 +273,16 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a class="wordmark" href="/">dove<em>tell</em></a>
+    <a class="wordmark" href="/">
+      <img src="/assets/favicon.png" alt="" aria-hidden="true">
+      <span>dovetell</span>
+    </a>
     <div class="nav-links">
       <a href="/products">Products</a>
       <a href="/framework">Framework</a>
       <a href="/team-assessment">Assessment</a>
-      <a href="/why">Why?</a>
-      <a class="nav-cta" href="/products">View products →</a>
+      <a href="/why" aria-current="page">Why?</a>
+      <a class="nav-cta" href="/products">View products</a>
     </div>
   </div>
 </nav>
@@ -298,16 +290,16 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
 <!-- HERO -->
 <div class="wrap">
   <div class="page-hero">
-    <div class="hero-eyebrow">// Why not just…?</div>
-    <h1>Your tools are good.<br>Context makes them <em>great.</em></h1>
-    <p class="page-sub"><strong>dovetell</strong> isn't a replacement for Cursor, Claude Code, or your wiki. It's the layer that makes them work better for your specific team — because great tools still need to know what your team actually decided.</p>
+    <div class="hero-eyebrow">Why not just...</div>
+    <h1>Your tools are good.<br>Context makes them safer to resume.</h1>
+    <p class="page-sub"><strong>dovetell</strong> is not a replacement for Cursor, Claude Code, or your wiki. It is the reviewed context layer beneath them: the decisions, drift, and handoff memory that keep the next session from starting cold.</p>
   </div>
 </div>
 
 <!-- PATTERNS -->
 <section style="animation-delay:0.1s;padding-top:0">
   <div class="wrap">
-    <div class="section-label">// The patterns</div>
+    <div class="section-label">The patterns</div>
 
     <!-- CURSOR -->
     <div class="pattern">
@@ -321,7 +313,7 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
           <ul>
             <li>Writes, edits, and refactors code inline with full file context</li>
             <li>Understands your codebase structure through indexing</li>
-            <li>Applies rules from <code style="font-family:var(--mono);font-size:11px;color:var(--blurple-light)">.cursorrules</code> or <code style="font-family:var(--mono);font-size:11px;color:var(--blurple-light)">AGENTS.md</code></li>
+            <li>Applies rules from <code>.cursorrules</code> or <code>AGENTS.md</code></li>
             <li>Executes tasks fast — it's the runtime</li>
           </ul>
         </div>
@@ -353,13 +345,13 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
             <li>Agentic, multi-step coding tasks from the terminal</li>
             <li>Reads, writes, and runs files across your whole repo</li>
             <li>Handles complex refactors with minimal hand-holding</li>
-            <li>Picks up project context from <code style="font-family:var(--mono);font-size:11px;color:var(--blurple-light)">CLAUDE.md</code></li>
+            <li>Picks up project context from <code>CLAUDE.md</code></li>
           </ul>
         </div>
         <div class="pattern-col">
           <div class="pattern-col-label">What dovetell adds</div>
           <ul>
-            <li>Structured prompt blocks that go into <code style="font-family:var(--mono);font-size:11px;color:var(--blurple-light)">CLAUDE.md</code> — written once, reused everywhere</li>
+            <li>Structured prompt blocks that go into <code>CLAUDE.md</code> — written once, reused everywhere</li>
             <li>Team decisions surfaced at session start, not re-explained every time</li>
             <li>A versioned record of what context was active when decisions were made</li>
             <li>The governance layer so CLAUDE.md doesn't drift into everyone's personal preferences</li>
@@ -500,12 +492,12 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
   <div class="wrap">
     <div class="verdict">
       <div class="verdict-inner">
-        <div class="section-label">// The honest answer</div>
-        <h2>Use all of it.<br><strong>dovetell</strong> is the <em>layer between.</em></h2>
-        <p>None of these tools are wrong choices. The gap they all share is the same: they're powerful at execution, but they don't carry your team's specific decisions, standards, and context forward automatically. That's the job dovetell does — not instead of the tools you already use, but underneath them.</p>
+        <div class="section-label">The honest answer</div>
+        <h2>Use all of it.<br><strong>dovetell</strong> is the context layer underneath.</h2>
+        <p>None of these tools are wrong choices. The gap they share is the same: they are powerful at execution, but they do not automatically carry your team's reviewed decisions, standards, and context forward. That is the job dovetell does: not instead of the tools you already use, but underneath them.</p>
         <div class="verdict-cta">
           <a class="btn-hero" href="/team-assessment">
-            See where your team stands →
+            See where your team stands
           </a>
           <a class="btn-ghost" href="/framework">
             See the framework
@@ -520,33 +512,18 @@ section{padding:64px 0;opacity:0;animation:fadeUp 0.7s ease forwards}
 <div class="wrap">
   <footer class="site-footer">
     <div class="footer-left">
-      <div class="footer-wordmark">dove<em>tell</em></div>
-      <div class="footer-tagline">"Tell it once. Let it travel."</div>
+      <div class="footer-wordmark">dovetell</div>
+      <div class="footer-tagline">Make project context easier to resume.</div>
     </div>
     <div class="footer-links">
       <a href="/products">Products</a>
       <a href="/framework">Framework</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/privacy">Privacy</a>
-      <a href="https://github.com/dovetell-io/sample/tree/main/minimal-repo-context-starter" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="https://github.com/dovetell-io/sample/tree/main/minimal-repo-context-starter" target="_blank" rel="noopener">GitHub</a>
     </div>
   </footer>
 </div>
 
-<script>
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.animationPlayState = 'running';
-      observer.unobserve(entry.target);
-    }
-  });
-}, {threshold: 0.1});
-
-document.querySelectorAll('section').forEach(el => {
-  el.style.animationPlayState = 'paused';
-  observer.observe(el);
-});
-</script>
 </body>
 </html>
