@@ -43,6 +43,11 @@ const BANNED_PUBLIC_TERMS = [
   /\bpublic intake\b/i,
   /\bprivacy-friendly analytics\b/i,
   /\bsource integrations only after\b/i,
+  /\bSetup Review\b/i,
+  /\bBook review\b/i,
+  /\bBook a 60-minute session\b/i,
+  /\bAI workflow expert\b/i,
+  /\$299\b/,
 ];
 
 function read(relativePath) {

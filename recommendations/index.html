@@ -417,19 +417,19 @@ function topLevelCardsHtml(freeSample, freeSampleHref) {
 function reviewCardHtml(isTopLevel) {
   return `
     <div class="review-card">
-      <div class="review-icon">📅</div>
+      <div class="review-icon">DT</div>
       <div class="review-body">
-        <div class="review-title">${isTopLevel ? 'Optional Benchmark Review' : 'Setup Review'} <span class="review-price">${isTopLevel ? 'Optional' : '$299'}</span></div>
+        <div class="review-title">${isTopLevel ? 'Keep the system visible' : 'Choose the next product path'} <span class="review-price">${isTopLevel ? 'Maintain' : 'Next'}</span></div>
         <div class="review-desc">${isTopLevel
-          ? 'Use this only if you want an outside read on whether your strong internal practices are durable, teachable, and ready to scale.'
-          : 'Book a 60-minute session with a dovetell expert to review your setup, identify gaps, and get tailored recommendations for your team.'}</div>
+          ? 'A strong score means the next move is calibration: keep examples current, review stale prompts, and make the operating model teachable.'
+          : 'Use your result to compare Starter, Project HQ, and Team HQ. Start with the smallest level that makes context reusable and reviewable.'}</div>
         <div class="review-features">
-          <span class="review-feat">✓ Personalized review of your results</span>
-          <span class="review-feat">✓ Prioritized action plan</span>
-          <span class="review-feat">✓ Q&A with an AI workflow expert</span>
+          <span class="review-feat">✓ Match structure to context pressure</span>
+          <span class="review-feat">✓ Keep human review in the loop</span>
+          <span class="review-feat">✓ Preserve the durable record near the work</span>
         </div>
       </div>
-      <button class="btn-review">${isTopLevel ? 'Join review list →' : 'Book review →'}</button>
+      <a class="btn-review" href="/products/">${isTopLevel ? 'Review product paths →' : 'View products →'}</a>
     </div>`;
 }
 

@@ -241,13 +241,13 @@
         "url": "/products/"
       }
     ],
-    "setupReview": {
-      "price": 299,
-      "desc": "Book a 60-minute session with a dovetell expert to review your setup, identify gaps, and get tailored recommendations.",
+    "productGuidance": {
+      "price": null,
+      "desc": "Use the assessment result to compare Starter, Project HQ, and Team HQ, then start with the smallest level of structure that makes context reusable.",
       "features": [
-        "Personalized review of your results",
-        "Prioritized action plan",
-        "Q&A with an AI workflow expert"
+        "Match structure to context pressure",
+        "Keep human review in the loop",
+        "Preserve the durable record near the work"
       ]
     }
   },

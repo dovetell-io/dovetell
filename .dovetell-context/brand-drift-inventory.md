@@ -123,6 +123,7 @@ email template is being updated for launch.
 | Product-status copy | aligned | Preserves Starter public, Project HQ gated, Team HQ research, and uses product-path language where public-facing. |
 | Public nav CTA language | aligned | Active public routes and writing generator use `View products`; no `View packs` matches remain. |
 | Shared nav source | guarded | Static pages still duplicate nav CSS/HTML; `dev-docs/public-nav-contract.md` and `scripts/check-public-nav.js` now guard the current contract until extraction is worth it. |
+| Recommendations outreach copy | aligned | Removed setup-review pricing and booking language from recommendations and fallback data; product-path guidance now points back to `/products/`. |
 
 ---
 
