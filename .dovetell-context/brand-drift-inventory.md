@@ -122,7 +122,7 @@ email template is being updated for launch.
 | App demo emoji logo | retire-or-isolate | Demo uses a loose symbol; do not treat as public brand. |
 | Product-status copy | aligned | Preserves Starter public, Project HQ gated, Team HQ research, and uses product-path language where public-facing. |
 | Public nav CTA language | aligned | Active public routes and writing generator use `View products`; no `View packs` matches remain. |
-| Shared nav source | inspect | Static pages still duplicate nav CSS/HTML; extract or otherwise govern in a later sweep. |
+| Shared nav source | guarded | Static pages still duplicate nav CSS/HTML; `dev-docs/public-nav-contract.md` and `scripts/check-public-nav.js` now guard the current contract until extraction is worth it. |
 
 ---
 

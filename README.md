@@ -24,7 +24,7 @@ contain public implementation files and a thin context pointer.
 | Path | Description |
 |------|-------------|
 | `index.html` | Homepage |
-| `products/` | Public product and template-pack ladder |
+| `products/` | Public product ladder |
 | `framework/` | The dovetell framework diagram |
 | `why/` | "Why not just X?" positioning page |
 | `writing/` | Preprod owned-writing SEO experiment |
@@ -54,6 +54,13 @@ with drift inventory in `.dovetell-context/brand-drift-inventory.md`.
 The canonical brand source is `dovetell-hq/doc-2f79b64a` and centerline
 `cl-2f79b64a`. Do not update public CSS, icons, OG images, or product-status
 copy without checking that centerline.
+
+Public nav and near-nav language are governed by
+`dev-docs/public-nav-contract.md`. After hand-editing public pages, run:
+
+```sh
+node scripts/check-public-nav.js
+```
 
 ---
 

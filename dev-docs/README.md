@@ -13,6 +13,7 @@ to preserve while working in this repo.
 
 - [Assessment identity model](assessment-identity-model.md)
 - [Database naming conventions](database-naming-conventions.md)
+- [Public nav contract](public-nav-contract.md)
 - [Resend assessment email template](resend-assessment-email-template.md)
 - [Social preview assets](social-preview-assets.md)
 - [Writing pages](writing-pages.md)

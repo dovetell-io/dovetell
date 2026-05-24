@@ -45,8 +45,11 @@ centerline_pointer:
         - Navigation CTA language stays on `View products`, not packs.
         - Generated writing pages do not reintroduce older nav language or shell widths.
         - Public recommendation/product copy uses product-path language.
+        - Nav and near-nav language have a documented contract and a local checker.
         - Visual QA is completed before release.
       evidence:
+        - dev-docs/public-nav-contract.md
+        - scripts/check-public-nav.js
         - products/index.html
         - recommendations/index.html
         - scripts/build-writing.js
@@ -78,6 +81,8 @@ measurement_policy_ref:
 - Public recommendation/product copy should avoid buyer-facing `packs` and
   `package ladder` language unless intentionally referring to technical repo
   packages.
+- Public nav and near-nav copy should pass `node scripts/check-public-nav.js`
+  after hand edits.
 
 ---
 
