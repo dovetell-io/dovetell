@@ -334,7 +334,7 @@
     "migration-cleanup": {
       "id": "workspace-cleanup-preview",
       "name": "Workspace Cleanup Preview",
-      "description": "A preview checklist for separating public, private, package, and prototype context during cleanup.",
+      "description": "A preview checklist for separating public, private, product, and prototype context during cleanup.",
       "bestFor": "Teams cleaning up migration residue, prototype history, or repo-role bleed.",
       "href": "https://docs.dovetell.io/templates/free-samples",
       "includes": [

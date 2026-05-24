@@ -136,7 +136,7 @@ function articleShell(article, content) {
 html{scroll-behavior:smooth}
 body{min-height:100vh;font-family:var(--sans);color:var(--ink);background:var(--paper);overflow-x:hidden}
 a{color:inherit}
-.shell{width:min(1060px,calc(100% - 48px));margin:0 auto}
+.shell{width:min(1120px,calc(100% - 48px));margin:0 auto}
 nav{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(17,18,35,.92);backdrop-filter:blur(14px)}
 .nav-inner{height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .wordmark{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:20px;font-weight:800;letter-spacing:0}
@@ -172,8 +172,8 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
 .footer-links{display:flex;gap:18px;flex-wrap:wrap}
 .footer-links a{font-size:12px;text-decoration:none}
 .footer-links a:hover{color:var(--ink)}
-@media(max-width:860px){.shell{width:min(100% - 36px,1060px)}.article-wrap{grid-template-columns:1fr;gap:28px}.side-note{position:static}.nav-links{gap:10px}.nav-links a:not(.nav-cta){display:none}}
-@media(max-width:560px){.shell{width:min(100% - 28px,1060px)}.article-hero{padding:56px 0 42px}.article{font-size:16px}.article h2{font-size:24px}.nav-inner{height:auto;min-height:62px;padding:10px 0}}
+@media(max-width:860px){.shell{width:min(100% - 36px,1120px)}.article-wrap{grid-template-columns:1fr;gap:28px}.side-note{position:static}.nav-links{gap:10px}.nav-links a:not(.nav-cta){display:none}}
+@media(max-width:560px){.shell{width:min(100% - 28px,1120px)}.article-hero{padding:56px 0 42px}.article{font-size:16px}.article h2{font-size:24px}.nav-inner{height:auto;min-height:62px;padding:10px 0}}
 </style>
 </head>
 <body>
@@ -189,7 +189,7 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
       <a href="/writing">Writings</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/why">Why?</a>
-      <a class="nav-cta" href="/products">View packs</a>
+      <a class="nav-cta" href="/products">View products</a>
     </div>
   </div>
 </nav>
@@ -266,7 +266,7 @@ function indexShell(articles) {
 :root{--ink:#111223;--paper:#fbfbff;--paper-2:#f1f2f8;--line:#dfe2ee;--muted:#62677e;--blurple:#5865f2;--blurple-dark:#3742c5;--green:#16834a;--sans:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
 body{min-height:100vh;font-family:var(--sans);color:var(--ink);background:var(--paper)}
 a{color:inherit}
-.shell{width:min(1060px,calc(100% - 48px));margin:0 auto}
+.shell{width:min(1120px,calc(100% - 48px));margin:0 auto}
 nav{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(17,18,35,.92);backdrop-filter:blur(14px)}
 .nav-inner{height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .wordmark{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:20px;font-weight:800}
@@ -286,8 +286,8 @@ h1{max-width:780px;font-size:clamp(42px,7vw,76px);line-height:1.02;font-weight:8
 .writing-card p{color:var(--muted);font-size:14px;line-height:1.65}
 .note{border-top:1px solid var(--line);background:var(--paper-2);padding:34px 0;color:var(--muted);font-size:14px;line-height:1.7}
 footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);background:#fff}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.footer-links{display:flex;gap:18px;flex-wrap:wrap}.footer-links a{font-size:12px;text-decoration:none}.footer-links a:hover{color:var(--ink)}
-@media(max-width:760px){.shell{width:min(100% - 36px,1060px)}.writing-grid{grid-template-columns:1fr}.nav-links{gap:10px}.nav-links a:not(.nav-cta){display:none}}
-@media(max-width:560px){.shell{width:min(100% - 28px,1060px)}.hero{padding:58px 0 44px}.nav-inner{height:auto;min-height:62px;padding:10px 0}}
+@media(max-width:760px){.shell{width:min(100% - 36px,1120px)}.writing-grid{grid-template-columns:1fr}.nav-links{gap:10px}.nav-links a:not(.nav-cta){display:none}}
+@media(max-width:560px){.shell{width:min(100% - 28px,1120px)}.hero{padding:58px 0 44px}.nav-inner{height:auto;min-height:62px;padding:10px 0}}
 </style>
 </head>
 <body>
@@ -303,7 +303,7 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
       <a href="/writing">Writings</a>
       <a href="/team-assessment">Assessment</a>
       <a href="/why">Why?</a>
-      <a class="nav-cta" href="/products">View packs</a>
+      <a class="nav-cta" href="/products">View products</a>
     </div>
   </div>
 </nav>
@@ -355,14 +355,14 @@ function build() {
     .sort((a, b) => String(b.date).localeCompare(String(a.date)));
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexShell(articles));
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexShell(articles) + '\n');
 
   for (const article of articles) {
     const articleDir = path.join(OUTPUT_DIR, article.slug);
     fs.mkdirSync(articleDir, { recursive: true });
     fs.writeFileSync(
       path.join(articleDir, 'index.html'),
-      articleShell(article, markdownToHtml(article.body))
+      articleShell(article, markdownToHtml(article.body)) + '\n'
     );
   }
 }

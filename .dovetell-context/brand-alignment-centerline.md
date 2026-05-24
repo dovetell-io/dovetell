@@ -37,15 +37,24 @@ centerline_pointer:
       measurement:
         status: unmeasured
     - centerline_item_id: cli-bd03c7a9
-      title: Implement token and asset alignment
-      local_status: parked
+      title: Implement token, asset, nav, and public-surface alignment
+      local_status: active
       local_acceptance:
         - Public site uses approved token family where appropriate.
         - Social previews use current v0.3 mark and product-status language.
+        - Navigation CTA language stays on `View products`, not packs.
+        - Generated writing pages do not reintroduce older nav language or shell widths.
+        - Public recommendation/product copy uses product-path language.
         - Visual QA is completed before release.
+      evidence:
+        - products/index.html
+        - recommendations/index.html
+        - scripts/build-writing.js
+        - dovetell-data.json
+        - team-assessment/assessment-config.json
       measurement:
-        status: not-worth-measuring
-        note: Parked until implementation is explicitly authorized.
+        status: measured-upstream
+        note: Actual token burn remains in the HQ centerline event log.
 ```
 
 ## Measurement
@@ -65,6 +74,10 @@ measurement_policy_ref:
 - Public site CSS uses older `--ink`, `--paper`, and blurple token values.
 - Public favicon and OG assets should be checked against the v0.3 mark family.
 - Public copy should preserve the Starter / Project HQ / Team HQ status split.
+- Public nav and generated-page source should preserve `View products`.
+- Public recommendation/product copy should avoid buyer-facing `packs` and
+  `package ladder` language unless intentionally referring to technical repo
+  packages.
 
 ---
 

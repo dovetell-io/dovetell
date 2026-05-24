@@ -83,16 +83,16 @@ token_drift:
       ink: "#111223"
       paper: "#fbfbff"
       blurple: "#5865f2"
-    classification: defer
-    reason: Generated or built writing pages should follow the same token pass as the source templates.
+    classification: aligned
+    reason: Generated and built writing pages now preserve the shared 1120px shell and `View products` CTA from scripts/build-writing.js.
 
   - file: assessments/index.html, recommendations/index.html, framework/index.html
     current:
       blurple: "#5865F2"
       blurple_dark: "#3B45C4"
       near_black: "#1A1A2E"
-    classification: defer
-    reason: Assessment surfaces are functional and should be reviewed alongside status-language and product-ladder copy.
+    classification: inspect
+    reason: Recommendation copy and metadata now use product-path language; assessment/framework visual chrome still needs a fuller shared-nav component pass.
 
   - file: assets/og-card.html, assets/og-starter.html, assets/og-assessment.html
     current:
@@ -120,7 +120,9 @@ email template is being updated for launch.
 | Wordmark assets | aligned | Replaced with v0.3 two-tone lockup exports. |
 | OG images/templates | aligned | Regenerated/updated from v0.3 sources and verified 1200x630. |
 | App demo emoji logo | retire-or-isolate | Demo uses a loose symbol; do not treat as public brand. |
-| Product-status copy | inspect | Preserve Starter public, Project HQ gated, Team HQ research. |
+| Product-status copy | aligned | Preserves Starter public, Project HQ gated, Team HQ research, and uses product-path language where public-facing. |
+| Public nav CTA language | aligned | Active public routes and writing generator use `View products`; no `View packs` matches remain. |
+| Shared nav source | inspect | Static pages still duplicate nav CSS/HTML; extract or otherwise govern in a later sweep. |
 
 ---
 

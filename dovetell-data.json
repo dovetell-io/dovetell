@@ -211,11 +211,11 @@
         "url": "https://docs.dovetell.io/templates/free-samples"
       },
       {
-        "badge": "Template Pack",
+        "badge": "Product",
         "badgeStyle": "paid",
         "name": "Starter",
         "price": null,
-        "desc": "A compact package for one project that needs durable AI context without ceremony.",
+        "desc": "A compact product path for one project that needs durable AI context without ceremony.",
         "includes": [
           "Project manifest",
           "Decision and task templates",
