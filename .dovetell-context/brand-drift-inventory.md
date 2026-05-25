@@ -80,11 +80,14 @@ token_drift:
 
   - file: writing/index.html and writing/context-debt/index.html
     current:
-      ink: "#111223"
-      paper: "#fbfbff"
-      blurple: "#5865f2"
+      ink: "#14263A"
+      paper: "#F8F5F1"
+      paper_2: "#F1F3F7"
+      line: "#D9DDE6"
+      blurple: "#5865F2"
+      blurple_dark: "#3237C8"
     classification: aligned
-    reason: Generated and built writing pages now preserve the shared 1120px shell and `View products` CTA from scripts/build-writing.js.
+    reason: Generated and built writing pages now preserve the shared 1120px shell, current public token family, and `View products` CTA from scripts/build-writing.js.
 
   - file: assessments/index.html, recommendations/index.html, framework/index.html
     current:
