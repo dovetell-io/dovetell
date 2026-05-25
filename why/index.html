@@ -63,7 +63,7 @@ nav{
 .nav-inner{
   max-width:1184px;margin:0 auto;padding:0 32px;
   display:flex;align-items:center;justify-content:space-between;
-  height:60px;
+  height:64px;
 }
 .wordmark{
   display:inline-flex;align-items:center;gap:10px;
@@ -79,7 +79,7 @@ nav{
 .nav-links a:hover,.nav-links a[aria-current="page"]{color:#fff}
 .nav-cta{
   background:var(--blurple);color:#fff !important;
-  padding:8px 18px;border-radius:7px;font-weight:700 !important;
+  padding:10px 15px;border-radius:8px;font-weight:700 !important;
   font-size:13px !important;transition:background 0.2s !important;
 }
 .nav-cta:hover{background:var(--blurple-dark) !important}
@@ -262,7 +262,10 @@ section{padding:48px 0}
   .verdict-cta{flex-direction:column}
   .btn-hero,.btn-ghost{justify-content:center;text-align:center}
   .nav-links a:not(.nav-cta){display:none}
-  .nav-cta{display:inline-flex;white-space:nowrap}
+  .wordmark{font-size:18px;gap:8px}
+  .wordmark img{width:28px;height:28px}
+  .nav-cta{display:inline-flex;white-space:nowrap;padding:9px 12px;font-size:0 !important}
+  .nav-cta::after{content:'Products';font-size:12px}
   .site-footer{flex-direction:column;text-align:center;gap:12px}
   .footer-left{flex-direction:column;gap:4px}
   .footer-links{gap:16px}
