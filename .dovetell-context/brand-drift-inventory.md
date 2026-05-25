@@ -119,12 +119,13 @@ email template is being updated for launch.
 | Favicon/apple-touch icon | aligned | Replaced with v0.3 assets. |
 | Wordmark assets | aligned | Replaced with v0.3 two-tone lockup exports. |
 | OG images/templates | aligned | Regenerated/updated from v0.3 sources and verified 1200x630. |
-| App demo emoji logo | retire-or-isolate | Demo uses a loose symbol; do not treat as public brand. |
+| App demo prototype screens | retire-hidden | Hidden from public navigation/search; do not treat sample project screens as public brand or product truth. |
 | Product-status copy | aligned | Preserves Starter public, Project HQ gated, Team HQ research, and uses product-path language where public-facing. |
 | Public nav CTA language | aligned | Active public routes and writing generator use `View products`; no `View packs` matches remain. |
 | Shared nav source | guarded | Static pages still duplicate nav CSS/HTML; `dev-docs/public-nav-contract.md` and `scripts/check-public-nav.js` now guard the current contract until extraction is worth it. |
 | Recommendations outreach copy | aligned | Removed setup-review pricing and booking language from recommendations and fallback data; product-path guidance now points back to `/products/`. |
 | Assessment-family visual baseline | partial-aligned | `team-assessment`, `assessments`, and `recommendations` now share warmer brand tokens and current mark treatment; full interaction QA remains separate. |
+| Internal action routing | active | Notes to John now belong in `.dovetell-context/internal-actions.md`, not ambiguous customer-facing helper text. |
 
 ---
 

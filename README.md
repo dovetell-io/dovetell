@@ -24,7 +24,7 @@ contain public implementation files and a thin context pointer.
 | Path | Description |
 |------|-------------|
 | `index.html` | Homepage |
-| `products/` | Public product ladder |
+| `products/` | Public product paths |
 | `framework/` | The dovetell framework diagram |
 | `why/` | "Why not just X?" positioning page |
 | `writing/` | Preprod owned-writing SEO experiment |
@@ -33,7 +33,7 @@ contain public implementation files and a thin context pointer.
 | `assessments/` | Returning user dashboard |
 | `recommendations/` | Personalized offer page |
 | `privacy/` | Privacy policy |
-| `app-demo/` | Vision demo screens (not live product) |
+| `app-demo/` | Hidden vision demo screens; retirement candidate, not live product |
 | `assets/` | Brand assets — logo, favicon, OG image |
 | `dev-docs/` | Repo-local developer wiki and implementation conventions |
 | `supabase/` | Public-safe draft schema and intake contract for assessment persistence |
@@ -119,10 +119,12 @@ intake contract.
 
 ---
 
-## Demo and vision
+## Hidden demo and vision
 
 The `app-demo/` folder contains vision demos of the Phase 2 platform.
-These are static HTML mockups — not live product.
+These are static HTML mockups, not live product, and should stay hidden from
+public navigation and search indexing. Treat the folder as a retirement
+candidate unless a future centerline explicitly revives it.
 
 All demo content should use fictional data only.
 
