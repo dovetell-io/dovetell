@@ -24,26 +24,26 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --blurple:#5865F2;--blurple-dark:#3B45C4;--blurple-light:#D8DAFD;
-  --blurple-pale:#EEF0FE;--near-black:#1A1A2E;--text:#1A1A2E;
-  --muted:#6B7280;--border:#E5E7EB;--surface:#F9FAFB;--white:#FFFFFF;
-  --green:#16A34A;--green-light:#DCFCE7;
+  --blurple:#5865F2;--blurple-dark:#3237C8;--blurple-light:#D8DAFD;
+  --blurple-pale:#EEF0FE;--near-black:#14263A;--text:#14263A;
+  --muted:#516173;--border:#D9DDE6;--surface:#F1F3F7;--paper:#F8F5F1;--white:#FFFFFF;
+  --green:#22C55E;--green-light:#DCFCE7;
   --sans:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
 }
 html{scroll-behavior:smooth}
-body{font-family:var(--sans);color:var(--text);background:var(--white);min-height:100vh}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);min-height:100vh}
 
-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);z-index:100}
-.wordmark{font-size:20px;font-weight:800;letter-spacing:-0.03em;color:var(--near-black);text-decoration:none}
-.wordmark span{color:var(--blurple)}
-.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;font-weight:500;transition:color 0.2s}
-.nav-back:hover{color:var(--text)}
+nav{display:flex;align-items:center;justify-content:space-between;padding:17px 40px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;background:rgba(20,38,58,.94);backdrop-filter:blur(14px);z-index:100}
+.wordmark{display:inline-flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:0;color:#fff;text-decoration:none}
+.wordmark img{width:30px;height:30px;border-radius:7px}
+.nav-back{font-size:13px;color:rgba(247,247,255,.72);text-decoration:none;display:flex;align-items:center;gap:6px;font-weight:600;transition:color 0.2s}
+.nav-back:hover{color:#fff}
 
 .page{max-width:860px;margin:0 auto;padding:48px 32px 100px}
 
 .rec-hero{margin-bottom:40px}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--blurple);margin-bottom:12px}
-.rec-hero h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-0.03em;margin-bottom:8px}
+.rec-hero h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:0;margin-bottom:8px}
 .rec-hero h1 em{font-style:normal;color:var(--blurple)}
 .rec-hero p{font-size:15px;color:var(--muted);line-height:1.65;max-width:560px}
 
@@ -66,8 +66,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 4
 .tier-badge.free{background:var(--surface);color:var(--muted)}
 .tier-badge.paid{background:var(--blurple-pale);color:var(--blurple)}
 .tier-badge.best{background:var(--blurple);color:#fff}
-.tier-name{font-size:16px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
-.tier-price{font-size:28px;font-weight:800;letter-spacing:-0.03em;color:var(--blurple);margin-bottom:4px}
+.tier-name{font-size:16px;font-weight:800;letter-spacing:0;margin-bottom:4px}
+.tier-price{font-size:28px;font-weight:800;letter-spacing:0;color:var(--blurple);margin-bottom:4px}
 .tier-price span{font-size:14px;font-weight:500;color:var(--muted)}
 .tier-desc{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:16px}
 .tier-includes{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
@@ -124,7 +124,10 @@ footer{border-top:1px solid var(--border);padding:20px 0;display:flex;justify-co
 <body>
 
 <nav>
-  <a class="wordmark" href="/">dove<span>tell</span></a>
+  <a class="wordmark" href="/">
+    <img src="/assets/favicon.png" alt="" aria-hidden="true">
+    <span>dovetell</span>
+  </a>
   <a class="nav-back" href="javascript:history.back()">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
     Back to results
@@ -504,7 +507,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     ${reviewCardHtml(isTopLevel)}
 
-    <div style="font-size:15px;font-weight:800;letter-spacing:-0.01em;margin-bottom:16px;text-align:center">Why these recommendations</div>
+    <div style="font-size:15px;font-weight:800;letter-spacing:0;margin-bottom:16px;text-align:center">Why these recommendations</div>
     <div class="why-grid">
       <div class="why-card"><div class="why-icon">🔁</div><div class="why-title">Improve prompt reuse</div><div class="why-desc">Standardized prompts and examples help your team move faster and stay consistent.</div></div>
       <div class="why-card"><div class="why-icon">🤝</div><div class="why-title">Reduce handoff friction</div><div class="why-desc">Clear handoff templates and governance reduce back-and-forth and context loss.</div></div>

@@ -47,12 +47,15 @@ centerline_pointer:
         - Public recommendation/product copy uses product-path language.
         - Nav and near-nav language have a documented contract and a local checker.
         - Recommendations avoid outreach-style setup-review pricing and booking copy.
+        - Assessment-family pages use current public-site tokens and mark treatment.
         - Visual QA is completed before release.
       evidence:
         - dev-docs/public-nav-contract.md
         - scripts/check-public-nav.js
         - products/index.html
         - recommendations/index.html
+        - team-assessment/index.html
+        - assessments/index.html
         - dovetell-data.json
         - scripts/build-writing.js
         - team-assessment/assessment-config.json

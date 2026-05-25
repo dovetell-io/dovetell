@@ -91,8 +91,8 @@ token_drift:
       blurple: "#5865F2"
       blurple_dark: "#3B45C4"
       near_black: "#1A1A2E"
-    classification: inspect
-    reason: Recommendation copy and metadata now use product-path language; assessment/framework visual chrome still needs a fuller shared-nav component pass.
+    classification: partial-aligned
+    reason: Assessment-family pages now use the warm surface, midnight, current blurple, current mark treatment, and guarded public copy; framework visual chrome remains a separate pass.
 
   - file: assets/og-card.html, assets/og-starter.html, assets/og-assessment.html
     current:
@@ -124,6 +124,7 @@ email template is being updated for launch.
 | Public nav CTA language | aligned | Active public routes and writing generator use `View products`; no `View packs` matches remain. |
 | Shared nav source | guarded | Static pages still duplicate nav CSS/HTML; `dev-docs/public-nav-contract.md` and `scripts/check-public-nav.js` now guard the current contract until extraction is worth it. |
 | Recommendations outreach copy | aligned | Removed setup-review pricing and booking language from recommendations and fallback data; product-path guidance now points back to `/products/`. |
+| Assessment-family visual baseline | partial-aligned | `team-assessment`, `assessments`, and `recommendations` now share warmer brand tokens and current mark treatment; full interaction QA remains separate. |
 
 ---
 
