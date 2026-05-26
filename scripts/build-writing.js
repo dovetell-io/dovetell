@@ -4,7 +4,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const CONTENT_DIR = path.join(ROOT, 'content', 'writing');
 const OUTPUT_DIR = path.join(ROOT, 'writing');
-const SITE_URL = 'https://preprod.dovetell.io';
+const SITE_URL = 'https://dovetell.io';
 
 function escapeHtml(value) {
   return String(value)
@@ -125,8 +125,6 @@ function articleShell(article, content) {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${SITE_URL}/assets/og.png">
 <script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
-<link rel="stylesheet" href="/assets/preprod-banner.css"/>
-<script defer src="/assets/preprod-banner.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -256,8 +254,6 @@ function indexShell(articles) {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${SITE_URL}/assets/og.png">
 <script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
-<link rel="stylesheet" href="/assets/preprod-banner.css"/>
-<script defer src="/assets/preprod-banner.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>

@@ -3,7 +3,7 @@ title: "Context Debt Is The Hidden Tax On AI-Assisted Teams"
 description: "Why scattered, stale, and unreviewed team context gets more expensive when AI agents start acting on it."
 date: "2026-05-16"
 slug: "context-debt"
-status: "preprod"
+status: "published"
 ---
 
 # Context Debt Is The Hidden Tax On AI-Assisted Teams
