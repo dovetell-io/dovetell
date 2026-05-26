@@ -45,6 +45,7 @@ centerline_pointer:
         - Navigation CTA language stays on `View products`, not packs.
         - Generated writing pages do not reintroduce older nav language or shell widths.
         - Public recommendation/product copy uses product-path language.
+        - Public product pages distinguish downloadable Context Kits from the app Context Inbox workflow.
         - Nav and near-nav language have a documented contract and a local checker.
         - Recommendations avoid outreach-style setup-review pricing and booking copy.
         - Assessment-family pages use current public-site tokens and mark treatment.

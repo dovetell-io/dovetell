@@ -10,7 +10,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:title" content="dovetell - Product recommendations">
-<meta property="og:description" content="Turn assessment results into the right dovetell product path for reusable project context.">
+<meta property="og:description" content="Turn assessment results into the right dovetell Context Kit path for reusable project context.">
 <meta property="og:url" content="https://preprod.dovetell.io/recommendations/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://preprod.dovetell.io/assets/og-starter.png">
@@ -382,10 +382,10 @@ function growthTierCardsHtml(freeSample, freeSampleHref) {
     <div class="tiers">
       ${freeSampleCardHtml(freeSample, freeSampleHref)}
       <div class="tier-card">
-        <div class="tier-badge paid">Product</div>
+        <div class="tier-badge paid">Context Kit</div>
         <div class="tier-name">Starter</div>
         <div class="tier-price">Soon</div>
-        <div class="tier-desc">A compact product path for one project that needs durable AI context without ceremony.</div>
+        <div class="tier-desc">A compact Context Kit for one project that needs durable AI context without ceremony.</div>
         <div class="tier-includes">Includes</div>
         ${['Project manifest','Decision and task templates','Session handoff','Lightweight governance checklist'].map(tierItemHtml).join('')}
         <div class="tier-cta"><a class="btn-tier paid-btn" href="/products/">View products</a></div>
@@ -422,17 +422,17 @@ function reviewCardHtml(isTopLevel) {
     <div class="review-card">
       <div class="review-icon">DT</div>
       <div class="review-body">
-        <div class="review-title">${isTopLevel ? 'Keep the system visible' : 'Choose the next product path'} <span class="review-price">${isTopLevel ? 'Maintain' : 'Next'}</span></div>
+        <div class="review-title">${isTopLevel ? 'Keep the system visible' : 'Choose the next kit path'} <span class="review-price">${isTopLevel ? 'Maintain' : 'Next'}</span></div>
         <div class="review-desc">${isTopLevel
           ? 'A strong score means the next move is calibration: keep examples current, review stale prompts, and make the operating model teachable.'
-          : 'Use your result to compare Starter, Project HQ, and Team HQ. Start with the smallest level that makes context reusable and reviewable.'}</div>
+          : 'Use your result to compare Starter, Project HQ, and Team HQ kits. Start with the smallest level that makes context reusable and reviewable.'}</div>
         <div class="review-features">
           <span class="review-feat">✓ Match structure to context pressure</span>
           <span class="review-feat">✓ Keep human review in the loop</span>
           <span class="review-feat">✓ Preserve the durable record near the work</span>
         </div>
       </div>
-      <a class="btn-review" href="/products/">${isTopLevel ? 'Review product paths →' : 'View products →'}</a>
+      <a class="btn-review" href="/products/">${isTopLevel ? 'Review kit paths →' : 'View products →'}</a>
     </div>`;
 }
 
@@ -514,7 +514,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">Build shared context faster</div><div class="why-desc">Centralized templates and context files help everyone stay aligned from day one.</div></div>
     </div>
 
-    <div class="gumroad-note">You can compare the current product paths on the <a href="/products/">products page</a> without retaking the assessment.</div>
+    <div class="gumroad-note">You can compare the current Context Kit paths on the <a href="/products/">products page</a> without retaking the assessment.</div>
 
     <footer>
       <span class="footer-copy">© 2026 dovetell.io</span>
