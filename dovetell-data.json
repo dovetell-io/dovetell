@@ -214,16 +214,16 @@
         "badge": "Product",
         "badgeStyle": "paid",
         "name": "Starter",
-        "price": null,
-        "desc": "A compact product path for one project that needs durable AI context without ceremony.",
+        "price": "$19",
+        "desc": "A compact Context Kit for one project that needs durable AI context without ceremony.",
         "includes": [
           "Project manifest",
           "Decision and task templates",
           "Session handoff",
           "Lightweight governance checklist"
         ],
-        "cta": "View products",
-        "url": "/products/"
+        "cta": "Buy Starter",
+        "url": "https://dovetellio.gumroad.com/l/starter-context-kit"
       },
       {
         "badge": "Governed Docs",
@@ -243,7 +243,7 @@
     ],
     "productGuidance": {
       "price": null,
-      "desc": "Use the assessment result to compare Starter, Project HQ, and Team HQ, then start with the smallest level of structure that makes context reusable.",
+      "desc": "Use the assessment result to compare Starter, Project HQ, and Team HQ, then start with the smallest level of structure that makes context reusable. Starter is available now; Project HQ and Team HQ are gated paths.",
       "features": [
         "Match structure to context pressure",
         "Keep human review in the loop",

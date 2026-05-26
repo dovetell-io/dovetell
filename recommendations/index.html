@@ -378,22 +378,23 @@ function freeSampleCardHtml(freeSample, freeSampleHref, featured = false) {
 }
 
 function growthTierCardsHtml(freeSample, freeSampleHref) {
+  const starterCheckoutHref = 'https://dovetellio.gumroad.com/l/starter-context-kit';
   return `
     <div class="tiers">
       ${freeSampleCardHtml(freeSample, freeSampleHref)}
       <div class="tier-card">
         <div class="tier-badge paid">Context Kit</div>
         <div class="tier-name">Starter</div>
-        <div class="tier-price">Soon</div>
+        <div class="tier-price">$19</div>
         <div class="tier-desc">A compact Context Kit for one project that needs durable AI context without ceremony.</div>
         <div class="tier-includes">Includes</div>
         ${['Project manifest','Decision and task templates','Session handoff','Lightweight governance checklist'].map(tierItemHtml).join('')}
-        <div class="tier-cta"><a class="btn-tier paid-btn" href="/products/">View products</a></div>
+        <div class="tier-cta"><a class="btn-tier paid-btn" href="${starterCheckoutHref}" target="_blank" rel="noopener">Buy Starter</a></div>
       </div>
       <div class="tier-card featured">
         <div class="tier-badge best">Governed Docs</div>
         <div class="tier-name">Project HQ</div>
-        <div class="tier-price">Soon</div>
+        <div class="tier-price">Gated preview</div>
         <div class="tier-desc">For active projects that need governed docs, document lineage, and cleanup paths.</div>
         <div class="tier-includes">Everything in Starter, plus</div>
         ${['Document registry','Stable doc pointers','Docs-as-code lanes','Documentation trigger model'].map(tierItemHtml).join('')}
