@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your Agents Are Running on Haunted Instructions - dovetell</title>
+<link rel="canonical" href="https://dovetell.io/writing/haunted-instructions/">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta name="description" content="Stale prompts, old rules, and outdated project notes do not disappear when teams start using agents. They become context the agent may still trust.">
+<meta property="og:image" content="https://dovetell.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:title" content="Your Agents Are Running on Haunted Instructions">
+<meta property="og:description" content="Stale prompts, old rules, and outdated project notes do not disappear when teams start using agents. They become context the agent may still trust.">
+<meta property="og:url" content="https://dovetell.io/writing/haunted-instructions/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://dovetell.io/assets/og.png">
+<script defer data-domain="dovetell.io" src="https://plausible.io/js/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#14263A;--ink-2:#172D45;--paper:#F8F5F1;--paper-2:#F1F3F7;--line:#D9DDE6;--muted:#516173;--blurple:#5865F2;--blurple-dark:#3237C8;--green:#22C55E;--sans:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+html{scroll-behavior:smooth}
+body{min-height:100vh;font-family:var(--sans);color:var(--ink);background:var(--paper);overflow-x:hidden}
+a{color:inherit}
+.shell{width:min(1120px,calc(100% - 48px));margin:0 auto}
+nav{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(20,38,58,.94);backdrop-filter:blur(14px)}
+.nav-inner{height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.wordmark{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:20px;font-weight:800;letter-spacing:0}
+.wordmark img{width:30px;height:30px;border-radius:7px}
+.nav-links{display:flex;align-items:center;gap:22px}
+.nav-links a{color:rgba(247,247,255,.72);font-size:13px;font-weight:600;text-decoration:none}
+.nav-links a:hover{color:#fff}
+.nav-cta{color:#fff!important;background:var(--blurple);border-radius:8px;padding:10px 15px}
+.nav-cta:hover{background:var(--blurple-dark)}
+.article-hero{background:var(--ink);color:#fff;padding:74px 0 56px}
+.kicker{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;color:#cfd3ff;font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.article-hero h1{max-width:860px;font-size:clamp(38px,6vw,68px);line-height:1.04;font-weight:800;letter-spacing:0;margin-bottom:20px}
+.dek{max-width:680px;color:rgba(247,247,255,.74);font-size:18px;line-height:1.7}
+.meta{margin-top:24px;color:rgba(247,247,255,.58);font-family:var(--mono);font-size:12px}
+.article-wrap{display:grid;grid-template-columns:minmax(0,720px) 240px;gap:64px;padding:64px 0 86px;align-items:start}
+.article{font-size:18px;line-height:1.78;color:var(--ink-2)}
+.article h1{display:none}
+.article h2{font-size:28px;line-height:1.2;color:var(--ink);margin:46px 0 14px;letter-spacing:0}
+.article p{margin:0 0 22px}
+.article ul{margin:0 0 26px 22px;display:grid;gap:9px}
+.article li{padding-left:4px}
+.article code{font-family:var(--mono);font-size:.9em;background:var(--paper-2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.article-figure{margin:34px 0 38px;border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}
+.article-figure img{display:block;width:100%;height:auto}
+.article-figure figcaption{border-top:1px solid var(--line);padding:12px 14px;color:var(--muted);font-size:13px;line-height:1.5}
+.side-note{position:sticky;top:96px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:18px}
+.side-note h2{font-size:13px;text-transform:uppercase;font-family:var(--mono);color:var(--blurple);margin-bottom:12px}
+.side-note p{font-size:13px;line-height:1.65;color:var(--muted);margin-bottom:14px}
+.side-note a{font-size:13px;font-weight:800;text-decoration:none;color:var(--blurple)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);background:#fff}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap}
+.footer-links a{font-size:12px;text-decoration:none}
+.footer-links a:hover{color:var(--ink)}
+@media(max-width:860px){.shell{width:min(100% - 36px,1120px)}.article-wrap{grid-template-columns:1fr;gap:28px}.side-note{position:static}.nav-links{gap:10px}.nav-links a:not(.nav-cta){display:none}}
+@media(max-width:560px){.shell{width:min(100% - 28px,1120px)}.article-hero{padding:56px 0 42px}.article{font-size:16px}.article h2{font-size:24px}.nav-inner{height:auto;min-height:62px;padding:10px 0}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="shell nav-inner">
+    <a class="wordmark" href="/">
+      <img src="/assets/favicon.png" alt="" aria-hidden="true">
+      <span>dovetell</span>
+    </a>
+    <div class="nav-links">
+      <a href="/products">Products</a>
+      <a href="/framework">Framework</a>
+      <a href="/writing">Writings</a>
+      <a href="/team-assessment">Assessment</a>
+      <a href="/why">Why?</a>
+      <a class="nav-cta" href="/products">View products</a>
+    </div>
+  </div>
+</nav>
+<main>
+  <header class="article-hero">
+    <div class="shell">
+      <div class="kicker"><span class="status-dot"></span>Writings</div>
+      <h1>Your Agents Are Running on Haunted Instructions</h1>
+      <p class="dek">Stale prompts, old rules, and outdated project notes do not disappear when teams start using agents. They become context the agent may still trust.</p>
+      <div class="meta">2026-06-05</div>
+    </div>
+  </header>
+  <div class="shell article-wrap">
+    <article class="article">
+<h1>Your Agents Are Running on Haunted Instructions</h1>
+<figure class="article-figure"><img src="/assets/writing/haunted-instructions-hero.jpg" alt="A dark editorial image reading Your agents are running on haunted instructions beside an old marked-up instruction sheet." loading="lazy"><figcaption>A dark editorial image reading Your agents are running on haunted instructions beside an old marked-up instruction sheet.</figcaption></figure>
+<p>Most teams do not have one instruction problem.</p>
+<p>They have an instruction afterlife.</p>
+<p>Old prompts keep circulating. Setup notes outlive the decision that created them. A process that was true three weeks ago still sits in a project brief, a wiki page, an agent file, or a copied chat.</p>
+<p>The team moves on.</p>
+<p>The instruction does not.</p>
+<p>Then an AI agent reads it.</p>
+<p>The result is rarely dramatic. The agent does not announce that it is following a ghost. It just makes a reasonable move from stale context.</p>
+<p>It implements the old standard.</p>
+<p>It revives a discarded plan.</p>
+<p>It optimizes for a constraint that stopped mattering last Tuesday.</p>
+<p>That is what I mean by haunted instructions.</p>
+<p>They are instructions that still have influence after their authority has expired.</p>
+<h2>This Is Not Just A Prompting Problem</h2>
+<p>The obvious answer is better prompting.</p>
+<p>Write clearer prompts. Add more detail. Tell the model what matters. Put the rules in a system message. Keep a better <code>AGENTS.md</code>.</p>
+<p>All useful.</p>
+<p>But they do not solve the deeper problem.</p>
+<p>The hard part is not writing instructions. The hard part is knowing which instructions are still true.</p>
+<p>AI tools make this visible because they act. A stale wiki note can sit quietly for months. A stale instruction in an agent-visible file can become code, copy, design, or a product decision before lunch.</p>
+<p>The failure mode changes from:</p>
+<p>Someone might be confused later.</p>
+<p>To:</p>
+<p>The system may confidently continue the wrong past.</p>
+<h2>How Instructions Become Haunted</h2>
+<p>Instructions usually become haunted in boring ways.</p>
+<ul>
+<li>A temporary workaround becomes a standing rule.</li>
+<li>A draft decision is copied into a durable file.</li>
+<li>A product direction changes, but the old launch copy stays in circulation.</li>
+<li>A naming convention is superseded, but both names remain visible.</li>
+<li>A context file says &quot;always do this&quot; when the actual rule became &quot;usually, unless...&quot;</li>
+<li>A human remembers the change, but the agent-readable context does not.</li>
+</ul>
+<p>No villain required.</p>
+<p>This is just what happens when AI-assisted work moves faster than the team's ability to retire, review, and reconcile context.</p>
+<p>Most teams are not short on information.</p>
+<p>They are short on authority.</p>
+<h2>Bigger Context Windows Will Not Fix This</h2>
+<p>Large context windows are useful.</p>
+<p>They let agents read more of the repo, more history, more notes, more docs, and more prior work.</p>
+<p>They also make it easier to feed the agent more ghosts.</p>
+<p>If the underlying context is stale, contradictory, or unreviewed, a larger context window does not automatically create clarity.</p>
+<p>It can create a larger room for ambiguity.</p>
+<p>The agent can see more. That does not mean it can know what the team currently believes.</p>
+<p>This is why &quot;just give the model more context&quot; is an incomplete answer.</p>
+<p>The question is not only how much context the agent can read. The question is what status that context has.</p>
+<p>Is this current?</p>
+<p>Was this reviewed?</p>
+<p>Is this a decision, a draft, a guess, a note, a parked idea, or an old constraint that should no longer guide the work?</p>
+<p>Without those distinctions, context becomes volume. And volume can make stale instructions harder to spot.</p>
+<h2>The Missing Layer Is Review</h2>
+<p>Software teams already understand review in code.</p>
+<p>Code can be proposed, changed, reviewed, merged, reverted, and traced. There is a difference between a branch and main. There is a difference between a comment and a committed change.</p>
+<p>AI context needs a similar distinction.</p>
+<p>Not because every note needs process around it.</p>
+<p>Because agents need to know what they are allowed to trust.</p>
+<p>A useful context system separates:</p>
+<ul>
+<li>rough notes from durable decisions</li>
+<li>proposed direction from reviewed direction</li>
+<li>local working memory from project truth</li>
+<li>current constraints from retired constraints</li>
+<li>exploratory prompts from reusable instructions</li>
+</ul>
+<p>That does not require a heavy platform at the start.</p>
+<p>It can begin with small, repo-owned context files and one clear rule: important instructions need visible status.</p>
+<p>If an instruction is current, say so.</p>
+<p>If it is a draft, say so.</p>
+<p>If it is superseded, retire it.</p>
+<p>If two instructions conflict, resolve the conflict instead of making the agent infer which ghost is friendlier.</p>
+<h2>Haunted Instructions Are Expensive</h2>
+<p>The cost is not just bad output.</p>
+<p>It is rework, review fatigue, and repeated explanation.</p>
+<p>A human notices the agent followed the old path. They correct it. They add another note. They hope the next session sees the right one.</p>
+<p>Sometimes that correction becomes another future ghost.</p>
+<p>This is where context debt becomes operational.</p>
+<p>Every unresolved instruction conflict is a small tax on the next session. Every stale rule left in the open increases the chance that an agent will faithfully continue something the team meant to leave behind.</p>
+<p>As token costs become more visible, this matters more.</p>
+<p>Carrying stale context is not free.</p>
+<p>Re-explaining the same correction is not free.</p>
+<p>Letting agents wander through contradictory instructions is not free.</p>
+<p>The cost may not show up as one obvious failure. It shows up as churn.</p>
+<h2>A Practical Starting Point</h2>
+<p>You do not need to solve all of team memory at once.</p>
+<p>Start with the places agents already read.</p>
+<p>For one active project, identify the instructions that shape the work:</p>
+<ul>
+<li>what this project is</li>
+<li>what should not change</li>
+<li>which decisions are current</li>
+<li>which names, rules, or patterns are authoritative</li>
+<li>what is still exploratory</li>
+<li>what the next safe move is</li>
+</ul>
+<p>Then give those instructions a basic lifecycle.</p>
+<p>Current.</p>
+<p>Draft.</p>
+<p>Superseded.</p>
+<p>Parked.</p>
+<p>Needs review.</p>
+<p>That distinction is small. It is also the difference between an agent reading a project and an agent reading a stack of old sediment.</p>
+<h2>The Goal Is Not Perfect Documentation</h2>
+<p>Perfect documentation is not the goal.</p>
+<p>Recoverable intent is the goal.</p>
+<p>When a human or agent returns to the work, they should be able to tell what the team currently believes, what changed, what drifted, and what should happen next.</p>
+<p>That is the difference between context as a pile of notes and context as a working surface.</p>
+<p>AI agents are going to keep reading whatever we give them.</p>
+<p>The question is whether we keep handing them haunted instructions, or whether we give them context that has been reviewed, retired, and kept close enough to the work to matter.</p>
+<p>Tell it once.</p>
+<p>Then make sure the thing you told it is still alive.</p>
+    </article>
+    <aside class="side-note" aria-label="Writing note">
+      <h2>Why this exists</h2>
+      <p>This essay introduces the problem dovetell is built around: teams lose momentum when important context is scattered, stale, or trapped in someone else's memory.</p>
+      <a href="/writing/">Back to writings</a>
+    </aside>
+  </div>
+</main>
+<footer>
+  <div class="shell footer-inner">
+    <div>dovetell · Tell it once. Let it travel.</div>
+    <div class="footer-links">
+      <a href="/products">Products</a>
+      <a href="/framework">Framework</a>
+      <a href="/writing">Writings</a>
+      <a href="/team-assessment">Assessment</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
