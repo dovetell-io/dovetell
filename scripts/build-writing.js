@@ -315,7 +315,7 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);backgr
 ${cards}
   </section>
   <section class="note">
-    <div class="shell">Start with the core essays, then use the products and framework pages when you are ready to put the pattern into a repo.</div>
+    <div class="shell">These essays explain the problem Dovetell is built around: keeping project intent current, reviewed, and usable by the humans and agents doing the work.</div>
   </section>
 </main>
 <footer>
